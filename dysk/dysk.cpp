@@ -204,7 +204,3 @@ void Disc::rename_file(std::string filename, std::string ext, std::string new_fi
 void Disc::add_to_file(std::string filename, std::string ext, std::string data)
 {
 }
-
-void Disc::show_file_info(std::string filename, std::string ext)
-{
-}

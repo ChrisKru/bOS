@@ -35,6 +35,5 @@ public:
 	void delete_file(std::string filename, std::string ext);							//usuwanie pliku
 	void print_file_list();																//wyswietla liste wszystkich plikow
 	void rename_file(std::string filename, std::string ext, std::string new_filename);	//zmiana nazwy pliku
-	void add_to_file(std::string filename, std::string ext, std::string data);			//dodanie do danych do juz istniejacych
-	void show_file_info(std::string filename, std::string ext);							//data godzina itp
+	void add_to_file(std::string filename, std::string ext, std::string data);			//dodanie danych do danych juz istniejacych
 };
