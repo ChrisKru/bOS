@@ -1,11 +1,11 @@
 #include "dysk.h"
 
 
-bool Disc::file_exist(std::string filename, std::string ext)
+bool Disc::file_exist(std::string filename)
 {
 	for (int i = 0; i < 32; i++)
 	{
-		if (katalog_[i].filename == filename && katalog_[i].ext == ext)
+		if (katalog_[i].filename == filename)
 			return 1;
 	}
 	return false;
@@ -34,7 +34,7 @@ int Disc::free_block()
 void Disc::available_free_space()
 {
 	int temp = 0;
-	for (int i = 1; i < 32; i++)
+	for (int i = 0; i < 32; i++)
 	{
 		if (block_[i] == true)
 		{
@@ -42,17 +42,13 @@ void Disc::available_free_space()
 		}
 	}
 	free_space_ = temp * 32;
-	if (free_space_ == 0)
-	{
-		disc_[0] = 'n';
-	}
 }
 
-int Disc::find_file(std::string filename, std::string ext)
+int Disc::find_file(std::string filename)
 {
 	for (int i = 0; i < 32; i++)
 	{
-		if (katalog_[i].filename == filename && katalog_[i].ext == ext)
+		if (katalog_[i].filename == filename)
 			return i;
 	}
 	return -1;
@@ -92,7 +88,7 @@ void Disc::save_block(int poczatek, std::string data)
 int Disc::free_block_space()
 {
 	int temp = 0;
-	for (int i = 1; i < 32; i++)
+	for (int i = 0; i < 32; i++)
 	{
 		if (block_[i] == true)
 			temp++;
@@ -111,29 +107,24 @@ Disc::Disc()
 	for (int i = 0; i < 32; i++)
 	{
 		katalog_[i].free = true;
-		//katalog_[i].data = false;
 		block_[i] = true;
 	}
-	block_[0] = false;
-	disc_[0] = 't'; //jest wolne miejsce/ n nie ma
 }
 
-void Disc::create_file(std::string filename, std::string ext)
+void Disc::create_file(std::string filename)
 {
-	if (disc_[0] == 't' && !file_exist(filename, ext))
+	if (!file_exist(filename))
 	{
 		int kat_nr = free_catalog();
 		int block_nr = free_block();
 		katalog_[kat_nr].filename = filename;
-		katalog_[kat_nr].ext = ext;
 		katalog_[kat_nr].free = false;
-		//katalog_[kat_nr].data = false;
 		katalog_[kat_nr].first_block = block_nr;
 		katalog_[kat_nr].size = 0;
 		block_[block_nr] = false;
 		available_free_space();
 	}
-	else if (disc_[0] == 'n')
+	else if (free_space_==0)
 	{
 		std::cout << "Dysk jest pelny" << std::endl;
 	}
@@ -143,14 +134,14 @@ void Disc::create_file(std::string filename, std::string ext)
 	}
 }
 
-void Disc::write_file(std::string filename, std::string ext, std::string data)
+void Disc::write_file(std::string filename, std::string data)
 {
-	if (!file_exist(filename, ext))
+	if (!file_exist(filename))
 	{
-		create_file(filename, ext);
+		create_file(filename);
 	}
 
-	int kat_nr = find_file(filename, ext);
+	int kat_nr = find_file(filename);
 
 	if (kat_nr != -1)
 	{
@@ -178,7 +169,7 @@ void Disc::write_file(std::string filename, std::string ext, std::string data)
 	}
 }
 
-void Disc::print_file(std::string filename, std::string ext)
+void Disc::print_file(std::string filename)
 {
 	/*for(int i=0;i<32;i++)
 	{
@@ -189,7 +180,7 @@ void Disc::print_file(std::string filename, std::string ext)
 	}*/
 }
 
-void Disc::delete_file(std::string filename, std::string ext)
+void Disc::delete_file(std::string filename)
 {
 }
 
@@ -197,10 +188,10 @@ void Disc::print_file_list()
 {
 }
 
-void Disc::rename_file(std::string filename, std::string ext, std::string new_filename)
+void Disc::rename_file(std::string filename, std::string new_filename)
 {
 }
 
-void Disc::add_to_file(std::string filename, std::string ext, std::string data)
+void Disc::add_to_file(std::string filename, std::string data)
 {
 }
