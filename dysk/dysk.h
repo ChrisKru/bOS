@@ -5,16 +5,16 @@
 struct Katalog
 {
 	std::string filename;		//nazwa
-	int first_block;				//numer pierwszego bloku
-	int size;						//rozmir pliku w znakach
-	bool free;						//wolny do zapisu
+	int first_block;			//numer pierwszego bloku
+	int size;					//rozmir pliku w znakach
+	bool free;					//wolny do zapisu
 };
 
 class Disc
 {
 	char disc_[1024];
 	Katalog katalog_[32];
-	bool block_[32];		//blok zajety/wolny true-wolny - szybsze sprawdzanie czy dany blok jest wolny
+	bool block_[32];		//blok zajety/wolny true-wolny
 
 	bool file_exist(std::string filename);
 	int free_catalog();
@@ -24,6 +24,7 @@ class Disc
 	int free_block_space();
 	void delete_block(int nr_bloku);
 	void print_block(int nr_bloku, int znaki);
+	std::string getString();
 public:
 
 	Disc();
