@@ -14,18 +14,16 @@ class Disc
 {
 	char disc_[1024];
 	Katalog katalog_[32];
-	int free_space_ = 1024;	//ilosc wolnego miejsc - 32 bajty zarezerwowane
 	bool block_[32];		//blok zajety/wolny true-wolny - szybsze sprawdzanie czy dany blok jest wolny
-	bool kat_[32];		//kat zajety/wolny true-wolny - szybsze sprawdzanie czy dany blok jest wolny
-
 
 	bool file_exist(std::string filename);
 	int free_catalog();
 	int free_block();
-	void available_free_space();
 	int find_file(std::string filename);
 	void save_block(int nr_bloku, std::string data);
 	int free_block_space();
+	void delete_block(int nr_bloku);
+	void print_block(int nr_bloku, int znaki);
 public:
 
 	Disc();
