@@ -26,7 +26,12 @@ int Disc::free_block()
 	for (int i = 0; i < 32; i++)
 	{
 		if (block_[i] == true)
+		{
+			block_[i] = false;
+			disc_[i * 32 + 31] = 'k';
 			return i;
+		}
+
 	}
 	return -1;
 }
@@ -275,13 +280,72 @@ void Disc::add_to_file(std::string filename, std::string data)
 	int kat_nr = find_file(filename);
 	if (kat_nr != -1)
 	{
-		if(data.size()+katalog_[kat_nr].size<=free_block_space())
+		if (katalog_[kat_nr].size == 0)
 		{
-			
+			std::cout << "Plik jest pusty nie mozna dopiasc plikow, uzyj innej funkcji" << std::endl;
 		}
 		else
 		{
-			std::cout << "Brak miejsca na dysku" << std::endl;
+			if (data.size() == 0)
+			{
+				std::cout << "Brak danych do zapisania" << std::endl;
+			}
+			else
+			{
+				int l = katalog_[kat_nr].size % 31;
+				if (l == 0)
+				{
+					l = 31;
+				}
+				int free_space = free_block_space() + (31 - l);
+				if (data.size() <= free_space)
+				{
+
+					int temp_size = katalog_[kat_nr].size;
+					int next_block = katalog_[kat_nr].first_block;
+					while (temp_size >= 31)
+					{
+						if (disc_[next_block * 32 + 31] == 'k')
+						{
+							int temp = free_block();
+							disc_[next_block * 32 + 31] = temp;
+							next_block = temp;
+						}
+						else
+						{
+							next_block = disc_[next_block * 32 + 31];
+						}
+						temp_size -= 31;
+					}
+					int j = next_block * 32 + temp_size;
+					int end = j + (data.size() % 31);
+					int i = 0;
+					for (i; j < end; i++)
+					{
+						if (disc_[j] == 'k')
+						{
+							end = j;
+							break;
+						}
+						disc_[j] = data[i];
+						j++;
+					}
+
+					katalog_[kat_nr].size += data.size();
+					data.erase(data.begin(), data.begin() + i);
+					if (data.size() > 0)
+					{
+						int next = free_block();
+						disc_[end] = next;
+						save_block(next * 32, data);
+					}
+
+				}
+				else
+				{
+					std::cout << "Brak miejsca na dysku" << std::endl;
+				}
+			}
 		}
 	}
 	else

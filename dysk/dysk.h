@@ -41,5 +41,5 @@ public:
 	void delete_file(std::string filename);								//usuwanie pliku
 	void print_file_list();												//wyswietla liste wszystkich plikow
 	void rename_file(std::string filename, std::string new_filename);	//zmiana nazwy pliku
-	void add_to_file(std::string filename, std::string data);			//dodanie danych do danych juz istniejacych
+	void add_to_file(std::string filename, std::string data);			//dodanie danych do danych juz istniejacych NIE MOZE ZAPISAC DO PUSTEGO PLIKU
 };
