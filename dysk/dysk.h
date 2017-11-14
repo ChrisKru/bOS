@@ -24,7 +24,7 @@ class Disc
 	int free_block_space();
 	void delete_block(int nr_bloku);
 	void print_block(int nr_bloku, int znaki);
-	std::string getString();
+
 public:
 
 	Disc();
