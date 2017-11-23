@@ -105,14 +105,15 @@ void Disc::delete_block(int nr_bloku)
 
 }
 
-void Disc::print_block(int nr_bloku, int znaki)
+std::string Disc::print_block(int nr_bloku, int znaki)
 {
+	std::string temp = "";
 	int j = nr_bloku * 32;
 	if (znaki <= 31)
 	{
 		for (int i = 0; i < znaki; i++)
 		{
-			std::cout << disc_[j];
+			temp += disc_[j];
 			j++;
 		}
 	}
@@ -120,11 +121,12 @@ void Disc::print_block(int nr_bloku, int znaki)
 	{
 		for (int i = 0; i < 31; i++)
 		{
-			std::cout << disc_[j];
+			temp += disc_[j];
 			j++;
 		}
-		print_block(disc_[nr_bloku * 32 + 31], znaki - 31);
+		temp += print_block(disc_[nr_bloku * 32 + 31], znaki - 31);
 	}
+	return temp;
 }
 
 
@@ -222,8 +224,7 @@ void Disc::print_file(std::string filename)
 	int kat_nr = find_file(filename);
 	if (kat_nr != -1)
 	{
-		print_block(katalog_[kat_nr].first_block, katalog_[kat_nr].size);
-		std::cout << std::endl;
+		std::cout << getFile(filename) << std::endl;
 	}
 	else
 	{
@@ -352,4 +353,20 @@ void Disc::add_to_file(std::string filename, std::string data)
 	{
 		std::cout << "Plik nie istnieje" << std::endl;
 	}
+}
+
+std::string Disc::getFile(std::string filename)
+{
+	std::string temp = "";
+	int kat_nr = find_file(filename);
+	if (kat_nr != -1)
+	{
+		temp += print_block(katalog_[kat_nr].first_block, katalog_[kat_nr].size);
+		std::cout << std::endl;
+	}
+	else
+	{
+		std::cout << "Plik nie istnieje" << std::endl;
+	}
+	return temp;
 }
