@@ -43,4 +43,5 @@ public:
 	void rename_file(std::string filename, std::string new_filename);	//zmiana nazwy pliku
 	void add_to_file(std::string filename, std::string data);			//dodanie danych do danych juz istniejacych NIE MOZE ZAPISAC DO PUSTEGO PLIKU
 	std::string getFile(std::string filename);							//zwraca stringa
+	void printDisc();													//Wypisuje zawartosc calego dysku (wszystkie znaki w tablicy)
 };

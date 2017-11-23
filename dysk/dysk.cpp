@@ -135,7 +135,7 @@ Disc::Disc()
 {
 	for (int i = 0; i < 1024; i++)
 	{
-		disc_[i] = 0;
+		disc_[i] = '0';
 	}
 	for (int i = 0; i < 32; i++)
 	{
@@ -369,4 +369,36 @@ std::string Disc::getFile(std::string filename)
 		std::cout << "Plik nie istnieje" << std::endl;
 	}
 	return temp;
+}
+
+void Disc::printDisc()
+{
+	std::cout << "Zawartosc dysku (danego bloku):" << std::endl;
+	int indeks = 0;
+	for (int i = 0; i < 32; i++)
+	{
+		std::cout << i << ":\t";
+		for (int j = 0; j < 32; j++)
+		{
+			if (j == 31)
+			{
+				std::cout << "\tNastepny blok: \t";
+				if (disc_[indeks + j] == 'k')
+				{
+					std::cout << disc_[indeks + j];
+				}
+				else
+				{
+					int temp = disc_[indeks + j];
+					std::cout << temp;
+				}
+			}
+			else
+			{
+				std::cout << disc_[indeks + j];
+			}
+		}
+		indeks += 32;
+		std::cout << std::endl;
+	}
 }
