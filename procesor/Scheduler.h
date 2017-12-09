@@ -5,7 +5,7 @@
 #include <queue>
 #include <memory>
 using namespace std;
-shared_ptr<PCB> running = make_shared<PCB>();
+shared_ptr<PCB> running = FirstProcess(0);
 struct komparator
 {
 	bool operator() (shared_ptr<PCB> p1, shared_ptr<PCB> p2) 
@@ -19,27 +19,26 @@ class Scheduler
 	float alpha = 0.5;
 	vector<shared_ptr<PCB>> procesy_gotowe;
 	priority_queue<shared_ptr<PCB>, vector<shared_ptr<PCB>>, komparator> procesy_gotowe_queue;
-	shared_ptr<PCB> idle = nullptr;
 public:
 	Scheduler()
 	{
 		time = 0;
-		running = FirstProcess();
 	}
 	void Schedule()
 	{
-		if (running != idle && running->GetState() == Stan::ZAKONCZONY)
+		if (running != nullptr && running->GetState() == Stan::ZAKONCZONY)
 		{
 			time = running->timer;
 		}
-		if (running != idle && running->GetState() != Stan::AKTYWNY)
+		if (running != nullptr && running->GetState() != Stan::AKTYWNY)
 		 {
 			if (procesy_otrzymane.size() > 0)
 			{
 				bool x = false;
 				for (auto proces : procesy_otrzymane)
 				{
-					if (proces->GetState() == Stan::AKTYWNY)
+					if (proces->GetState() == Stan::NOWY) proces->SetState(Stan::GOTOWY);
+					if (proces->GetState() == Stan::GOTOWY)
 					{
 						if (time == 0)
 						{
@@ -61,24 +60,27 @@ public:
 						}
 					}
 				}
-			/*	for (auto proces : procesy_gotowe)
+				for (auto proces : procesy_gotowe)
 			{
-				cout << proces->ID << "Tau: " << proces->tau << endl;
+				cout << proces->ID << " - Tau: " << proces->tau << endl;
 				procesy_gotowe_queue.push(proces);
-			}*/
+			}
 				procesy_otrzymane.clear();
 				procesy_gotowe.clear();
-				running = procesy_gotowe_queue.top();
-				procesy_gotowe_queue.pop();
-				running->SetState(Stan::AKTYWNY);
-				cout << "Aktywny: " << running->ID << endl;
+				if (procesy_gotowe_queue.size() > 0)
+				{
+					running = procesy_gotowe_queue.top();
+					procesy_gotowe_queue.pop();
+					running->SetState(Stan::AKTYWNY);
+					cout << "Aktywny: " << running->ID << endl;
+				}
 			}
 			else
 			{
 				if (procesy_gotowe_queue.size() <= 0)
 				{
-					cout << "Brak procesow" << endl;
-					running = FirstProcess();
+					cout << "Brak gotowych procesow!" << endl;
+					running = FirstProcess(0);
 				}
 				else
 				{
@@ -93,9 +95,9 @@ public:
 	}
 	void print_running()
 	{
-		
+		cout << "Akutalnie wykonywany jest proces o ID: " << running->GetID() << endl;
 	}
-	 void dodaj_do_listy(shared_ptr<PCB> proces)
+	 void dodaj_do_procesow_gotowych(shared_ptr<PCB> proces)
 	{
 		procesy_otrzymane.push_back(proces);
 	}
