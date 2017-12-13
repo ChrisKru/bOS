@@ -215,27 +215,33 @@ void Disc::write_file(std::string filename, std::string data)
 	if (file_exist(filename))
 	{
 		int kat_nr = find_file(filename);
-
-		if (kat_nr != -1)
+		if (katalog_[kat_nr].open == true)
 		{
-			if (katalog_[kat_nr].size == 0)
+			if (kat_nr != -1)
 			{
-				int length = data.length();
-				if (length - 31 > free_block_space())
+				if (katalog_[kat_nr].size == 0)
 				{
-					std::cout << "Brak miejsca na dysku na zapisanie tego pliku" << std::endl;
+					int length = data.length();
+					if (length - 31 > free_block_space())
+					{
+						std::cout << "Brak miejsca na dysku na zapisanie tego pliku" << std::endl;
+					}
+					else
+					{
+						int poczatek = katalog_[kat_nr].first_block * 32;
+						save_block(poczatek, data);
+						katalog_[kat_nr].size = length;
+					}
 				}
 				else
 				{
-					int poczatek = katalog_[kat_nr].first_block * 32;
-					save_block(poczatek, data);
-					katalog_[kat_nr].size = length;
+					std::cout << "Nie mozna nadpisac pliku" << std::endl;
 				}
 			}
-			else
-			{
-				std::cout << "Nie mozna nadpisac pliku" << std::endl;
-			}
+		}
+		else
+		{
+			std::cout << "Nalezy otworzyc plik" << std::endl;
 		}
 	}
 	else
@@ -251,7 +257,15 @@ void Disc::print_file(std::string filename)
 	int kat_nr = find_file(filename);
 	if (kat_nr != -1)
 	{
-		std::cout << getFile(filename) << std::endl;
+		if (katalog_[kat_nr].open == true)
+		{
+			std::cout << getFile(filename) << std::endl;
+		}
+		else
+		{
+			std::cout << "Nalezy otworzyc plik" << std::endl;
+		}
+
 	}
 	else
 	{
@@ -264,12 +278,18 @@ void Disc::delete_file(std::string filename)
 	if (file_exist(filename))
 	{
 		int kat_nr = find_file(filename);
+		if (katalog_[kat_nr].open == true)
+		{
+			delete_block(katalog_[kat_nr].first_block);
 
-		delete_block(katalog_[kat_nr].first_block);
-
-		katalog_[kat_nr].free = true;
-		katalog_[kat_nr].size = 0;
-		katalog_[kat_nr].filename = "";
+			katalog_[kat_nr].free = true;
+			katalog_[kat_nr].size = 0;
+			katalog_[kat_nr].filename = "";
+		}
+		else
+		{
+			std::cout << "Nalezy otworzyc plik" << std::endl;
+		}
 	}
 	else
 	{
@@ -294,8 +314,15 @@ void Disc::rename_file(std::string filename, std::string new_filename)
 	int kat_nr = find_file(filename);
 	if (kat_nr != -1)
 	{
-		katalog_[kat_nr].filename = new_filename;
-		std::cout << "Zmieniono nazwe pliku \"" << filename << "\" na \"" << new_filename << "\"" << std::endl;
+		if (katalog_[kat_nr].open == true)
+		{
+			katalog_[kat_nr].filename = new_filename;
+			std::cout << "Zmieniono nazwe pliku \"" << filename << "\" na \"" << new_filename << "\"" << std::endl;
+		}
+		else
+		{
+			std::cout << "Nalezy otworzyc plik" << std::endl;
+		}
 	}
 	else
 	{
@@ -308,73 +335,81 @@ void Disc::add_to_file(std::string filename, std::string data)
 	int kat_nr = find_file(filename);
 	if (kat_nr != -1)
 	{
-		if (katalog_[kat_nr].size == 0)
+		if (katalog_[kat_nr].open == true)
 		{
-			std::cout << "Plik jest pusty nie mozna dopiasc plikow, uzyj innej funkcji" << std::endl;
-		}
-		else
-		{
-			if (data.size() == 0)
+			if (katalog_[kat_nr].size == 0)
 			{
-				std::cout << "Brak danych do zapisania" << std::endl;
+				std::cout << "Plik jest pusty nie mozna dopiasc plikow, uzyj innej funkcji" << std::endl;
 			}
 			else
 			{
-				int l = katalog_[kat_nr].size % 31;
-				if (l == 0)
+				if (data.size() == 0)
 				{
-					l = 31;
-				}
-				int free_space = free_block_space() + (31 - l);
-				if (data.size() <= free_space)
-				{
-
-					int temp_size = katalog_[kat_nr].size;
-					int next_block = katalog_[kat_nr].first_block;
-					while (temp_size >= 31)
-					{
-						if (disc_[next_block * 32 + 31] == 'k')
-						{
-							int temp = free_block();
-							disc_[next_block * 32 + 31] = temp;
-							next_block = temp;
-						}
-						else
-						{
-							next_block = disc_[next_block * 32 + 31];
-						}
-						temp_size -= 31;
-					}
-					int j = next_block * 32 + temp_size;
-					int end = j + (data.size() % 31);
-					int i = 0;
-					for (i; j < end; i++)
-					{
-						if (disc_[j] == 'k')
-						{
-							end = j;
-							break;
-						}
-						disc_[j] = data[i];
-						j++;
-					}
-
-					katalog_[kat_nr].size += data.size();
-					data.erase(data.begin(), data.begin() + i);
-					if (data.size() > 0)
-					{
-						int next = free_block();
-						disc_[end] = next;
-						save_block(next * 32, data);
-					}
-
+					std::cout << "Brak danych do zapisania" << std::endl;
 				}
 				else
 				{
-					std::cout << "Brak miejsca na dysku" << std::endl;
+					int l = katalog_[kat_nr].size % 31;
+					if (l == 0)
+					{
+						l = 31;
+					}
+					int free_space = free_block_space() + (31 - l);
+					if (data.size() <= free_space)
+					{
+
+						int temp_size = katalog_[kat_nr].size;
+						int next_block = katalog_[kat_nr].first_block;
+						while (temp_size >= 31)
+						{
+							if (disc_[next_block * 32 + 31] == 'k')
+							{
+								int temp = free_block();
+								disc_[next_block * 32 + 31] = temp;
+								next_block = temp;
+							}
+							else
+							{
+								next_block = disc_[next_block * 32 + 31];
+							}
+							temp_size -= 31;
+						}
+						int j = next_block * 32 + temp_size;
+						int end = j + (data.size() % 31);
+						int i = 0;
+						for (i; j < end; i++)
+						{
+							if (disc_[j] == 'k')
+							{
+								end = j;
+								break;
+							}
+							disc_[j] = data[i];
+							j++;
+						}
+
+						katalog_[kat_nr].size += data.size();
+						data.erase(data.begin(), data.begin() + i);
+						if (data.size() > 0)
+						{
+							int next = free_block();
+							disc_[end] = next;
+							save_block(next * 32, data);
+						}
+
+					}
+					else
+					{
+						std::cout << "Brak miejsca na dysku" << std::endl;
+					}
 				}
 			}
 		}
+		else
+		{
+			std::cout << "Nalezy otworzyc plik" << std::endl;
+		}
+		
 	}
 	else
 	{
@@ -388,8 +423,16 @@ std::string Disc::getFile(std::string filename)
 	int kat_nr = find_file(filename);
 	if (kat_nr != -1)
 	{
-		temp += print_block(katalog_[kat_nr].first_block, katalog_[kat_nr].size);
-		std::cout << std::endl;
+		if (katalog_[kat_nr].open == true)
+		{
+			temp += print_block(katalog_[kat_nr].first_block, katalog_[kat_nr].size);
+			std::cout << std::endl;
+		}
+		else
+		{
+			std::cout << "Nalezy otworzyc plik" << std::endl;
+		}
+
 	}
 	else
 	{
