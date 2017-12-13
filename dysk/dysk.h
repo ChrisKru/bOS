@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <iostream>
+#include "CV.h"
 
 struct Katalog
 {
@@ -8,6 +9,8 @@ struct Katalog
 	int first_block;			//numer pierwszego bloku
 	int size;					//rozmir pliku w znakach
 	bool free;					//wolny do zapisu
+	bool open = false;					//czy plik otwarty
+	CV cv_;						//Zmienna warunkowa
 };
 
 class Disc
@@ -29,14 +32,13 @@ public:
 
 	Disc();
 
-	//Musi byc wywolane dla kazdego pliku
-	//Nie wiem jeszcze jakie parametry ale pewnie jakis proces czy cos
+	//Musi byc wywolane dla kazdego pliku!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	void open_file(std::string filename);
 	void close_file(std::string filename);
 
 
 	void create_file(std::string filename);								//utworzenie pliku
-	void write_file(std::string filename, std::string data);			//zapis do pliku - jesli plik nie istnieje tworzy go
+	void write_file(std::string filename, std::string data);			//zapis do pliku
 	void print_file(std::string filename);								//wyswietlenie zawartosci
 	void delete_file(std::string filename);								//usuwanie pliku
 	void print_file_list();												//wyswietla liste wszystkich plikow

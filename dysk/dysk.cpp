@@ -146,10 +146,42 @@ Disc::Disc()
 
 void Disc::open_file(std::string filename)
 {
+	if (file_exist(filename))
+	{
+		int kat_nr = find_file(filename);
+
+		katalog_[kat_nr].cv_.wait();
+
+		if (katalog_[kat_nr].open == true)
+		{
+			std::cout << "Plik jest juz otwarty" << std::endl;
+		}
+		else
+		{
+			katalog_[kat_nr].open = true;
+		}
+	}
+	else
+	{
+		std::cout << "Plik nie istnieje" << std::endl;
+	}
 }
 
 void Disc::close_file(std::string filename)
 {
+	if (file_exist(filename))
+	{
+		int kat_nr = find_file(filename);
+
+		katalog_[kat_nr].cv_.signal();
+
+		katalog_[kat_nr].open = false;
+
+	}
+	else
+	{
+		std::cout << "Plik nie istnieje" << std::endl;
+	}
 }
 
 void Disc::create_file(std::string filename)
@@ -180,43 +212,38 @@ void Disc::create_file(std::string filename)
 
 void Disc::write_file(std::string filename, std::string data)
 {
-	if (!file_exist(filename))
+	if (file_exist(filename))
 	{
-		int length = data.length();
-		if (length > free_block_space())
-		{
-			std::cout << "Brak miejsca na dysku na zapisanie tego pliku" << std::endl;
-			return;
-		}
-		else
-		{
-			create_file(filename);
-		}
-	}
+		int kat_nr = find_file(filename);
 
-	int kat_nr = find_file(filename);
-
-	if (kat_nr != -1)
-	{
-		if (katalog_[kat_nr].size == 0)
+		if (kat_nr != -1)
 		{
-			int length = data.length();
-			if (length - 31 > free_block_space())
+			if (katalog_[kat_nr].size == 0)
 			{
-				std::cout << "Brak miejsca na dysku na zapisanie tego pliku" << std::endl;
+				int length = data.length();
+				if (length - 31 > free_block_space())
+				{
+					std::cout << "Brak miejsca na dysku na zapisanie tego pliku" << std::endl;
+				}
+				else
+				{
+					int poczatek = katalog_[kat_nr].first_block * 32;
+					save_block(poczatek, data);
+					katalog_[kat_nr].size = length;
+				}
 			}
 			else
 			{
-				int poczatek = katalog_[kat_nr].first_block * 32;
-				save_block(poczatek, data);
-				katalog_[kat_nr].size = length;
+				std::cout << "Nie mozna nadpisac pliku" << std::endl;
 			}
 		}
-		else
-		{
-			std::cout << "Nie mozna nadpisac pliku" << std::endl;
-		}
 	}
+	else
+	{
+		std::cout << "Plik nie istnieje" << std::endl;
+	}
+
+
 }
 
 void Disc::print_file(std::string filename)
