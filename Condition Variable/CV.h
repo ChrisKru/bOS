@@ -1,13 +1,12 @@
 #pragma once
 #include "Process.h"
-#include "Scheduler.h"
 #include <list>
 #include <memory>
 
 class CV {
 	std::list<std::shared_ptr<PCB>> pcb_waiting_list;
 
-protected:
+public:
 	void wait() {
 		if (pcb_waiting_list.size() == 0) {
 			// nie musze nic robic
@@ -22,5 +21,9 @@ protected:
 
 		if(pcb_waiting_list.size() > 0)
 		pcb_waiting_list.front()->PCB::SetState(State::GOTOWY);
+	}
+	bool is_empty() {
+		if (pcb_waiting_list.size() == 0) return true;
+		else return false;
 	}
 };
