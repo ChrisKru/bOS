@@ -278,17 +278,25 @@ void Disc::delete_file(std::string filename)
 	if (file_exist(filename))
 	{
 		int kat_nr = find_file(filename);
-		if (katalog_[kat_nr].open == true)
+		if (katalog_[kat_nr].open == false)
 		{
-			delete_block(katalog_[kat_nr].first_block);
+			if(katalog_[kat_nr].cv_.is_empty())
+			{
+				delete_block(katalog_[kat_nr].first_block);
 
-			katalog_[kat_nr].free = true;
-			katalog_[kat_nr].size = 0;
-			katalog_[kat_nr].filename = "";
+				katalog_[kat_nr].free = true;
+				katalog_[kat_nr].size = 0;
+				katalog_[kat_nr].filename = "";
+			}
+			else
+			{
+				std::cout << "Plik jest uzywany przez inny proces" << std::endl;
+			}
+
 		}
 		else
 		{
-			std::cout << "Nalezy otworzyc plik" << std::endl;
+			std::cout << "Zamknij plik przed usunieciem" << std::endl;
 		}
 	}
 	else
