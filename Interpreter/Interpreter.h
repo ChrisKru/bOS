@@ -26,9 +26,12 @@ private:
 											 [1] (opcjonalne) dana do operacji
 											 [2] (opcjonalne) dana do operacji
 											 */
+
+	void setInstruction();			// ustawiamy w nim nasza tablice instruction
 	Disc dysk;
 	Memory RAM;
 	Scheduler scheduler;
+	
 
 public:
 	Interpreter();
@@ -38,7 +41,7 @@ public:
 	void saveRegisters();;			// ustawia dane zawarte w running naszymi danymi(rejestry, PID, IP, timer++)
 	void showRegisters();			// wyswietla stany rejestrow, PID oraz IP
 
-	bool runInstruction();			// glowna metoda, zawiera interpretacje rozkazow
+	bool runInstruction(Disc ds, Memory mm, Scheduler sc);			// glowna metoda, zawiera interpretacje rozkazow
 
 };
 
