@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <iostream>
-#include "CV.h"
+#include "../ConditionVariable/CV.h"
 
 struct Katalog
 {
