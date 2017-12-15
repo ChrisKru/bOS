@@ -1,7 +1,9 @@
 #pragma once
-#include "Scheduler.h"
-#include "dysk.h"
-#include "Memory.h"
+
+#include "../Memory/Memory.h"
+#include "../dysk/dysk.h"
+#include "../procesor/Scheduler.h"
+
 #include <string>
 #include <array>
 
