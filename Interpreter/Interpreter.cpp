@@ -26,6 +26,21 @@ std::string Interpreter::loadInstruction() {
 	// wywolanie pamieci operacyjnej
 	// zwraca nam rozkaz jaki ma zostac wykonany
 	// return STRING Z ROZKAZEM
+	// return RAM.getCommands(_PID, _ID);
+}
+
+void Interpreter::setInstruction()
+{
+	std::string command = loadInstruction();
+	instruction[0] = command.substr(0, 2);
+	command = command.substr(2);
+	int i = 1;
+	while (command[i] != ' ') {
+		instruction[1] += command[i];
+		i++;
+	}
+	i++;
+	instruction[2] = command.substr(i);
 }
 
 void Interpreter::saveRegisters() {
@@ -44,24 +59,25 @@ void Interpreter::showRegisters() {
 	std::cout << "Licznik rozkazow: " << _IP << std::endl;
 }
 
-bool Interpreter::runInstruction() {
+bool Interpreter::runInstruction(Disc ds, Memory mm, Scheduler sc) {
+	this->dysk = ds;
+	this->RAM = mm;
+	this->scheduler = sc;
 	// wczytujemy rozkaz do wykonania
 	// instruction = loadInstruction();
 	/*
 	Prace rozdzielamy sobie na tablice Stringow
 	rozkazy bêd¹ do niej zapisywane, maks rozmiar = 3.
-	string s = Ram.getCommands();
-	instruction[0] = s.substr(0,2);
-	itd.
-	*/
 
+	*/
+	setInstruction();
 
 	// operation = instruction.substr(0,2);
 	std::string operation = instruction[0];
 
 
 	// operator zamkniecia procesu
-	if (operation==("AD")) {
+	if (operation == ("AD")) {
 		// killujemy proces
 		showRegisters();
 		_IP += operation.length();
@@ -70,7 +86,7 @@ bool Interpreter::runInstruction() {
 
 	/* Operacje logiczne */
 	// MV nazwa_rejestru liczba
-	if (operation==("MV")) {
+	if (operation == ("MV")) {
 		std::string d1 = instruction[1];
 		std::string d2 = instruction[2];
 		if (d1 == "A") {
@@ -118,7 +134,7 @@ bool Interpreter::runInstruction() {
 	}
 
 	// EQ nazwa_rejestru nazwa_rejestru
-	else if (operation==("EQ")) {
+	else if (operation == ("EQ")) {
 		std::string d1 = instruction[1];
 		std::string d2 = instruction[2];
 		if (d1 == d2 || d1 == "A" && d2 == "B" && _RegA == _RegB ||
@@ -136,24 +152,24 @@ bool Interpreter::runInstruction() {
 		}
 	}
 	// JP gdzie
-	else if (operation==("JP")) {
+	else if (operation == ("JP")) {
 		std::string d1 = instruction[1];
 		_IP = std::stoi(d1);
 	}
 	// JT gdzie(jesli prawda)
-	else if (operation==("JT")) {
+	else if (operation == ("JT")) {
 		std::string d1 = instruction[1];
 		if (_flagEQ == true) _IP = std::stoi(d1);
 	}
 	// JF gdzie(jeœli falsz)
-	else if (operation==("JF")) {
+	else if (operation == ("JF")) {
 		std::string d1 = instruction[1];
 		if (_flagEQ == false) _IP = std::stoi(d1);
 	}
 
 	/* Operacje arytmetyczne */
 	// AD nazwa_rejestru liczba/nazwa_rejestru
-	else if (operation==("AD")) {
+	else if (operation == ("AD")) {
 		std::string d1 = instruction[1];
 		std::string d2 = instruction[2];
 		if (d1 == "A") {
@@ -201,7 +217,7 @@ bool Interpreter::runInstruction() {
 	}
 
 	// ML nazwa_rejestru liczba/nazwa_rejestru
-	else if (operation==("ML")) {
+	else if (operation == ("ML")) {
 		std::string d1 = instruction[1];
 		std::string d2 = instruction[2];
 		if (d1 == "A") {
@@ -249,7 +265,7 @@ bool Interpreter::runInstruction() {
 	}
 
 	// SB nazwa_rejestru liczba/nazwa_rejestru
-	else if (operation==("SB")) {
+	else if (operation == ("SB")) {
 		std::string d1 = instruction[1];
 		std::string d2 = instruction[2];
 		if (d1 == "A") {
@@ -297,7 +313,7 @@ bool Interpreter::runInstruction() {
 	}
 
 	// DV nazwa_rejestru liczba/nazwa_rejestru
-	else if (operation==("DV")) {
+	else if (operation == ("DV")) {
 		std::string d1 = instruction[1];
 		std::string d2 = instruction[2];
 		if (d1 == "A") {
@@ -348,7 +364,7 @@ bool Interpreter::runInstruction() {
 	}
 
 	// IC nazwa_rejestru
-	else if (operation==("IC")) {
+	else if (operation == ("IC")) {
 		std::string reg = instruction[1];
 		if (reg == "A") {
 			_RegA++;
@@ -361,7 +377,7 @@ bool Interpreter::runInstruction() {
 		}
 	}
 	// DC nazwa_rejestru
-	else if (operation==("DC")) {
+	else if (operation == ("DC")) {
 		std::string reg = instruction[1];
 		if (reg == "A") {
 			_RegA--;
@@ -376,54 +392,54 @@ bool Interpreter::runInstruction() {
 
 	/* Operacje wykonywane na dysku */
 	// OF nazwa_pliku
-	else if (operation==("OF")) {
+	else if (operation == ("OF")) {
 		std::string d1 = instruction[1];
 		dysk.open_file(d1);
 	}
 	// ZF nazwa_pliku
-	else if (operation==("ZF")) {
+	else if (operation == ("ZF")) {
 		std::string d1 = instruction[1];
 		dysk.close_file(d1);
 	}
 	// CF nazwa_pliku
-	else if (operation==("CF")) {
+	else if (operation == ("CF")) {
 		std::string d1 = instruction[1];
 		dysk.create_file(d1);
 	}
 	// WF nazwa_pliku dane
-	else if (operation==("WF")) {
+	else if (operation == ("WF")) {
 		std::string d1 = instruction[1];
 		std::string d2 = instruction[2];
 		dysk.write_file(d1, d2);
 	}
 	// PF nazwa_pliku
-	else if (operation==("PF")) {
+	else if (operation == ("PF")) {
 		std::string d1 = instruction[1];
 		dysk.print_file(d1);
 	}
 	// DF nazwa_pliku
-	else if (operation==("DF")) {
+	else if (operation == ("DF")) {
 		std::string d1 = instruction[1];
 		dysk.delete_file(d1);
 	}
 	// RF nazwa_pliku_stara nazwa_pliku_nowa
-	else if (operation==("RF")) {
+	else if (operation == ("RF")) {
 		std::string d1 = instruction[1];
 		std::string d2 = instruction[2];
 		dysk.rename_file(d1, d2);
 	}
 	// AF nazwa_pliku dane
-	else if (operation==("AF")) {
+	else if (operation == ("AF")) {
 		std::string d1 = instruction[1];
 		std::string d2 = instruction[2];
 		dysk.add_to_file(d1, d2);
 	}
 	// LF
-	else if (operation==("LF")) {
+	else if (operation == ("LF")) {
 		dysk.print_file_list();
 	}
 	// PD
-	else if (operation==("PD")) {
+	else if (operation == ("PD")) {
 		dysk.printDisc();
 	}
 
@@ -431,41 +447,52 @@ bool Interpreter::runInstruction() {
 
 
 	/* Operacje wykonywane na komunikatach */
-	// SC nazwa_procesu nazwa_procesu
-	else if (operation==("SC")) {
-		
+	// SC nazwa_procesu komunikat, gdzie nazwa_procesu to do kogo
+	else if (operation == ("SC")) {
+
 	}
-	// RC nazwa_procesu nazwa_procesu
-	else if (operation==("RC")) {
-		//
+	// RC nazwa_procesu
+	else if (operation == ("RC")) {
+		// 
+	}
+
+	/* Operacje wykonywane na procesach */
+	// CP nazwa_procesu grupa_procesu
+	else if (operation == ("CP")) {
+		//create a new process
+		std::string d1 = instruction[1];
+		std::string d2 = instruction[2];
+		NewProcess(d1, std::stoi(d2));
+	}
+	// DP PID
+	else if (operation == ("DP")) {
+		std::string d1 = instruction[1];
+		DeleteProcess(std::stoi(d1));
 	}
 	
-	/* Operacje wykonywane na procesach */
-	// CP nazwa_procesu
-	else if (operation==("CP")) {
-		//create a new process
-	}
-	// DP nazwa_procesu
-	else if (operation==("DP")) {
-		//delete a new process
-	}
 	// Aktywny proces: AP
-	else if (operation==("AP")) {
+	else if (operation == ("AP")) {
 		scheduler.print_running();
 	}
 	// Gotowe procesy: RP
-	else if (operation==("RP")) {
+	else if (operation == ("RP")) {
 		scheduler.wyswietl_gotowe();
 	}
 	/* Operacje wykonywane na pamieci RAM */
 	// SR
-	else if (operation==("SR")) {
+	else if (operation == ("SR")) {
 		RAM.show();
 	}
 	// SF
-	else if (operation==("SF")) {
+	else if (operation == ("SF")) {
 		RAM.showFIFO();
 	}
+	// Blad interpretacji
+	else {
+		std::cout << "Brak takiej instrukcji";
+		_done = false;
+	}
+	return false;
 }
 
 /*
