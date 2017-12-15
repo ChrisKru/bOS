@@ -14,8 +14,8 @@ public:
 	Kolejka();	//domyœlny konstruktor?
 	void dodaj_komunikat(Komunikat komunikat);
 	void usun_komunikat();
-	Komunikat odbierz_komunikat();
-	//void wyslij_komunikat(int id_odbiorcy, Komunikat komunikat);
+	Komunikat receive();
+	//void send(int id_odbiorcy, Komunikat komunikat);
 	void wyswietl();	//wyswieltanie zawartoœci kolejki
 };
 
