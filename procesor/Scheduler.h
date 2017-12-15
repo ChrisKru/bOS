@@ -27,9 +27,9 @@ public:
 	}
 	void Schedule()
 	{
-		if (running != nullptr && running->GetState() == State::ZAKONCZONY)
+		if (running != nullptr && running->GetState() == State::ZAKONCZONY) 
 		{
-			time = running->Timmer;
+			time = running->Timmer; 
 
 		}
 		if (running != nullptr && running->GetState() != State::AKTYWNY)
@@ -64,7 +64,7 @@ public:
 				}
 				for (auto proces : procesy_gotowe)
 				{
-					cout << proces->ProcessName << " - Tau: " << proces->GetTau() << endl;
+					//cout << proces->ProcessName << " - Tau: " << proces->GetTau() << endl;
 					procesy_gotowe_queue.push(proces);
 				}
 				procesy_otrzymane.clear();
@@ -74,18 +74,18 @@ public:
 					running = procesy_gotowe_queue.top();
 					procesy_gotowe_queue.pop();
 					running->SetState(State::AKTYWNY);
-					cout << "Aktywny: " << running->ProcessName << " with Tau - " << running->GetTau() << endl;
+					cout << "Aktywny: " << running->ProcessName << " z tau = " << running->GetTau() << endl;
 
 				}
 			}
-			else
+			else //if procesy_gotowe.size() == 0
 			{
-				if (procesy_gotowe_queue.size() <= 0)
+				if (procesy_gotowe_queue.size() == 0) // jesli nie ma nic w kolejce
 				{
 					cout << "Brak gotowych procesow!" << endl;
 					running = FirstProcess(0);
 				}
-				else
+				else // jesli jest to przelicz tau i wybierz nowy proces
 				{
 					for (int i = 0; i <= procesy_gotowe_queue.size(); i++)
 					{
@@ -112,7 +112,7 @@ public:
 					running = procesy_gotowe_queue.top();
 					procesy_gotowe_queue.pop();
 					running->SetState(State::AKTYWNY);
-					cout << "Aktywny: " << running->ProcessName << " with Tau - " << running->GetTau() << endl;
+					cout << "Aktywny: " << running->ProcessName << " z tau = " << running->GetTau() << endl;
 				}
 
 			}

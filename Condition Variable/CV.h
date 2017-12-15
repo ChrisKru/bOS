@@ -13,8 +13,8 @@ public:
 		}
 		else {
 			running->SetState(State::OCZEKUJACY);
-			pcb_waiting_list.push_back(running);
 		}
+		pcb_waiting_list.push_back(running);
 	}
 	void signal() {
 		pcb_waiting_list.pop_front(); // mozliwe, ze jeszcze musialbym zmienic stan tego na zakonczony(?); - niby nie
