@@ -1,5 +1,5 @@
 #pragma once
-#include "Scheduler.h"
+#include "../procesor/Scheduler.h"
 #include <list>
 #include <memory>
 
