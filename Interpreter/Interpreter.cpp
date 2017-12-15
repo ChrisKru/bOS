@@ -1,4 +1,4 @@
-#include "Interpreter.h"
+#include "../Interpreter/Interpreter.h"
 
 
 Interpreter::Interpreter() {
