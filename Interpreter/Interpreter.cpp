@@ -59,10 +59,11 @@ void Interpreter::showRegisters() {
 	std::cout << "Licznik rozkazow: " << _IP << std::endl;
 }
 
-bool Interpreter::runInstruction(Disc ds, Memory mm, Scheduler sc) {
+bool Interpreter::runInstruction(Disc ds, Memory mm, Scheduler sc, Kolejka km) {
 	this->dysk = ds;
 	this->RAM = mm;
 	this->scheduler = sc;
+	this->kokmunikacja = km;
 	// wczytujemy rozkaz do wykonania
 	// instruction = loadInstruction();
 	/*
@@ -449,11 +450,18 @@ bool Interpreter::runInstruction(Disc ds, Memory mm, Scheduler sc) {
 	/* Operacje wykonywane na komunikatach */
 	// SC nazwa_procesu komunikat, gdzie nazwa_procesu to do kogo
 	else if (operation == ("SC")) {
-
+		std::string d1 = instruction[1];
+		std::string d2 = instruction[2];
+		komunikacja.send(d1, d2);
 	}
 	// RC nazwa_procesu
 	else if (operation == ("RC")) {
-		// 
+		std::string d1 = instruction[1];
+		komunikacja.receive(d1);
+	}
+	// PC
+	else if (operation == ("PC")) {
+		komunikacja.wyswietl();
 	}
 
 	/* Operacje wykonywane na procesach */

@@ -3,6 +3,7 @@
 #include "../Memory/Memory.h"
 #include "../dysk/dysk.h"
 #include "../procesor/Scheduler.h"
+#include "../komunikacja/kolejka.h"
 
 #include <string>
 #include <array>
@@ -33,6 +34,7 @@ private:
 	Disc dysk;
 	Memory RAM;
 	Scheduler scheduler;
+	Kolejka komunikacja;
 	
 
 public:
@@ -43,7 +45,7 @@ public:
 	void saveRegisters();;			// ustawia dane zawarte w running naszymi danymi(rejestry, PID, IP, timer++)
 	void showRegisters();			// wyswietla stany rejestrow, PID oraz IP
 
-	bool runInstruction(Disc ds, Memory mm, Scheduler sc);			// glowna metoda, zawiera interpretacje rozkazow
+	bool runInstruction(Disc ds, Memory mm, Scheduler sc, Kolejka km);			// glowna metoda, zawiera interpretacje rozkazow
 
 };
 
