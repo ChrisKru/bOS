@@ -44,7 +44,7 @@ public:
 
 	std::string getCommand(int programCounter, int PID) {
 		// zwraca komendê, o któr¹ prosi interpreter
-		// najpierw trzeba dodaæ j¹ do RAMu
+		// trzeba dodaæ j¹ do RAMu
 
 		for (int i = 0;i < pagetables.size();i++) {
 			if (pagetables[i].getID() == PID) {
@@ -68,6 +68,7 @@ public:
 				else {
 					// w przypadku gdy stronicy jeszcze nie ma w RAMie:
 					tab data_;
+					data_.PID = PID;
 					// pobieranie z pliku wymiany
 					//for (int j = 0;j < 16;j++){
 					data_ = file.getData(PID,page);
@@ -94,11 +95,11 @@ public:
 								PIDinFrame[k] = PID;
 								freeFrame[k] = false;
 
-								std::string data;
-								//for (int o = 0;o < 16;o++) {
-								//	data[o] = data_.data[o];
-								//}
-								data = data_.data;
+								std::string data = "";
+								for (int o = 0;o < 16;o++) {
+									data += data_.data[o];
+								}
+								//data = data_.data;
 								return data;
 								break;
 							}
@@ -134,7 +135,7 @@ public:
 						
 						std::string data;
 						for (int u = 0;u < 16;u++) {
-							data[u] = data_.data[u];
+							data += data_.data[u];
 						}
 						return data;
 					}
