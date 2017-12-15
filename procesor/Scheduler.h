@@ -1,5 +1,5 @@
 #pragma once
-#include "Process.h"
+#include "../ProcessM/ProcessM.h"
 #include <vector>
 #include <iostream>
 #include <queue>
@@ -23,7 +23,8 @@ public:
 	Scheduler()
 	{
 		time = 0;
-		running = FirstProcess(0);
+		NewProcessGroup("bezczynny");
+		running = GetPCB(0);
 	}
 	void Schedule()
 	{
@@ -83,7 +84,7 @@ public:
 				if (procesy_gotowe_queue.size() == 0) // jesli nie ma nic w kolejce
 				{
 					cout << "Brak gotowych procesow!" << endl;
-					running = FirstProcess(0);
+					running = GetPCB(0);
 				}
 				else // jesli jest to przelicz tau i wybierz nowy proces
 				{
