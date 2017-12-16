@@ -10,9 +10,6 @@ Interpreter::Interpreter() {
 }
 
 
-Interpreter::~Interpreter()
-{
-}
 
 void Interpreter::loadRegister() { // Running to wskaznik na PCB
 	_PID = running->ProcessID;
@@ -26,7 +23,10 @@ std::string Interpreter::loadInstruction() {
 	// wywolanie pamieci operacyjnej
 	// zwraca nam rozkaz jaki ma zostac wykonany
 	// return STRING Z ROZKAZEM
-	// return RAM.getCommands(_PID, _ID);
+	int size;
+	std::string filename;
+	//RAM.loadProcess(_PID, size, filename);
+	return RAM.getCommand(_IP, _PID);
 }
 
 void Interpreter::setInstruction()
@@ -59,30 +59,21 @@ void Interpreter::showRegisters() {
 	std::cout << "Licznik rozkazow: " << _IP << std::endl;
 }
 
-bool Interpreter::runInstruction(Disc ds, Memory mm, Scheduler sc, Kolejka km) {
+void Interpreter::runInstruction(Disc ds, Memory mm, Scheduler sc, Kolejka km) {
 	this->dysk = ds;
 	this->RAM = mm;
 	this->scheduler = sc;
-	this->kokmunikacja = km;
+	this->komunikacja = km;
+	_done = true; // ustalamy, ¿e rozkaz siê wykona. Jak nast¹pi¹ probelmy to _done = false;
 	// wczytujemy rozkaz do wykonania
-	// instruction = loadInstruction();
-	/*
-	Prace rozdzielamy sobie na tablice Stringow
-	rozkazy bêd¹ do niej zapisywane, maks rozmiar = 3.
-
-	*/
 	setInstruction();
-
 	// operation = instruction.substr(0,2);
 	std::string operation = instruction[0];
 
-
 	// operator zamkniecia procesu
-	if (operation == ("AD")) {
+	if (operation == ("EX")) {
 		// killujemy proces
 		showRegisters();
-		_IP += operation.length();
-
 	}
 
 	/* Operacje logiczne */
@@ -433,6 +424,15 @@ bool Interpreter::runInstruction(Disc ds, Memory mm, Scheduler sc, Kolejka km) {
 	else if (operation == ("AF")) {
 		std::string d1 = instruction[1];
 		std::string d2 = instruction[2];
+		if (d2 == "[A]") {
+			d2 = std::to_string(_RegA);
+		}
+		else if (d2 == "[B]") {
+			d2 = std::to_string(_RegB);
+		}
+		else if (d2 == "[C]"){
+			d2 = std::to_string(_RegC);
+		}
 		dysk.add_to_file(d1, d2);
 	}
 	// LF
@@ -449,16 +449,16 @@ bool Interpreter::runInstruction(Disc ds, Memory mm, Scheduler sc, Kolejka km) {
 
 	/* Operacje wykonywane na komunikatach */
 	// SC nazwa_procesu komunikat, gdzie nazwa_procesu to do kogo
-	else if (operation == ("SC")) {
-		std::string d1 = instruction[1];
-		std::string d2 = instruction[2];
-		komunikacja.send(d1, d2);
-	}
-	// RC nazwa_procesu
-	else if (operation == ("RC")) {
-		std::string d1 = instruction[1];
-		komunikacja.receive(d1);
-	}
+	//else if (operation == ("SC")) {
+	//	std::string d1 = instruction[1];
+	//	std::string d2 = instruction[2];
+	//	komunikacja.send(d1, d2);
+	//}
+	//// RC nazwa_procesu
+	//else if (operation == ("RC")) {
+	//	std::string d1 = instruction[1];
+	//	komunikacja.receive(d1);
+	//}
 	// PC
 	else if (operation == ("PC")) {
 		komunikacja.wyswietl();
@@ -471,6 +471,7 @@ bool Interpreter::runInstruction(Disc ds, Memory mm, Scheduler sc, Kolejka km) {
 		std::string d1 = instruction[1];
 		std::string d2 = instruction[2];
 		NewProcess(d1, std::stoi(d2));
+		scheduler.Schedule();
 	}
 	// DP PID
 	else if (operation == ("DP")) {
@@ -500,7 +501,6 @@ bool Interpreter::runInstruction(Disc ds, Memory mm, Scheduler sc, Kolejka km) {
 		std::cout << "Brak takiej instrukcji";
 		_done = false;
 	}
-	return false;
 }
 
 /*

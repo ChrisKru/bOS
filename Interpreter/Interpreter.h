@@ -45,7 +45,7 @@ public:
 	void saveRegisters();;			// ustawia dane zawarte w running naszymi danymi(rejestry, PID, IP, timer++)
 	void showRegisters();			// wyswietla stany rejestrow, PID oraz IP
 
-	bool runInstruction(Disc ds, Memory mm, Scheduler sc, Kolejka km);			// glowna metoda, zawiera interpretacje rozkazow
+	void runInstruction(Disc ds, Memory mm, Scheduler sc, Kolejka km);			// glowna metoda, zawiera interpretacje rozkazow
 
 };
 
