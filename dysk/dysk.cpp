@@ -135,7 +135,15 @@ Disc::Disc()
 {
 	for (int i = 0; i < 1024; i++)
 	{
-		disc_[i] = '0';
+		if((i+1)%32==0)
+		{
+			disc_[i] = 'k';
+		}
+		else
+		{
+			disc_[i] = '0';
+		}
+
 	}
 	for (int i = 0; i < 32; i++)
 	{
