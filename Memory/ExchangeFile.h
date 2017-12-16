@@ -4,15 +4,16 @@
 
 #include "PageTable.h"
 
-// struktura reprezentuj¹ca jeden proces
+// struktura daj¹ca informacje o danych fragmentach pliku wymiany
 struct OneProcess {
-	int page;
-	int PID;						
+	int page;		// która to stronica procesu
+	int PID;		// który to proces
 };
 
+// plik wymiany podzielony na struktury, maj¹ce w sobie:
 struct tab {
-	int PID;
-	char data[16];
+	int PID;		// informacjê o ID procesu
+	char data[16];	// dane
 };
 
 
@@ -20,9 +21,9 @@ class ExchangeFile {
 private:
 	std::vector<OneProcess> container;		// w wektorze zapisywane informacje o tym, jakie procesy
 											// s¹ w pliku wymiany
-public:
 	std::vector<tab> file;					// plik wymiany jako vector stronnic po 16 znaków
-	
+
+public:
 	ExchangeFile() {
 		// konstruktor domyœlny
 	}
@@ -34,16 +35,11 @@ public:
 		std::string line, allfile;
 		std::fstream txtfile;
 		txtfile.open(fileName);
-		if (txtfile) {
-			// ustalanie wielkosci pliku - wielkosci procesu
-			//txtfile.seekg(0, std::ios::end);
-			//size = txtfile.tellg();
-			//txtfile.seekg(0, std::ios::beg);
-			
-			// wpisanie wartoœci pliku txt do tymczasowej tablicy
+		if (txtfile) {		
+			// wpisanie wartoœci pliku txt do tymczasowego stringa
 			while (!txtfile.eof()) {
 				std::getline(txtfile, line);
-				allfile += line;
+				allfile += line + ';';
 			}
 		}
 		txtfile.close();
@@ -57,24 +53,23 @@ public:
 		int fromfile = 0;
 		for (int i = 0;i < pages;i++) {
 			
-			char helpful[16];
+			tab table;
+
 			// for zapisuje pojedyncze znaki do pomocniczego chara
 			for (int k = 0;k < 16;k++) {
-				if (fromfile != allfile.size()) {
-					helpful[k] = allfile[fromfile++];
+				if (fromfile < allfile.size()) {
+					table.data[k] = allfile[fromfile++];
 					//fromfile++;
 				}
-				else break;
+				else {
+					table.data[k] = ' ';
+				}
 			}
-			
-			// wrzucenie stronicy po 16 znaków do pliku wymiany
-			tab table;
-			for (int j = 0;j < 16;j++) {
-				table.data[j] = helpful[j];
-			}
+			//std::cout << table.data << std::endl; //<-- sprawdza³em czy dobrze zapisuje
+
 			table.PID = PID;
 			file.push_back(table);
-			
+			file;
 			// dodanie informacji o wrzucanych danych
 			OneProcess thisproc;
 			thisproc.page = i;
@@ -100,22 +95,40 @@ public:
 		}
 	}
 
-/* raczej niepotrzebne gdy plik wymiany ma byæ vectorem
-	void deleteProcessData(int ProcID) {
-		// usuwa zawartoœæ procesu z pliku wymiany
-		char str = ' ';
-		for (int i = 0;i < container.size();i++) {
-			if (container[i].PID == ProcID) {
-				int first, last;
-				first = container[i].firstIndex;
-				last = container[i].lastIndex;
-				for (int k = first;k < (last - first + 1);k++) {
-					file[k] = str;
+	int getFirstIndex(int PID, int commandCounter) {
+		// zwraca pocz¹tek komendy
+		// metoda potrzebna w getCommand
+		
+		if (commandCounter == 0) return 0;
+
+		int separators = 0;
+		for (int i = 0;i < file.size();i++) {
+			if (file[i].PID == PID) {
+				for (int j = 0;j < 16;j++) {
+					if (file[i].data[j] == ';') {
+						separators++;
+						if (separators == commandCounter) { return (container[i].page * 16 + j + 1); break; }
+					}
 				}
-			} break;
+			}
 		}
 	}
-	*/
+
+	int getLastIndex(int PID, int commandCounter) {
+		// analogicznie do getFirstIndex
+
+		int separators = 0;
+		for (int i = 0;i < file.size();i++) {
+			if (file[i].PID == PID) {
+				for (int j = 0;j < 16;j++) {
+					if (file[i].data[j] == ';') {
+						separators++;
+						if (separators == commandCounter+1) { return (container[i].page * 16 + j - 1); break; }
+					}
+				}
+			}
+		}
+	}
 	
 	void show() {
 		// wyœwietla zawartoœæ pliku wymiany
@@ -124,7 +137,6 @@ public:
 		for (int i = 0;i < file.size();i++) {
 			std::cout << file[i].data;
 		}
-	
 	}
 
 };
