@@ -40,7 +40,7 @@ PCB::PCB(std::string processname, int processgroup) {
 	A, B, C = 0;
 
 	CommandCounter = 0;
-	Tau = 0;
+	Tau = 3;
 	Timmer = 0;
 
 
