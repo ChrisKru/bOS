@@ -1,7 +1,7 @@
 #ifndef komunikacja_h
 #define komunikacja_h
 
-#include "deque"
+#include <deque>
 
 
 class Komunikat
