@@ -1,0 +1,17 @@
+CF num
+MV B 7
+MV A 1
+OF num
+WF num Numbers:
+AF num [A]
+AF num ,
+IC A
+DC B
+JZ 6
+AF num [A]
+PF num
+LF
+DF num
+LF
+PF num
+EX

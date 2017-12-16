@@ -22,7 +22,7 @@ void Kolejka::usun_komunikat()
 	else 
 	kolejka.pop_front();
 }
-Komunikat Kolejka::odbierz_komunikat()
+Komunikat Kolejka::receive()
 {
 	if (kolejka.size() > 0)
 	{
@@ -45,6 +45,26 @@ void Kolejka::wyswietl()
 		{
 			std::cout << e.getTresc() << std::endl;		//chyba powinno wyœwietliæ, nie mam jeszcze pewnoœci
 		}
+	}
+}
+void send(int id_odbiorcy, Komunikat komunikat)
+{	//dostêp do kolejki: id procesu jest potrzebne. Wykorzystujê funkcjê GetPCB, któa zwraca shared pointer do PCB. Wtedy bêdzie PCB->kolejka
+	//std::list<Group>ProcessGroupsList;
+	std::cout << tab[0];
+	int grupa=ProcessGroup)
+	for(std::list<Group>iterator it = ProcessGroupsList.begin(); it != ProcessGroupsList.end(); it++)
+		//for (auto e : lista_PCB)	//chuj wie jak to zrobiæ w koñcu. Trzeba przecie¿ przechodziæ po liœcie procesów, ¿eby znaleœæ odbiorcê po ID, ale jak uzyskaæ do niej dostêp w tym miejscu?
+		//for(int i=0;i<5;i++)
+	{
+		if (it->ProcessGroup == grupa)
+		{
+			for (auto e: it->ProcessGroup)
+			{
+				if(e==id_odbiorcy)
+				dodaj_komunikat(komunikat);
+			}
+		}
+
 	}
 }
 /*
