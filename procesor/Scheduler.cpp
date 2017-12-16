@@ -1,4 +1,4 @@
-#include "../procesor/Scheduler.h"
+#include "Scheduler.h"
 bool komparator::operator() (shared_ptr<PCB> p1, shared_ptr<PCB> p2)
 	{
 	return p1->Tau > p2->Tau;
