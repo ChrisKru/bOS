@@ -1,8 +1,8 @@
 #ifndef komunikacja_h
 #define komunikacja_h
 
-#include <deque>
-
+#include "deque"
+#include "../ProcessM/ProcessM.h"
 
 class Komunikat
 {
