@@ -7,11 +7,17 @@
 #include <iostream>
 #include <sstream>
 
+#include <Windows.h>
+
 class Shell{
 public:
-	static void Loop();
+	Shell();
+	void Loop();
 private:
-	static std::string waitUserInput();
-	static std::vector<std::string> parseInput(std::string input);
-	static bool executeCommand(std::vector<std::string> parameters);
+	std::string waitUserInput();
+	std::vector<std::string> parseInput(std::string input);
+	bool executeCommand(std::vector<std::string> parameters);
+	void ErrorIC();
+	void ErrorPM();
+	Disc disc;
 };

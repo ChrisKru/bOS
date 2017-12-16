@@ -1,6 +1,7 @@
 #include "Shell/Shell.hpp"
 
 int main(){
-	Shell::Loop();
+	Shell szel;
+	szel.Loop();
 	return 0;
 }
