@@ -5,7 +5,7 @@
 #include <queue>
 #include <memory>
 using namespace std;
-shared_ptr<PCB> running = nullptr;
+extern shared_ptr<PCB> running;
 struct komparator
 {
 	bool operator() (shared_ptr<PCB> p1, shared_ptr<PCB> p2);

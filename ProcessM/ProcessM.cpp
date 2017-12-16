@@ -1,6 +1,10 @@
 
 #include "../ProcessM/ProcessM.h"
 
+int GroupNumber = 0;
+OverseerID IDs;
+std::list<Group>ProcessGroupsList;
+std::vector<std::shared_ptr<PCB>> procesy_otrzymane;
 
 OverseerID::OverseerID() {
 

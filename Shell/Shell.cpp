@@ -25,11 +25,18 @@ std::vector<std::string> Shell::parseInput(std::string input){
 }
 
 bool Shell::executeCommand(std::vector<std::string> parameters){
+	Disc disc;
 	if(parameters.size() == 0){
 		return 0;
 	}
-	if(parameters[0] == "exit"){
+	if (parameters[0] == "exit") {
 		return 1;
+	} else if (parameters[0] == "lsp") {
+		PrintProcessListInformation();
+	}else if(parameters[0] == "cf"){
+		
+	}else if(parameters[0] == "dinfo"){
+		disc.printDisc();
 	}else{
 		std::cout << "command not found" << "\n";
 		//w razie zlego parametru - invalid option

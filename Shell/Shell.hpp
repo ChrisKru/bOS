@@ -1,5 +1,6 @@
-#ifndef SHELL_HPP
-#define SHELL_HPP
+#pragma once
+
+#include "../dysk/dysk.h"
 
 #include <vector>
 #include <string>
@@ -14,5 +15,3 @@ private:
 	static std::vector<std::string> parseInput(std::string input);
 	static bool executeCommand(std::vector<std::string> parameters);
 };
-
-#endif

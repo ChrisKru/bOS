@@ -10,7 +10,7 @@ odpowiednio numery kolejnisci 0, 1, 2, ...*/
 
 enum State { NOWY, GOTOWY, ZAKONCZONY, AKTYWNY, OCZEKUJACY };
 
-int GroupNumber = 0;
+extern int GroupNumber;
 
 /*Nazdorca Id - on nadaje procesom Id w sposów unikatowy
 i nie powtarzalny, dzia³¹ na zasadzie tablicy zajêtych numerów
@@ -33,7 +33,7 @@ struct OverseerID {
 };
 
 /*Musimy miec 1 obiekt globalny dla wszytskich Id*/
-OverseerID IDs;
+extern OverseerID IDs;
 
 /*Blok Kontrony procesu*/
 //Jesli potrzebujecie jeszcze jakies POLA, GETERY, SETERY piszcie
@@ -92,11 +92,11 @@ struct Group {
 
 /*Globalna lista grup na której bedzie dzia³ac zarz¹danie procesami*/
 
-std::list<Group>ProcessGroupsList;
+extern std::list<Group>ProcessGroupsList;
 
 /*Dla procesora lista nowych procesów*/
 
-std::vector<std::shared_ptr<PCB>> procesy_otrzymane;
+extern std::vector<std::shared_ptr<PCB>> procesy_otrzymane;
 
 
 /*Tworzenie nowego procesu i dodawanie go do istniejacej grupy,
