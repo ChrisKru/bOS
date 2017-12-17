@@ -100,7 +100,14 @@ void Disc::delete_block(int nr_bloku)
 	}
 	for (int i = poczatek; i < poczatek + 32; i++)
 	{
-		disc_[i] = '0';
+		if ((i + 1) % 32 == 0)
+		{
+			disc_[i] = 'k';
+		}
+		else
+		{
+			disc_[i] = '0';
+		}
 	}
 
 }
@@ -291,7 +298,7 @@ void Disc::delete_file(std::string filename)
 			if(katalog_[kat_nr].cv_.is_empty())
 			{
 				delete_block(katalog_[kat_nr].first_block);
-
+				block_[katalog_[kat_nr].first_block] = true;
 				katalog_[kat_nr].free = true;
 				katalog_[kat_nr].size = 0;
 				katalog_[kat_nr].filename = "";
