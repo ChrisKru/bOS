@@ -37,7 +37,9 @@ PCB::PCB(std::string processname, int processgroup) {
 	ProcessName = processname;
 	ProcessGroup = processgroup;
 
-	A, B, C = 0;
+	A = 0;
+	B = 0;
+	C = 0;
 
 	CommandCounter = 0;
 	Tau = 3;
