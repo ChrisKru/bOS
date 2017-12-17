@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../dysk/dysk.h"
+#include "../ConditionVariable/CV.h"
 
 #include <vector>
 #include <string>
