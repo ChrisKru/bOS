@@ -442,7 +442,6 @@ std::string Disc::getFile(std::string filename)
 		if (katalog_[kat_nr].open == true)
 		{
 			temp += print_block(katalog_[kat_nr].first_block, katalog_[kat_nr].size);
-			std::cout << std::endl;
 		}
 		else
 		{
