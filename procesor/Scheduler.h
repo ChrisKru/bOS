@@ -18,6 +18,7 @@ class Scheduler
 	priority_queue<shared_ptr<PCB>, vector<shared_ptr<PCB>>, komparator> procesy_gotowe_queue;
 public:
 	Scheduler();
+	Scheduler(int a);
 	void Schedule();
 	void print_running();
 	void wyswietl_gotowe();

@@ -1,15 +1,18 @@
 #include "Scheduler.h"
 
 shared_ptr<PCB> running = nullptr;
-
 bool komparator::operator() (shared_ptr<PCB> p1, shared_ptr<PCB> p2)
 	{
 	return p1->Tau > p2->Tau;
 	}
-Scheduler::Scheduler()
+Scheduler::Scheduler() //to wywoluja wszyscy oprocz shella na poczatku w main
+{
+	time = 0;
+}
+Scheduler::Scheduler(int a) // to wywoluje Shell w main
 	{
 		time = 0;
-		NewProcessGroup("bezczynny");
+		NewProcessGroup("bezczynny1");
 		running = GetPCB(0);
 	}
 void Scheduler::Schedule()
