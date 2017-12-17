@@ -31,7 +31,7 @@ std::string Interpreter::loadInstruction() {
 
 void Interpreter::setInstruction()
 {
-	std::string command = loadInstruction();
+	std::string command = "AD A 3";//= loadInstruction();
 	instruction[0] = command.substr(0, 2);
 	command = command.substr(2);
 	int i = 1;
@@ -54,19 +54,21 @@ void Interpreter::saveRegisters() {
 void Interpreter::showRegisters() {
 	std::cout << std::endl << "Stan reejestrow dla procesu: " << _PID << std::endl;
 	std::cout << "A: " << _RegA << std::endl;
-	std::cout << "B: " << _RegA << std::endl;
-	std::cout << "C: " << _RegA << std::endl;
+	std::cout << "B: " << _RegB << std::endl;
+	std::cout << "C: " << _RegC << std::endl;
 	std::cout << "Licznik rozkazow: " << _IP << std::endl;
 }
 
-void Interpreter::runInstruction(Disc ds, Memory mm, Scheduler sc, Kolejka km) {
+void Interpreter::runInstruction(Disc& ds, Memory& mm, Scheduler& sc){//, Kolejka km) {
 	this->dysk = ds;
 	this->RAM = mm;
 	this->scheduler = sc;
-	this->komunikacja = km;
+	//this->komunikacja = km;
 	_done = true; // ustalamy, ¿e rozkaz siê wykona. Jak nast¹pi¹ probelmy to _done = false;
+	loadRegister();
 	// wczytujemy rozkaz do wykonania
 	setInstruction();
+
 	// operation = instruction.substr(0,2);
 	std::string operation = instruction[0];
 
@@ -375,10 +377,10 @@ void Interpreter::runInstruction(Disc ds, Memory mm, Scheduler sc, Kolejka km) {
 			_RegA--;
 		}
 		else if (reg == "B") {
-			_RegA--;
+			_RegB--;
 		}
 		else if (reg == "C") {
-			_RegA--;
+			_RegC--;
 		}
 	}
 
@@ -460,9 +462,9 @@ void Interpreter::runInstruction(Disc ds, Memory mm, Scheduler sc, Kolejka km) {
 	//	komunikacja.receive(d1);
 	//}
 	// PC
-	else if (operation == ("PC")) {
+	/*else if (operation == ("PC")) {
 		komunikacja.wyswietl();
-	}
+	}*/
 
 	/* Operacje wykonywane na procesach */
 	// CP nazwa_procesu grupa_procesu
