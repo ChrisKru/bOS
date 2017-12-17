@@ -19,5 +19,6 @@ private:
 	bool executeCommand(std::vector<std::string> parameters);
 	void ErrorIC();
 	void ErrorPM();
+	void printHelp();
 	Disc disc;
 };
