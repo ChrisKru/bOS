@@ -3,7 +3,7 @@
 #include "../Memory/Memory.h"
 #include "../dysk/dysk.h"
 #include "../procesor/Scheduler.h"
-#include "../komunikacja/kolejka.h"
+#include "../komunikacja/komunikacja.h"
 
 #include <string>
 #include <array>
