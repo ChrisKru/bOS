@@ -99,10 +99,15 @@ std::string Memory::getCommand(int PID, int commandCounter) {
 					newframe = FIFO.front().FrameNumber;
 
 					// ustawienie, ¿e dane wychodz¹ z ramki
-					pagetables[PIDinFrame[newframe]].FrameNumber[FIFO.front().pageNumber] = -1;
-					pagetables[PIDinFrame[newframe]].VIBit[FIFO.front().pageNumber] = false;
+					int ProcID = PIDinFrame[newframe];
+					for (int i = 0;i < pagetables.size();i++) {
+						if (pagetables[i].getID() == ProcID) {
+							pagetables[i].FrameNumber[FIFO.front().pageNumber] = -1;
+							pagetables[i].VIBit[FIFO.front().pageNumber] = false;
+							break;
+						}
+					}
 					FIFO.pop();
-
 					// zast¹pienie danych potrzebnymi
 					int r = 16 * newframe;
 					for (int l = 0;l < 16;l++) {
@@ -187,9 +192,16 @@ std::string Memory::getCommand(int PID, int commandCounter) {
 						newframe = FIFO.front().FrameNumber;
 
 						// ustawienie, ¿e dane wychodz¹ z ramki
-						pagetables[PIDinFrame[newframe]].FrameNumber[FIFO.front().pageNumber] = -1;
-						pagetables[PIDinFrame[newframe]].VIBit[FIFO.front().pageNumber] = false;
+						int ProcID = PIDinFrame[newframe];
+						for (int i = 0;i < pagetables.size();i++) {
+							if (pagetables[i].getID() == ProcID) {
+								pagetables[i].FrameNumber[FIFO.front().pageNumber] = -1;
+								pagetables[i].VIBit[FIFO.front().pageNumber] = false;
+								break;
+							}
+						}
 						FIFO.pop();
+						
 
 						// zast¹pienie danych potrzebnymi
 						int r = 16 * newframe;
@@ -228,7 +240,7 @@ void Memory::loadProcess(int PID, std::string filename) {
 	if (txtfile) {
 		while (!txtfile.eof()) {
 			std::getline(txtfile, line);
-			allfile += line;
+			allfile += line + ";";
 		}
 	}
 	size = allfile.size();
@@ -253,16 +265,15 @@ void Memory::showExchangeFile() {
 
 void Memory::showFIFO() {
 	std::queue<FrameInfo> showthis = FIFO;
+	int size = showthis.size();
 
 	if (!showthis.empty()) {
 		std::cout << "KOLEJKA FIFO" << std::endl;
-		for (int i = 0;i < showthis.size();i++) {
+		for (int i = 0;i < size;i++) {
 			std::cout << "Ramka: " << showthis.front().FrameNumber << "; PID: " <<
 				showthis.front().PID << "; stronica procesu: " << showthis.front().pageNumber << std::endl;
 			showthis.pop();
 		}
-		std::cout << "Ramka: " << showthis.back().FrameNumber << "; PID: " <<
-			showthis.back().PID << "; stronica procesu: " << showthis.back().pageNumber << std::endl;
 	}
 }
 

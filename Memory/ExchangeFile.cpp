@@ -39,7 +39,7 @@ PageTable ExchangeFile::DataToFile(int& PID, std::string& fileName, int& size) {
 				table.data[k] = ' ';
 			}
 		}
-		//std::cout << table.data << std::endl; //<-- sprawdza³em czy dobrze zapisuje
+		std::cout << table.data << std::endl; //<-- sprawdza³em czy dobrze zapisuje
 
 		table.PID = PID;
 		file.push_back(table);
