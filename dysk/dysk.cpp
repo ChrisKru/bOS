@@ -398,7 +398,12 @@ void Disc::add_to_file(std::string filename, std::string data)
 							temp_size -= 31;
 						}
 						int j = next_block * 32 + temp_size;
-						int end = j + (data.size() % 31);
+						int tempData = data.size() % 31;
+						if(tempData==0)
+						{
+							tempData = 31;
+						}
+						int end = j + tempData;
 						int i = 0;
 						for (i; j < end; i++)
 						{
