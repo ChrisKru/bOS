@@ -104,7 +104,7 @@ extern std::vector<std::shared_ptr<PCB>> procesy_otrzymane;
 
 /*Tworzenie nowego procesu i dodawanie go do istniejacej grupy,
 Id nadaje nadzorca*/
-void NewProcess(std::string ProcessName, int ProcessGroup);
+std::shared_ptr<PCB> NewProcess(std::string ProcessName, int ProcessGroup);
 
 /*Usuwanie procesu znj¹c tylko jego Id*/
 void DeleteProcess(int ProcessID);

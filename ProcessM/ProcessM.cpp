@@ -66,7 +66,7 @@ void PCB::SetState(State state) {
 ProcessState = state;
 
 };
-void PCB::SetFileName(std::string filename); {
+void PCB::SetFileName(std::string filename) {
 
 	FileName = filename;
 
@@ -107,7 +107,7 @@ Group::Group() {
 	ProcessGroup = GroupNumber;
 	GroupNumber++; // uproszcony nadzorca
 };
-void NewProcess(std::string ProcessName, int ProcessGroup) {
+std::shared_ptr<PCB> NewProcess(std::string ProcessName, int ProcessGroup) {
 
 	std::shared_ptr<PCB> New = std::make_shared<PCB>(ProcessName, ProcessGroup);
 	for (auto it = ProcessGroupsList.begin(); it != ProcessGroupsList.end(); ++it) {
@@ -115,6 +115,7 @@ void NewProcess(std::string ProcessName, int ProcessGroup) {
 		//else NewProcessGroup(ProcessName); // nie wiem czy wyrzucaæ bl¹d gdy podasz grupê ktora nie stnieje czy odrazu utworzyæ tak¹ grupê
 	}
 	procesy_otrzymane.push_back(New); // funkcja niebezpieczna potrzebna dla procesora !!!
+	return New;
 };
 void DeleteProcess(int ProcessID) {
 	for (auto it = ProcessGroupsList.begin(); it != ProcessGroupsList.end(); ++it) {
