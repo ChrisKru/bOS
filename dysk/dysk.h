@@ -33,8 +33,8 @@ public:
 	Disc();
 
 	//Musi byc wywolane dla kazdego pliku!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	void open_file(std::string filename);
-	void close_file(std::string filename);
+	bool open_file(std::string filename, bool is_shell);
+	void close_file(std::string filename, bool is_shell);
 
 
 	void create_file(std::string filename);								//utworzenie pliku
