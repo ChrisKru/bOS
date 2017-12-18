@@ -331,7 +331,7 @@ void Disc::delete_file(std::string filename)
 
 void Disc::print_file_list()
 {
-	std::cout << "Lista wszystkich plikow:" << std::endl;
+	std::cout << "Pliki:" << std::endl;
 	for (int i = 0; i < 32; i++)
 	{
 		if (katalog_[i].free == false)
@@ -407,18 +407,21 @@ void Disc::add_to_file(std::string filename, std::string data)
 							temp_size -= 31;
 						}
 						int j = next_block * 32 + temp_size;
-						int tempData = data.size() % 31;
-						if (tempData == 0)
+						int end;
+						if(temp_size+data.size()>31)
 						{
-							tempData = 31;
+							end = next_block * 32 + 31;
 						}
-						int end = j + tempData;
+						else
+						{
+							end = j + data.size();
+						}
+
 						int i = 0;
 						for (i; j < end; i++)
 						{
 							if (disc_[j] == 'k')
 							{
-								end = j;
 								break;
 							}
 							disc_[j] = data[i];
@@ -430,7 +433,7 @@ void Disc::add_to_file(std::string filename, std::string data)
 						if (data.size() > 0)
 						{
 							int next = free_block();
-							disc_[end] = next;
+							disc_[next_block * 32 + 31] = next;
 							save_block(next * 32, data);
 						}
 
