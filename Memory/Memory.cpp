@@ -11,27 +11,6 @@ Memory::Memory() {
 }
 
 
-Memory::~Memory() {
-	std::cout << "Oproznienie pamieci" << std::endl;
-	for (int i = 0;i < 8;i++) {
-		freeFrame[i] = true;
-	}
-	for (int i = 0;i < 8;i++) {
-		PIDinFrame[i] = -1;
-	}
-	for (int i = 0;i < 128;i++) {
-		RAM[i] = ' ';
-	}
-	int size = FIFO.size();
-	for (int i = 0;i < size;i++) {
-		FIFO.pop();
-	}
-	ExchangeFile newfile;
-	file = newfile;
-	std::vector<PageTable> newpagetabels;
-	pagetables = newpagetabels;
-}
-
 
 std::string Memory::getCommand(int PID, int commandCounter) {
 	int first, last;
