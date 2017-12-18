@@ -2,9 +2,10 @@
 
 Shell::Shell(){}
 
-void Shell::systemInit(Disc disc, Memory memory){
+void Shell::systemInit(Disc disc, Memory memory, Scheduler scheduler){
 	_disc = disc;
 	_memory = memory;
+	_scheduler = scheduler;
 }
 
 void Shell::Loop(){
@@ -78,10 +79,7 @@ bool Shell::executeCommand(std::vector<std::string> parameters) {
 			ErrorPM();
 			return 0;
 		}
-		if(_disc.open_file(parameters[1], true)){
-			_disc.print_file(parameters[1]);
-			_disc.close_file(parameters[1], true);
-		}
+		_disc.print_file(parameters[1]);
 	} else if (parameters[0] == "rmf") {
 		if (parameters.size() != 2) {
 			ErrorPM();
@@ -142,6 +140,22 @@ bool Shell::executeCommand(std::vector<std::string> parameters) {
 			return 0;
 		}
 		_memory.showPageTable(std::stoi(parameters[1]));
+	} else if (parameters[0] == "lsp") {
+		if (parameters.size() == 1) {
+			PrintProcessListInformation();
+		}else if(parameters.size() == 2){
+			if(parameters[1] == "-a"){
+				_scheduler.wyswietl_gotowe();
+			}else if(parameters[1] == "-r"){
+				_scheduler.print_running();
+			}else{
+				ErrorPM();
+				return 0;
+			}
+		}else{
+			ErrorPM();
+			return 0;
+		}
 	}else{
 		ErrorIC();
 	}
@@ -175,4 +189,7 @@ void Shell::printHelp(){
 	std::cout << "exfile                                  zawartosc pliku wymiany\n";
 	std::cout << "fifo                                    zawartosc kolejki fifo\n";
 	std::cout << "pagetable    pid                        zawartosc pliku wymiany\n";
+	std::cout << "lsp                                     lista procesow\n";
+	std::cout << "lsp -r                                  proces aktualnie wykonywany\n";
+	std::cout << "lsp -a                                  lista procesow gotowych\n";
 }

@@ -13,7 +13,7 @@
 class Shell{
 public:
 	Shell();
-	void systemInit(Disc disc, Memory memory);
+	void systemInit(Disc disc, Memory memory, Scheduler scheduler);
 	void Loop();
 private:
 	std::string waitUserInput();
@@ -24,4 +24,5 @@ private:
 	void printHelp();
 	Disc _disc;
 	Memory _memory;
+	Scheduler _scheduler;
 };
