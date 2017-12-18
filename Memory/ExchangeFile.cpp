@@ -1,4 +1,4 @@
-#include "ExchangeFile.h"
+#include "../Memory/ExchangeFile.h"
 
 
 ExchangeFile::ExchangeFile() { }
@@ -108,8 +108,10 @@ int ExchangeFile::getLastIndex(int PID, int commandCounter) {
 
 void ExchangeFile::show() {
 
-	std::cout << "PLIK WYMIANY" << std::endl;
 	for (int i = 0;i < file.size();i++) {
-		std::cout << file[i].data;
+		for (int o = 0;o < 16;o++) {
+			std::cout << file[i].data[o];
+		}
 	}
+	std::cout << std::endl;
 }
