@@ -142,7 +142,7 @@ Disc::Disc()
 {
 	for (int i = 0; i < 1024; i++)
 	{
-		if((i+1)%32==0)
+		if ((i + 1) % 32 == 0)
 		{
 			disc_[i] = 'k';
 		}
@@ -159,13 +159,17 @@ Disc::Disc()
 	}
 }
 
-void Disc::open_file(std::string filename)
+bool Disc::open_file(std::string filename, bool is_shell)
 {
 	if (file_exist(filename))
 	{
 		int kat_nr = find_file(filename);
 
-		katalog_[kat_nr].cv_.wait();
+		if (!is_shell)
+		{
+			katalog_[kat_nr].cv_.wait();
+		}
+
 
 		if (katalog_[kat_nr].open == true)
 		{
@@ -175,20 +179,25 @@ void Disc::open_file(std::string filename)
 		{
 			katalog_[kat_nr].open = true;
 		}
+		return true;
 	}
 	else
 	{
 		std::cout << "Plik nie istnieje" << std::endl;
+		return false;
 	}
 }
 
-void Disc::close_file(std::string filename)
+void Disc::close_file(std::string filename, bool is_shell)
 {
 	if (file_exist(filename))
 	{
 		int kat_nr = find_file(filename);
 
-		katalog_[kat_nr].cv_.signal();
+		if(!is_shell)
+		{
+			katalog_[kat_nr].cv_.signal();
+		}
 
 		katalog_[kat_nr].open = false;
 
@@ -272,14 +281,14 @@ void Disc::print_file(std::string filename)
 	int kat_nr = find_file(filename);
 	if (kat_nr != -1)
 	{
-		if (katalog_[kat_nr].open == true)
-		{
+		/*if (katalog_[kat_nr].open == true)
+		{*/
 			std::cout << getFile(filename) << std::endl;
-		}
+		/*}
 		else
 		{
 			std::cout << "Nalezy otworzyc plik" << std::endl;
-		}
+		}*/
 
 	}
 	else
@@ -295,7 +304,7 @@ void Disc::delete_file(std::string filename)
 		int kat_nr = find_file(filename);
 		if (katalog_[kat_nr].open == false)
 		{
-			if(katalog_[kat_nr].cv_.is_empty())
+			if (katalog_[kat_nr].cv_.is_empty())
 			{
 				delete_block(katalog_[kat_nr].first_block);
 				block_[katalog_[kat_nr].first_block] = true;
@@ -399,7 +408,7 @@ void Disc::add_to_file(std::string filename, std::string data)
 						}
 						int j = next_block * 32 + temp_size;
 						int tempData = data.size() % 31;
-						if(tempData==0)
+						if (tempData == 0)
 						{
 							tempData = 31;
 						}
@@ -437,7 +446,7 @@ void Disc::add_to_file(std::string filename, std::string data)
 		{
 			std::cout << "Nalezy otworzyc plik" << std::endl;
 		}
-		
+
 	}
 	else
 	{
