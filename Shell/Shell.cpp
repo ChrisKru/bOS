@@ -165,6 +165,7 @@ bool Shell::executeCommand(std::vector<std::string> parameters) {
 		if (parameters.size() == 3) {
 			try{
 				NewProcess(parameters[1], std::stoi(parameters[2]));
+				_scheduler.Schedule();
 			} catch (std::exception exception) {
 				ErrorIP();
 				return 0;
@@ -173,6 +174,7 @@ bool Shell::executeCommand(std::vector<std::string> parameters) {
 			try {
 				auto process = NewProcess(parameters[1], std::stoi(parameters[2]));
 				process->SetFileName(parameters[3]);
+				_scheduler.Schedule();
 			}catch(std::exception exception){
 				ErrorIP();
 				return 0;
