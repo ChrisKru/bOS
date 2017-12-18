@@ -139,21 +139,57 @@ bool Shell::executeCommand(std::vector<std::string> parameters) {
 			ErrorPM();
 			return 0;
 		}
-		_memory.showPageTable(std::stoi(parameters[1]));
+		try{
+			_memory.showPageTable(std::stoi(parameters[1]));
+		}catch(std::exception exception){
+			ErrorIP();
+			return 0;
+		}
 	} else if (parameters[0] == "lsp") {
 		if (parameters.size() == 1) {
 			PrintProcessListInformation();
-		}else if(parameters.size() == 2){
-			if(parameters[1] == "-a"){
+		} else if (parameters.size() == 2) {
+			if (parameters[1] == "-a") {
 				_scheduler.wyswietl_gotowe();
-			}else if(parameters[1] == "-r"){
+			} else if (parameters[1] == "-r") {
 				_scheduler.print_running();
-			}else{
+			} else {
 				ErrorPM();
 				return 0;
 			}
-		}else{
+		} else {
 			ErrorPM();
+			return 0;
+		}
+	} else if (parameters[0] == "cp") {
+		if (parameters.size() == 3) {
+			try{
+				NewProcess(parameters[1], std::stoi(parameters[2]));
+			} catch (std::exception exception) {
+				ErrorIP();
+				return 0;
+			}			
+		} else if (parameters.size() == 4) {
+			try {
+				auto process = NewProcess(parameters[1], std::stoi(parameters[2]));
+				process->SetFileName(parameters[3]);
+			}catch(std::exception exception){
+				ErrorIP();
+				return 0;
+			}
+		} else {
+			ErrorPM();
+			return 0;
+		}
+	} else if (parameters[0] == "killp") {
+		if (parameters.size() != 2) {
+			ErrorPM();
+			return 0;
+		}
+		try{
+			DeleteProcess(std::stoi(parameters[1]));
+		}catch(std::exception exception){
+			ErrorIP();
 			return 0;
 		}
 	}else{
@@ -175,21 +211,30 @@ void Shell::ErrorPM(){
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
 }
 
+void Shell::ErrorIP(){
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED);
+	std::cout << "Zla forma parametru" << "\n";
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
+}
+
 void Shell::printHelp(){
-	std::cout << "exit                                    zakonczenie dzialania\n";
-	std::cout << "cf           nazwa_pliku                utworzenie pliku\n";
-	std::cout << "wf           nazwa_pliku  dane          zapis do pliku\n";
-	std::cout << "catf         nazwa_pliku                zawartosc pliku\n";
-	std::cout << "rmf          nazwa_pliku                usuniecie pliku\n";
-	std::cout << "lsf                                     lista plikow\n";
-	std::cout << "rnamef       nazwa_pliku  nowa_nazwa    zmiana nazwy pliku\n";
-	std::cout << "weof         nazwa_pliku  dane          zapis na koniec pliku\n";
-	std::cout << "disk                                    informacje o dysku\n";
-	std::cout << "memory                                  zawartosc pamieci\n";
-	std::cout << "exfile                                  zawartosc pliku wymiany\n";
-	std::cout << "fifo                                    zawartosc kolejki fifo\n";
-	std::cout << "pagetable    pid                        zawartosc pliku wymiany\n";
-	std::cout << "lsp                                     lista procesow\n";
-	std::cout << "lsp -r                                  proces aktualnie wykonywany\n";
-	std::cout << "lsp -a                                  lista procesow gotowych\n";
+	std::cout << "exit                                             zakonczenie dzialania\n";
+	std::cout << "cf          nazwa_pliku                          utworzenie pliku\n";
+	std::cout << "wf          nazwa_pliku  dane                    zapis do pliku\n";
+	std::cout << "catf        nazwa_pliku                          zawartosc pliku\n";
+	std::cout << "rmf         nazwa_pliku                          usuniecie pliku\n";
+	std::cout << "lsf                                              lista plikow\n";
+	std::cout << "rnamef      nazwa_pliku  nowa_nazwa              zmiana nazwy pliku\n";
+	std::cout << "weof        nazwa_pliku  dane                    zapis na koniec pliku\n";
+	std::cout << "disk                                             informacje o dysku\n";
+	std::cout << "memory                                           zawartosc pamieci\n";
+	std::cout << "exfile                                           zawartosc pliku wymiany\n";
+	std::cout << "fifo                                             zawartosc kolejki fifo\n";
+	std::cout << "pagetable   pid                                  zawartosc pliku wymiany\n";
+	std::cout << "lsp                                              lista procesow\n";
+	std::cout << "lsp -r                                           proces aktualnie wykonywany\n";
+	std::cout << "lsp -a                                           lista procesow gotowych\n";
+	std::cout << "cp          nazwa_procesu id_grupy               utworzenie procesu pustego\n";
+	std::cout << "cp          nazwa_procesu id_grupy nazwa_pliku   utworzenie procesu z pliku\n";
+	std::cout << "killp                                            usuniecie procesu";
 }

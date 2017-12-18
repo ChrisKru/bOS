@@ -21,6 +21,7 @@ private:
 	bool executeCommand(std::vector<std::string> parameters);
 	void ErrorIC();
 	void ErrorPM();
+	void ErrorIP();
 	void printHelp();
 	Disc _disc;
 	Memory _memory;
