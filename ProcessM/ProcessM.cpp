@@ -66,6 +66,11 @@ void PCB::SetState(State state) {
 ProcessState = state;
 
 };
+void PCB::SetFileName(std::string filename); {
+
+	FileName = filename;
+
+};
 void PCB::PrintPCBInformations() {};
 int PCB::GetCommandCounter() {
 
@@ -141,6 +146,16 @@ void SetStateID(int ProcessID, State state) {
 	}
 
 };
+void SetFileNameID(int ProcessID, std::string filename) {
+
+	for (auto &v : ProcessGroupsList) {
+		for (auto &x : v.ProcessList) {
+			x->SetFileName(filename);
+		}
+	}
+
+};
+
 State GetStateID(int ProcessID) {
 
 	for (auto &v : ProcessGroupsList) {
