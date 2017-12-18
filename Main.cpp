@@ -1,7 +1,10 @@
 #include "Shell/Shell.hpp"
 
 int main(){
-	Shell szel;
-	szel.Loop();
+	Disc disc;
+	Memory memory;
+	Shell shell;
+	shell.systemInit(disc, memory);
+	shell.Loop();
 	return 0;
 }
