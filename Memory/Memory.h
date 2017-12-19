@@ -1,7 +1,7 @@
 #pragma once
 #include <queue>
 
-#include "../Memory/ExchangeFile.h"
+#include "ExchangeFile.h"
 
 struct FrameInfo {
 	int FrameNumber;			// numer ramki

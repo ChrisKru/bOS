@@ -1,4 +1,4 @@
-#include "ExchangeFile.h"
+#include "../Memory/ExchangeFile.h"
 
 
 ExchangeFile::ExchangeFile() { }
@@ -39,7 +39,7 @@ PageTable ExchangeFile::DataToFile(int& PID, std::string& fileName, int& size) {
 				table.data[k] = ' ';
 			}
 		}
-		std::cout << table.data << std::endl; //<-- sprawdza³em czy dobrze zapisuje
+		//std::cout << table.data << std::endl; //<-- sprawdza³em czy dobrze zapisuje
 
 		table.PID = PID;
 		file.push_back(table);
@@ -108,8 +108,10 @@ int ExchangeFile::getLastIndex(int PID, int commandCounter) {
 
 void ExchangeFile::show() {
 
-	std::cout << "PLIK WYMIANY" << std::endl;
 	for (int i = 0;i < file.size();i++) {
-		std::cout << file[i].data;
+		for (int o = 0;o < 16;o++) {
+			std::cout << file[i].data[o];
+		}
 	}
+	std::cout << std::endl;
 }

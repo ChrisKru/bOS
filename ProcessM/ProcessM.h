@@ -58,6 +58,9 @@ struct PCB {
 	int Tau;
 	int Timmer;
 
+	// nazwa otwartego pliku
+
+	std::string FileName;
 	// Konstruktor tworz¹cy nowy PCB
 
 	PCB(std::string processname, int processgroup);
@@ -75,7 +78,7 @@ struct PCB {
 	void SetTau(int tau);
 	int GetTimmer();
 	void SetTimmer(int timmer);
-
+	void SetFileName(std::string FileName);
 };
 
 /*Obiekt pozwalaj¹cy na wsadzenie mi grup do listy (zrobienie listy grup)*/
@@ -101,7 +104,7 @@ extern std::vector<std::shared_ptr<PCB>> procesy_otrzymane;
 
 /*Tworzenie nowego procesu i dodawanie go do istniejacej grupy,
 Id nadaje nadzorca*/
-void NewProcess(std::string ProcessName, int ProcessGroup);
+std::shared_ptr<PCB> NewProcess(std::string ProcessName, int ProcessGroup);
 
 /*Usuwanie procesu znj¹c tylko jego Id*/
 void DeleteProcess(int ProcessID);
@@ -118,6 +121,9 @@ void NewProcessGroup(std::string ProcessName);
 
 /*Ustawianie Stanu tylko po Id bez znajomosci grupy*/
 void SetStateID(int ProcessID, State state);
+
+/*Ustawianie nazwy pliku tylko po Id bez znajomosci grupy*/
+void SetFileNameID(int ProcessID, std::string FileName);
 
 /*Zwracanie Stanu tylko po Id bez znajomosci grupy*/
 State GetStateID(int ProcessID);

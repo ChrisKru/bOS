@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../dysk/dysk.h"
-#include "../ConditionVariable/CV.h"
+#include "../Memory/Memory.h"
 
 #include <vector>
 #include <string>
@@ -13,6 +13,7 @@
 class Shell{
 public:
 	Shell();
+	void systemInit(Disc disc, Memory memory, Scheduler scheduler);
 	void Loop();
 private:
 	std::string waitUserInput();
@@ -20,6 +21,9 @@ private:
 	bool executeCommand(std::vector<std::string> parameters);
 	void ErrorIC();
 	void ErrorPM();
+	void ErrorIP();
 	void printHelp();
-	Disc disc;
+	Disc _disc;
+	Memory _memory;
+	Scheduler _scheduler;
 };

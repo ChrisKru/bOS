@@ -1,4 +1,4 @@
-#include "Memory.h"
+#include "../Memory/Memory.h"
 
 
 Memory::Memory() {
@@ -254,13 +254,19 @@ void Memory::loadProcess(int PID, std::string filename) {
 
 void Memory::show() {
 	std::cout << "RAM" << std::endl;
-	std::cout << RAM << std::endl;
+	int it = 0;
+	for (int i = 0;i < 8;i++) {
+		std::cout << "Ramka " << i << ": ";
+		for (int j = 0;j < 16;j++) {
+			std::cout << RAM[it++];
+		}
+		std::cout << std::endl;
+	}
 }
 
 void Memory::showExchangeFile() {
 	std::cout << "PLIK WYMIANY" << std::endl;
 	file.show();
-
 }
 
 void Memory::showFIFO() {

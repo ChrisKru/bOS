@@ -388,12 +388,12 @@ void Interpreter::runInstruction(Disc& ds, Memory& mm, Scheduler& sc){//, Kolejk
 	// OF nazwa_pliku
 	else if (operation == ("OF")) {
 		std::string d1 = instruction[1];
-		dysk.open_file(d1);
+		dysk.open_file(d1, false);
 	}
 	// ZF nazwa_pliku
 	else if (operation == ("ZF")) {
 		std::string d1 = instruction[1];
-		dysk.close_file(d1);
+		dysk.close_file(d1, false);
 	}
 	// CF nazwa_pliku
 	else if (operation == ("CF")) {
