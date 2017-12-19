@@ -14,15 +14,17 @@ Komunikat::Komunikat(int nadawca, std::string tresc)
 	tresc_komunikatu = tresc;
 	rozmiar_komunikatu = tresc_komunikatu.size();
 }
-
+/*
 int Komunikat::getID()
 {
 	return id_nadawcy;
 }
+
 int Komunikat::getRozmair()
 {
 	return rozmiar_komunikatu;
 }
+*/
 std::string Komunikat::getTresc()
 {
 	return tresc_komunikatu;
@@ -85,7 +87,7 @@ void Kolejka::send(int id_odbiorcy, Komunikat komunikat)
 		{
 			for (auto &e : it.ProcessList)
 			{
-				if (e->ProcessName == nazwa_odbiorcy)
+				if (e->ProcessID == id_odbiorcy)
 					Kolejka::dodaj_komunikat(komunikat);
 			}
 		}
