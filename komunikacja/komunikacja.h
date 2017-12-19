@@ -23,7 +23,7 @@ class Kolejka
 {
 public:
 	//--------pola
-	static std::deque<Komunikat> kolejka;
+	std::deque<Komunikat> kolejka;
 	Komunikat* wskaznik;	//mo¿e niech ka¿dy proces dysponuje takim wskaŸnikiem, którego bêdzie u¿ywa³ przy metodach zwracaj¹cych wskaŸniki, np przy odbierz
 	Komunikat niewskaznik;
 	//--------metody
