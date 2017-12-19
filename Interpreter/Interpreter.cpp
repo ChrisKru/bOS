@@ -23,15 +23,12 @@ std::string Interpreter::loadInstruction() {
 	// wywolanie pamieci operacyjnej
 	// zwraca nam rozkaz jaki ma zostac wykonany
 	// return STRING Z ROZKAZEM
-	int size;
-	std::string filename;
-	//RAM.loadProcess(_PID, size, filename);
 	return RAM.getCommand(_IP, _PID);
 }
 
 void Interpreter::setInstruction()
 {
-	std::string command = "AD A 3";//= loadInstruction();
+	std::string command = loadInstruction();
 	instruction[0] = command.substr(0, 2);
 	command = command.substr(2);
 	int i = 1;
@@ -63,7 +60,7 @@ void Interpreter::runInstruction(Disc& ds, Memory& mm, Scheduler& sc, Kolejka km
 	this->dysk = ds;
 	this->RAM = mm;
 	this->scheduler = sc;
-	//this->komunikacja = km;
+	this->komunikacja = km;
 	_done = true; // ustalamy, ¿e rozkaz siê wykona. Jak nast¹pi¹ probelmy to _done = false;
 	loadRegister();
 	// wczytujemy rozkaz do wykonania
@@ -77,7 +74,6 @@ void Interpreter::runInstruction(Disc& ds, Memory& mm, Scheduler& sc, Kolejka km
 		// killujemy proces
 		DeleteProcess(_PID);
 		running->SetState(State::ZAKONCZONY);
-		showRegisters();
 	}
 
 	/* Operacje logiczne */
@@ -510,6 +506,7 @@ void Interpreter::runInstruction(Disc& ds, Memory& mm, Scheduler& sc, Kolejka km
 	}
 	saveRegisters();
 }
+
 
 /*
 ROZKAZY -> deasmbleracja
