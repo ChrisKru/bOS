@@ -2,6 +2,7 @@
 
 #include "../dysk/dysk.h"
 #include "../Memory/Memory.h"
+#include "../Interpreter/Interpreter.h"
 
 #include <vector>
 #include <string>
@@ -13,7 +14,7 @@
 class Shell{
 public:
 	Shell();
-	void systemInit(Disc disc, Memory memory, Scheduler scheduler);
+	void systemInit(Disc disc, Memory memory, Scheduler scheduler, Kolejka kolejka, Interpreter interpreter);
 	void Loop();
 private:
 	std::string waitUserInput();
@@ -26,4 +27,6 @@ private:
 	Disc _disc;
 	Memory _memory;
 	Scheduler _scheduler;
+	Kolejka _kolejka;
+	Interpreter _interpreter;
 };

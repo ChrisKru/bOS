@@ -333,13 +333,18 @@ void Disc::delete_file(std::string filename)
 
 void Disc::print_file_list()
 {
-	std::cout << "Pliki:" << std::endl;
+	bool pusty = true;
 	for (int i = 0; i < 32; i++)
 	{
 		if (katalog_[i].free == false)
 		{
+			pusty = false;
 			std::cout << katalog_[i].filename << std::endl;
 		}
+	}
+	if(pusty)
+	{
+		std::cout << "Brak plikow" << std::endl;
 	}
 }
 
