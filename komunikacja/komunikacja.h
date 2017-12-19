@@ -14,8 +14,8 @@ public:
 	//--------metody
 	Komunikat::Komunikat();
 	Komunikat::Komunikat(int nadawca, std::string tresc);
-	int Komunikat::getId();
-	int Komunikat::getRozmair();
+	//int Komunikat::getId();
+	//int Komunikat::getRozmair();
 	std::string Komunikat::getTresc();
 };
 
