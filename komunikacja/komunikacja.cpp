@@ -1,5 +1,6 @@
 
 #include "komunikacja.h"
+#include <iostream>
 
 //--------metody dla komuniaktu
 
@@ -7,16 +8,16 @@ Komunikat::Komunikat()
 {
 
 }
-Komunikat::Komunikat(std::string nadawca, std::string tresc)
+Komunikat::Komunikat(int nadawca, std::string tresc)
 {
-	nazwa_nadawcy = nadawca;
+	id_nadawcy = nadawca;
 	tresc_komunikatu = tresc;
 	rozmiar_komunikatu = tresc_komunikatu.size();
 }
 
-std::string Komunikat::getName()
+int Komunikat::getID()
 {
-	return nazwa_nadawcy;
+	return id_nadawcy;
 }
 int Komunikat::getRozmair()
 {
@@ -52,6 +53,7 @@ Komunikat Kolejka::receive(std::string nazwa_nadawcy)
 	{
 		Komunikat odebrany = kolejka.front();	//mo¿e to daæ w jednej linii jednak z tym u góry
 		usun_komunikat();	//po odczytaniu komunikatu z kolejki, musi zostaæ z niej usuniêty
+		std::cout <<"Tresc odebranego komunikatu: "<< odebrany.tresc_komunikatu;
 		return odebrany;
 	}
 	else if (kolejka.size() == 0)
@@ -71,10 +73,11 @@ void Kolejka::wyswietl()
 		}
 	}
 }
-void Kolejka::send(std::string nazwa_odbiorcy, Komunikat komunikat)
+void Kolejka::send(int id_odbiorcy, Komunikat komunikat)
 {	//dostêp do kolejki: id procesu jest potrzebne. Wykorzystujê funkcjê GetPCB, któa zwraca shared pointer do PCB. Wtedy bêdzie PCB->kolejka
 	//std::list<Group>ProcessGroupsList;
-	int grupa = PCB::ProcessGroup;
+	std::shared_ptr<PCB> x = GetPCB(id_odbiorcy);
+	int grupa = x->ProcessGroup;
 
 	for (auto &it : ProcessGroupsList)
 	{

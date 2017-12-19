@@ -8,13 +8,13 @@ class Komunikat
 {
 public:
 	//--------pola
-	std::string nazwa_nadawcy;
+	int id_nadawcy;
 	int rozmiar_komunikatu;
 	std::string tresc_komunikatu;
 	//--------metody
 	Komunikat::Komunikat();
-	Komunikat::Komunikat(std::string nadawca, std::string tresc);
-	std::string Komunikat::getName();
+	Komunikat::Komunikat(int nadawca, std::string tresc);
+	int Komunikat::getId();
 	int Komunikat::getRozmair();
 	std::string Komunikat::getTresc();
 };
@@ -30,7 +30,7 @@ public:
 	Kolejka::Kolejka();
 	void Kolejka::dodaj_komunikat(Komunikat komunikat);
 	void Kolejka::usun_komunikat();
-	void Kolejka::send(std::string nazwa_odbiorcy, Komunikat komunikat);
+	void Kolejka::send(int id_odbiorcy, Komunikat komunikat);
 	Komunikat Kolejka::receive(std::string nazwa_nadawcy);
 	void Kolejka::wyswietl();
 };
