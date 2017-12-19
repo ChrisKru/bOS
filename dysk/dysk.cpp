@@ -174,12 +174,14 @@ bool Disc::open_file(std::string filename, bool is_shell)
 		if (katalog_[kat_nr].open == true)
 		{
 			std::cout << "Plik jest juz otwarty" << std::endl;
+			return false;
 		}
 		else
 		{
 			katalog_[kat_nr].open = true;
+			return true;
 		}
-		return true;
+
 	}
 	else
 	{
