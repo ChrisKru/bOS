@@ -156,5 +156,10 @@ void Scheduler::dodaj_do_procesow_gotowych(shared_ptr<PCB> proces)
 	{
 		procesy_otrzymane.push_back(proces);
 	}
+void Scheduler::killprocess()
+{
+	running->SetState(State::ZAKONCZONY);
+	DeleteProcess(running->GetID());
+}
 
 

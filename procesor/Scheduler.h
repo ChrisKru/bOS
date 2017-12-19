@@ -23,5 +23,6 @@ public:
 	void print_running();
 	void wyswietl_gotowe();
 	void dodaj_do_procesow_gotowych(shared_ptr<PCB> proces);
+	void killprocess();
 };
 
