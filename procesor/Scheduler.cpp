@@ -110,7 +110,9 @@ void Scheduler::Schedule()
 	}
 void Scheduler::print_running()
 	{
+	if(running->ProcessState == State::AKTYWNY)
 		cout << "Akutalnie wykonywany jest proces o nazwie: " << running->ProcessName << endl;
+	else cout << "Nie jest wykonywany zaden proces!" << endl;
 	}
 void Scheduler::wyswietl_gotowe()
 	{
