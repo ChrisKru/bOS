@@ -23,12 +23,13 @@ std::string Interpreter::loadInstruction() {
 	// wywolanie pamieci operacyjnej
 	// zwraca nam rozkaz jaki ma zostac wykonany
 	// return STRING Z ROZKAZEM
-	return RAM.getCommand(_IP, _PID);
+	return RAM.getCommand(_PID,_IP);
 }
 
 void Interpreter::setInstruction()
 {
-	std::string command = loadInstruction();
+	std::string command = "";
+	command = loadInstruction();
 	instruction[0] = command.substr(0, 2);
 	command = command.substr(2);
 	int i = 1;
@@ -459,7 +460,7 @@ void Interpreter::runInstruction(Disc& ds, Memory& mm, Scheduler& sc, Kolejka km
 	else if (operation == ("RC")) {
 		std::string d1 = instruction[1];
 		Komunikat kom;
-		kom = komunikacja.receive(d1);
+		kom = komunikacja.receive(std::stoi(d1));
 	}
 	// PC
 	else if (operation == ("PC")) {
