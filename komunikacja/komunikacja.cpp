@@ -49,14 +49,21 @@ void Kolejka::usun_komunikat()
 	else
 		kolejka.pop_front();
 }
-Komunikat Kolejka::receive(std::string nazwa_nadawcy)
+Komunikat Kolejka::receive(int id_nadawcy)
 {
 	if (kolejka.size() > 0)
 	{
-		Komunikat odebrany = kolejka.front();	//mo¿e to daæ w jednej linii jednak z tym u góry
-		usun_komunikat();	//po odczytaniu komunikatu z kolejki, musi zostaæ z niej usuniêty
-		std::cout <<"Tresc odebranego komunikatu: "<< odebrany.tresc_komunikatu;
-		return odebrany;
+		for (auto &it : kolejka)
+		{
+			if (it.id_nadawcy == id_nadawcy)
+			{
+				Komunikat odebrany = kolejka.front();	//mo¿e to daæ w jednej linii jednak z tym u góry
+				usun_komunikat();	//po odczytaniu komunikatu z kolejki, musi zostaæ z niej usuniêty
+				std::cout << "Tresc odebranego komunikatu: " << odebrany.tresc_komunikatu;
+				return odebrany;
+			}
+		}
+		
 	}
 	else if (kolejka.size() == 0)
 		std::cout << "Kolejka komunikatow dla tego procesu jest pusta" << std::endl;

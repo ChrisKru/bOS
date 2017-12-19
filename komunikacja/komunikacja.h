@@ -31,7 +31,7 @@ public:
 	void Kolejka::dodaj_komunikat(Komunikat komunikat);
 	void Kolejka::usun_komunikat();
 	void Kolejka::send(int id_odbiorcy, Komunikat komunikat);
-	Komunikat Kolejka::receive(std::string nazwa_nadawcy);
+	Komunikat Kolejka::receive(int id_nadawcy);
 	void Kolejka::wyswietl();
 };
 #endif
