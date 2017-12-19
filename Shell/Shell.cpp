@@ -162,15 +162,7 @@ bool Shell::executeCommand(std::vector<std::string> parameters) {
 			return 0;
 		}
 	} else if (parameters[0] == "cp") {
-		if (parameters.size() == 3) {
-			try{
-				std::shared_ptr<PCB> process = NewProcess(parameters[1], std::stoi(parameters[2]));
-				std::cout << "PID = " << std::to_string(process->GetID()) << "\n";
-			} catch (std::exception exception) {
-				ErrorIP();
-				return 0;
-			}			
-		} else if (parameters.size() == 4) {
+		if (parameters.size() == 4) {
 			try {
 				std::shared_ptr<PCB> process = NewProcess(parameters[1], std::stoi(parameters[2]));
 				process->SetFileName(parameters[3]);
@@ -196,11 +188,12 @@ bool Shell::executeCommand(std::vector<std::string> parameters) {
 		}
 		_scheduler.Schedule();
 		_interpreter.runInstruction(_disc, _memory, _scheduler, _kolejka);
-	}else if(parameters[0] == "runc"){
-		if(parameters.size() != 2){
+	}else if(parameters[0] == "reg"){
+		if(parameters.size() != 1){
 			ErrorPM();
 			return 0;
 		}
+		_interpreter.showRegisters();
 	}else{
 		ErrorIC();
 	}
@@ -242,8 +235,8 @@ void Shell::printHelp(){
 	std::cout << "pagetable   pid                                  zawartosc tablicy stronic\n";
 	std::cout << "lsp                                              lista procesow\n";
 	std::cout << "lsp -r                                           proces aktualnie wykonywany\n";
-	std::cout << "cp          nazwa_procesu id_grupy               utworzenie procesu pustego\n";
 	std::cout << "cp          nazwa_procesu id_grupy nazwa_pliku   utworzenie procesu z pliku\n";
 	std::cout << "killp                                            usuniecie procesu wykonywanego\n";
 	std::cout << "runp                                             uruchomienie procesu\n";
+	std::cout << "reg                                              zawartosc rejestru\n";
 }
