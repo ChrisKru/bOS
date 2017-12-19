@@ -75,6 +75,8 @@ void Interpreter::runInstruction(Disc& ds, Memory& mm, Scheduler& sc){//, Kolejk
 	// operator zamkniecia procesu
 	if (operation == ("EX")) {
 		// killujemy proces
+		DeleteProcess(_PID);
+		running->SetState(State::ZAKONCZONY);
 		showRegisters();
 	}
 
@@ -450,13 +452,14 @@ void Interpreter::runInstruction(Disc& ds, Memory& mm, Scheduler& sc){//, Kolejk
 
 
 	/* Operacje wykonywane na komunikatach */
-	// SC nazwa_procesu komunikat, gdzie nazwa_procesu to do kogo
+	// SC PID komunikat, gdzie ID_procesu to do kogo
 	//else if (operation == ("SC")) {
 	//	std::string d1 = instruction[1];
 	//	std::string d2 = instruction[2];
-	//	komunikacja.send(d1, d2);
+	//  Komunikat kom(_PID, d2);
+	//	komunikacja.send(d1, kom);
 	//}
-	//// RC nazwa_procesu
+	//// RC PID
 	//else if (operation == ("RC")) {
 	//	std::string d1 = instruction[1];
 	//	komunikacja.receive(d1);
@@ -479,6 +482,7 @@ void Interpreter::runInstruction(Disc& ds, Memory& mm, Scheduler& sc){//, Kolejk
 	else if (operation == ("DP")) {
 		std::string d1 = instruction[1];
 		DeleteProcess(std::stoi(d1));
+
 	}
 	
 	// Aktywny proces: AP
@@ -503,6 +507,7 @@ void Interpreter::runInstruction(Disc& ds, Memory& mm, Scheduler& sc){//, Kolejk
 		std::cout << "Brak takiej instrukcji";
 		_done = false;
 	}
+	saveRegisters();
 }
 
 /*
