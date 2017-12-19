@@ -2,10 +2,12 @@
 
 Shell::Shell(){}
 
-void Shell::systemInit(Disc disc, Memory memory, Scheduler scheduler){
+void Shell::systemInit(Disc disc, Memory memory, Scheduler scheduler, Kolejka kolejka, Interpreter interpreter){
 	_disc = disc;
 	_memory = memory;
 	_scheduler = scheduler;
+	_kolejka = kolejka;
+	_interpreter = interpreter;
 }
 
 void Shell::Loop(){
@@ -147,11 +149,9 @@ bool Shell::executeCommand(std::vector<std::string> parameters) {
 		}
 	} else if (parameters[0] == "lsp") {
 		if (parameters.size() == 1) {
-			PrintProcessListInformation();
+			_scheduler.wyswietl_gotowe();
 		} else if (parameters.size() == 2) {
-			if (parameters[1] == "-a") {
-				_scheduler.wyswietl_gotowe();
-			} else if (parameters[1] == "-r") {
+			if (parameters[1] == "-r") {
 				_scheduler.print_running();
 			} else {
 				ErrorPM();
@@ -164,17 +164,17 @@ bool Shell::executeCommand(std::vector<std::string> parameters) {
 	} else if (parameters[0] == "cp") {
 		if (parameters.size() == 3) {
 			try{
-				NewProcess(parameters[1], std::stoi(parameters[2]));
-				_scheduler.Schedule();
+				std::shared_ptr<PCB> process = NewProcess(parameters[1], std::stoi(parameters[2]));
+				std::cout << "PID = " << std::to_string(process->GetID()) << "\n";
 			} catch (std::exception exception) {
 				ErrorIP();
 				return 0;
 			}			
 		} else if (parameters.size() == 4) {
 			try {
-				auto process = NewProcess(parameters[1], std::stoi(parameters[2]));
+				std::shared_ptr<PCB> process = NewProcess(parameters[1], std::stoi(parameters[2]));
 				process->SetFileName(parameters[3]);
-				_scheduler.Schedule();
+				_memory.loadProcess(process->GetID(), parameters[3]);
 			}catch(std::exception exception){
 				ErrorIP();
 				return 0;
@@ -184,14 +184,21 @@ bool Shell::executeCommand(std::vector<std::string> parameters) {
 			return 0;
 		}
 	} else if (parameters[0] == "killp") {
-		if (parameters.size() != 2) {
+		if (parameters.size() != 1) {
 			ErrorPM();
 			return 0;
 		}
-		try{
-			DeleteProcess(std::stoi(parameters[1]));
-		}catch(std::exception exception){
-			ErrorIP();
+		_scheduler.killprocess();
+	} else if (parameters[0] == "runp") {
+		if (parameters.size() != 1) {
+			ErrorPM();
+			return 0;
+		}
+		_scheduler.Schedule();
+		_interpreter.runInstruction(_disc, _memory, _scheduler, _kolejka);
+	}else if(parameters[0] == "runc"){
+		if(parameters.size() != 2){
+			ErrorPM();
 			return 0;
 		}
 	}else{
@@ -232,11 +239,11 @@ void Shell::printHelp(){
 	std::cout << "memory                                           zawartosc pamieci\n";
 	std::cout << "exfile                                           zawartosc pliku wymiany\n";
 	std::cout << "fifo                                             zawartosc kolejki fifo\n";
-	std::cout << "pagetable   pid                                  zawartosc pliku wymiany\n";
+	std::cout << "pagetable   pid                                  zawartosc tablicy stronic\n";
 	std::cout << "lsp                                              lista procesow\n";
 	std::cout << "lsp -r                                           proces aktualnie wykonywany\n";
-	std::cout << "lsp -a                                           lista procesow gotowych\n";
 	std::cout << "cp          nazwa_procesu id_grupy               utworzenie procesu pustego\n";
 	std::cout << "cp          nazwa_procesu id_grupy nazwa_pliku   utworzenie procesu z pliku\n";
-	std::cout << "killp                                            usuniecie procesu";
+	std::cout << "killp                                            usuniecie procesu wykonywanego\n";
+	std::cout << "runp                                             uruchomienie procesu\n";
 }
