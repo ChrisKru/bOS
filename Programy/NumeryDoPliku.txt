@@ -10,11 +10,12 @@ AF num ,
 IC A 
 DC B 
 EQ B C
-JT 6 
+JF 7 
 AF num [A]
 PF num 
 LF  
-DF num
+ZF num 
+DF num 
 LF  
-PF num
-EX 
+PF num 
+EX  
