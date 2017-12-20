@@ -104,6 +104,10 @@ int ExchangeFile::getLastIndex(int PID, int commandCounter) {
 	}
 }
 
+void ExchangeFile::deleteProcessData(int PID) {
+
+}
+
 
 
 void ExchangeFile::show() {

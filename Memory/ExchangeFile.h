@@ -41,6 +41,10 @@ public:
 	int getLastIndex(int PID, int commandCounter);
 		// analogicznie do getFirstIndex
 	
+	void deleteProcessData(int PID);
+		//usuwa dane procesu z pliku wymiany
+	
+
 	void show();
 		// wyœwietla zawartoœæ pliku wymiany
 

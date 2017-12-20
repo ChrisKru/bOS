@@ -19,17 +19,17 @@ void Interpreter::loadRegister() { // Running to wskaznik na PCB
 	_IP = running->CommandCounter;
 }
 
-std::string Interpreter::loadInstruction() {
+std::string Interpreter::loadInstruction(Memory& RAM) {
 	// wywolanie pamieci operacyjnej
 	// zwraca nam rozkaz jaki ma zostac wykonany
 	// return STRING Z ROZKAZEM
 	return RAM.getCommand(_PID,_IP);
 }
 
-void Interpreter::setInstruction()
+void Interpreter::setInstruction(Memory& RAM)
 {
 	std::string command = "";
-	command = loadInstruction();
+	command = loadInstruction(RAM);
 	instruction[0] = command.substr(0, 2);
 	command = command.substr(2);
 	int i = 1;
@@ -57,15 +57,15 @@ void Interpreter::showRegisters() {
 	std::cout << "Licznik rozkazow: " << _IP << std::endl;
 }
 
-void Interpreter::runInstruction(Disc& ds, Memory& mm, Scheduler& sc, Kolejka km) {
-	this->dysk = ds;
-	this->RAM = mm;
-	this->scheduler = sc;
-	this->komunikacja = km;
+void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, Kolejka komunikacja) {
+	//this->dysk = ds;
+	//this->RAM = mm;
+	//this->scheduler = sc;
+	//this->komunikacja = km;
 	_done = true; // ustalamy, ¿e rozkaz siê wykona. Jak nast¹pi¹ probelmy to _done = false;
 	loadRegister();
 	// wczytujemy rozkaz do wykonania
-	setInstruction();
+	setInstruction(RAM);
 
 	// operation = instruction.substr(0,2);
 	std::string operation = instruction[0];
@@ -397,6 +397,7 @@ void Interpreter::runInstruction(Disc& ds, Memory& mm, Scheduler& sc, Kolejka km
 	// CF nazwa_pliku
 	else if (operation == ("CF")) {
 		std::string d1 = instruction[1];
+		//dysk.create_file(d1);
 		dysk.create_file(d1);
 	}
 	// WF nazwa_pliku dane
@@ -431,13 +432,14 @@ void Interpreter::runInstruction(Disc& ds, Memory& mm, Scheduler& sc, Kolejka km
 		else if (d2 == "[B]") {
 			d2 = std::to_string(_RegB);
 		}
-		else if (d2 == "[C]"){
+		else if (d2 == "[C]") {
 			d2 = std::to_string(_RegC);
 		}
 		dysk.add_to_file(d1, d2);
 	}
 	// LF
 	else if (operation == ("LF")) {
+		//dysk.print_file_list();
 		dysk.print_file_list();
 	}
 	// PD
@@ -453,7 +455,7 @@ void Interpreter::runInstruction(Disc& ds, Memory& mm, Scheduler& sc, Kolejka km
 	else if (operation == ("SC")) {
 		std::string d1 = instruction[1];
 		std::string d2 = instruction[2];
-	    Komunikat kom(_PID, d2);
+		Komunikat kom(_PID, d2);
 		komunikacja.send(std::stoi(d1), kom);
 	}
 	// RC PID
@@ -482,7 +484,7 @@ void Interpreter::runInstruction(Disc& ds, Memory& mm, Scheduler& sc, Kolejka km
 		DeleteProcess(std::stoi(d1));
 
 	}
-	
+
 	// Aktywny proces: AP
 	else if (operation == ("AP")) {
 		scheduler.print_running();
@@ -505,7 +507,10 @@ void Interpreter::runInstruction(Disc& ds, Memory& mm, Scheduler& sc, Kolejka km
 		std::cout << "Brak takiej instrukcji";
 		_done = false;
 	}
-	saveRegisters();
+	if (_done) {
+		_IP++;
+		saveRegisters();
+	}
 }
 
 

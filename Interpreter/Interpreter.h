@@ -30,18 +30,18 @@ private:
 											 [2] (opcjonalne) dana do operacji
 											 */
 
-	void setInstruction();			// ustawiamy w nim nasza tablice instruction
-	Disc dysk;
-	Memory RAM;
-	Scheduler scheduler;
-	Kolejka komunikacja;
+	void setInstruction(Memory& RAM);			// ustawiamy w nim nasza tablice instruction
+	//Disc dysk;
+	//Memory RAM;
+	//Scheduler scheduler;
+	//Kolejka komunikacja;
 	
 
 public:
 	Interpreter();
 
 	void loadRegister();			// ustawia nasze wewnetrze rejestry, PID oraz wskaznik rozkazow korzystajac z running od Scheduler
-	std::string loadInstruction();	// za³adowanie rozkazu z danymi od pamieci RAM
+	std::string loadInstruction(Memory& RAM);	// za³adowanie rozkazu z danymi od pamieci RAM
 	void saveRegisters();;			// ustawia dane zawarte w running naszymi danymi(rejestry, PID, IP, timer++)
 	void showRegisters();			// wyswietla stany rejestrow, PID oraz IP
 
