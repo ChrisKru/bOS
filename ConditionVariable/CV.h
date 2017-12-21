@@ -8,7 +8,7 @@ class CV {
 	std::list<std::shared_ptr<PCB>> pcb_waiting_list;
 
 public:
-	void wait();
+	bool wait();
 	void signal();
 	bool is_empty();
 };
