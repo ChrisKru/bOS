@@ -2,18 +2,23 @@
 
 bool CV::wait() {
 	bool temp;
-	if (pcb_waiting_list.front()->GetState() == State::ZAKONCZONY)
-		temp = true;
-	else
-		temp = false;
 
-	pcb_waiting_list.remove_if([](std::shared_ptr<PCB> proces) { if(proces->GetState() == State::ZAKONCZONY) return proces; });
+	if (pcb_waiting_list.size() > 0) {
+		if (pcb_waiting_list.front()->GetState() == State::ZAKONCZONY)
+			temp = true;
+		else
+			temp = false;
 
-	if (!(pcb_waiting_list.size() == 0)) {
-		running->SetState(State::OCZEKUJACY);
+		pcb_waiting_list.remove_if([](std::shared_ptr<PCB> proces) { if (proces->GetState() == State::ZAKONCZONY) return proces; });
+
+		if (pcb_waiting_list.front()->GetID() != running->GetID()) {
+			running->SetState(State::OCZEKUJACY);
+			pcb_waiting_list.push_back(running);
+		}
 	}
-	pcb_waiting_list.push_back(running);
-
+	else {
+		pcb_waiting_list.push_back(running);
+	}
 	return temp;
 }
 void CV::signal() {
