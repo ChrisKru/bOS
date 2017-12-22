@@ -1,7 +1,7 @@
 #include "CV.h"
 
 bool CV::wait() {
-	bool temp;
+	bool temp = false;
 
 	if (pcb_waiting_list.size() > 0) {
 		if (pcb_waiting_list.front()->GetState() == State::ZAKONCZONY)

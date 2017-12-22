@@ -1,0 +1,12 @@
+MV A 1
+MV B 2
+CP aryt 3 arytmetyka.txt
+ML A B
+MV B 3
+CP kom 2 komunikaty.txt
+MV C A
+CP aryt2 4 arytmetyka2.txt
+MV A 0
+MV B 1
+MV C B
+EX
