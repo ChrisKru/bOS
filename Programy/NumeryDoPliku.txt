@@ -1,21 +1,21 @@
-CF num 
-LF  
+CF num
+LF
 MV B 7
 MV A 1
 MV C 0
-OF num 
+OF num
 WF num Numbers:
 AF num [A]
 AF num ,
-IC A 
-DC B 
+IC A
+DC B
 EQ B C
-JF 7 
+JF 7
 AF num [A]
-PF num 
-LF  
-ZF num 
-DF num 
-LF  
-PF num 
-EX  
+PF num
+LF
+ZF num
+DF num
+LF
+PF num
+EX
