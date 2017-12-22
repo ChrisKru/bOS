@@ -13,11 +13,11 @@ public:
 	int rozmiar_komunikatu;
 	std::string tresc_komunikatu;
 	//--------metody
-	Komunikat::Komunikat();
-	Komunikat::Komunikat(int nadawca, std::string tresc);
+	Komunikat();
+	Komunikat(int nadawca, std::string tresc);
 	//int Komunikat::getId();
 	//int Komunikat::getRozmair();
-	std::string Komunikat::getTresc();
+	std::string getTresc();
 };
 
 class Kolejka
@@ -28,11 +28,11 @@ public:
 	Komunikat* wskaznik;	//mo¿e niech ka¿dy proces dysponuje takim wskaŸnikiem, którego bêdzie u¿ywa³ przy metodach zwracaj¹cych wskaŸniki, np przy odbierz
 	Komunikat niewskaznik;
 	//--------metody
-	Kolejka::Kolejka();
-	void Kolejka::dodaj_komunikat(Komunikat komunikat);
-	void Kolejka::usun_komunikat();
-	void Kolejka::send(int id_odbiorcy, Komunikat komunikat);
-	Komunikat Kolejka::receive(int id_nadawcy);
-	void Kolejka::wyswietl();
+	Kolejka();
+	void dodaj_komunikat(Komunikat komunikat);
+	void usun_komunikat();
+	void send(int id_odbiorcy, Komunikat komunikat);
+	Komunikat receive(int id_nadawcy);
+	void wyswietl();
 };
 #endif
