@@ -2,8 +2,8 @@ MV A 3
 MV B A
 AD A B
 MV C A
-IC A 
-DC B 
+IC A
+DC B
 ML A B
 ML B 3
 SB A 2
@@ -11,4 +11,4 @@ SB B 1
 AD B 1
 DV B C
 DV A 6
-EX  
+EX

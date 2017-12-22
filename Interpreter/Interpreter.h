@@ -30,11 +30,7 @@ private:
 											 [2] (opcjonalne) dana do operacji
 											 */
 
-	void setInstruction(Memory& RAM);			// ustawiamy w nim nasza tablice instruction
-	//Disc dysk;
-	//Memory RAM;
-	//Scheduler scheduler;
-	//Kolejka komunikacja;
+	void setInstruction(Memory& RAM, int num_parameters);			// ustawiamy w nim nasza tablice instruction
 	
 
 public:
