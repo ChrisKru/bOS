@@ -149,7 +149,7 @@ std::string Memory::getCommand(int PID, int commandCounter) {
 					// w przypadku gdy ju¿ jest w RAMie:
 					int frame = pagetables[i].FrameNumber[page2];
 					int it = frame * 16;
-					int end = frame * 16 + (last - page2 * 16 + 1);
+					int end = /*frame * 16 + (*/last - page2 * 16 + 1/*)*/;
 					for (int p = 0;p < end;p++) {
 						command += RAM[it];
 						it++;

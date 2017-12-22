@@ -26,19 +26,31 @@ std::string Interpreter::loadInstruction(Memory& RAM) {
 	return RAM.getCommand(_PID,_IP);
 }
 
-void Interpreter::setInstruction(Memory& RAM)
+void Interpreter::setInstruction(Memory& RAM, int num_parameters)
 {
 	std::string command = "";
+	instruction[0] = "";
+	instruction[1] = "";
+	instruction[2] = "";
 	command = loadInstruction(RAM);
 	instruction[0] = command.substr(0, 2);
 	command = command.substr(2);
-	int i = 1;
-	while (command[i] != ' ') {
-		instruction[1] += command[i];
-		i++;
+	if (num_parameters == 1) {
+		int i = 1;
+		while (command[i] != ' ' && command[i] != '\0') {
+			instruction[1] += command[i];
+			i++;
+		}
 	}
-	i++;
-	instruction[2] = command.substr(i);
+	if (num_parameters == 2) {
+		int i = 1;
+		while (command[i] != ' ') {
+			instruction[1] += command[i];
+			i++;
+		}
+			i++;
+			instruction[2] = command.substr(i);
+	}
 }
 
 void Interpreter::saveRegisters() {
@@ -58,458 +70,490 @@ void Interpreter::showRegisters() {
 }
 
 void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, Kolejka komunikacja) {
-	//this->dysk = ds;
-	//this->RAM = mm;
-	//this->scheduler = sc;
-	//this->komunikacja = km;
-	_done = true; // ustalamy, ¿e rozkaz siê wykona. Jak nast¹pi¹ probelmy to _done = false;
-	loadRegister();
-	// wczytujemy rozkaz do wykonania
-	setInstruction(RAM);
 
-	// operation = instruction.substr(0,2);
-	std::string operation = instruction[0];
-
-	// operator zamkniecia procesu
-	if (operation == ("EX")) {
-		// killujemy proces
-		DeleteProcess(_PID);
-		running->SetState(State::ZAKONCZONY);
-	}
-
-	/* Operacje logiczne */
-	// MV nazwa_rejestru liczba
-	if (operation == ("MV")) {
-		std::string d1 = instruction[1];
-		std::string d2 = instruction[2];
-		if (d1 == "A") {
-			if (d2 == "B") {
-				_RegA = _RegB;
-			}
-			else if (d2 == "C") {
-				_RegA = _RegC;
-			}
-			else if (d2 == "A") {
-				_RegA = _RegA;
-			}
-			else {
-				_RegA = std::stoi(d2);
-			}
-		}
-		else if (d1 == "B") {
-			if (d2 == "A") {
-				_RegB = _RegA;
-			}
-			else if (d2 == "C") {
-				_RegB = _RegC;
-			}
-			else if (d2 == "B") {
-				_RegB = _RegB;
-			}
-			else {
-				_RegB = std::stoi(d2);
-			}
-		}
-		else if (d1 == "C") {
-			if (d2 == "A") {
-				_RegC = _RegA;
-			}
-			else if (d2 == "B") {
-				_RegC = _RegB;
-			}
-			else if (d2 == "C") {
-				_RegC = _RegC;
-			}
-			else {
-				_RegC = std::stoi(d2);
-			}
-		}
-	}
-
-	// EQ nazwa_rejestru nazwa_rejestru
-	else if (operation == ("EQ")) {
-		std::string d1 = instruction[1];
-		std::string d2 = instruction[2];
-		if (d1 == d2 || d1 == "A" && d2 == "B" && _RegA == _RegB ||
-			d1 == "A" && d2 == "C" && _RegA == _RegC ||
-			d1 == "B" && d2 == "A" && _RegB == _RegA ||
-			d1 == "B" && d2 == "C" && _RegB == _RegC ||
-			d1 == "C" && d2 == "A" && _RegC == _RegA ||
-			d1 == "C" && d2 == "B" && _RegC == _RegB) {
-			std::cout << "Wartosci sa sobie rowne!" << std::endl;
-			_flagEQ = true;
-		}
-		else {
-			_flagEQ = false;
-			std::cout << "Wartosci sa rozne!" << std::endl;
-		}
-	}
-	// JP gdzie
-	else if (operation == ("JP")) {
-		std::string d1 = instruction[1];
-		_IP = std::stoi(d1);
-	}
-	// JT gdzie(jesli prawda)
-	else if (operation == ("JT")) {
-		std::string d1 = instruction[1];
-		if (_flagEQ == true) _IP = std::stoi(d1);
-	}
-	// JF gdzie(jeœli falsz)
-	else if (operation == ("JF")) {
-		std::string d1 = instruction[1];
-		if (_flagEQ == false) _IP = std::stoi(d1);
-	}
-
-	/* Operacje arytmetyczne */
-	// AD nazwa_rejestru liczba/nazwa_rejestru
-	else if (operation == ("AD")) {
-		std::string d1 = instruction[1];
-		std::string d2 = instruction[2];
-		if (d1 == "A") {
-			if (d2 == "B") {
-				_RegA += _RegB;
-			}
-			else if (d2 == "C") {
-				_RegA += _RegC;
-			}
-			else if (d2 == "A") {
-				_RegA += _RegA;
-			}
-			else {
-				_RegA += std::stoi(d2);
-			}
-		}
-		else if (d1 == "B") {
-			if (d2 == "A") {
-				_RegB += _RegA;
-			}
-			else if (d2 == "C") {
-				_RegB += _RegC;
-			}
-			else if (d2 == "B") {
-				_RegB += _RegB;
-			}
-			else {
-				_RegB += std::stoi(d2);
-			}
-		}
-		else if (d1 == "C") {
-			if (d2 == "A") {
-				_RegC += _RegA;
-			}
-			else if (d2 == "B") {
-				_RegC += _RegB;
-			}
-			else if (d2 == "C") {
-				_RegC += _RegC;
-			}
-			else {
-				_RegC += std::stoi(d2);
-			}
-		}
-	}
-
-	// ML nazwa_rejestru liczba/nazwa_rejestru
-	else if (operation == ("ML")) {
-		std::string d1 = instruction[1];
-		std::string d2 = instruction[2];
-		if (d1 == "A") {
-			if (d2 == "B") {
-				_RegA *= _RegB;
-			}
-			else if (d2 == "C") {
-				_RegA *= _RegC;
-			}
-			else if (d2 == "A") {
-				_RegA *= _RegA;
-			}
-			else {
-				_RegA *= std::stoi(d2);
-			}
-		}
-		else if (d1 == "B") {
-			if (d2 == "A") {
-				_RegB *= _RegA;
-			}
-			else if (d2 == "C") {
-				_RegB *= _RegC;
-			}
-			else if (d2 == "B") {
-				_RegB *= _RegB;
-			}
-			else {
-				_RegB *= std::stoi(d2);
-			}
-		}
-		else if (d1 == "C") {
-			if (d2 == "A") {
-				_RegC *= _RegA;
-			}
-			else if (d2 == "B") {
-				_RegC *= _RegB;
-			}
-			else if (d2 == "C") {
-				_RegC *= _RegC;
-			}
-			else {
-				_RegC *= std::stoi(d2);
-			}
-		}
-	}
-
-	// SB nazwa_rejestru liczba/nazwa_rejestru
-	else if (operation == ("SB")) {
-		std::string d1 = instruction[1];
-		std::string d2 = instruction[2];
-		if (d1 == "A") {
-			if (d2 == "B") {
-				_RegA -= _RegB;
-			}
-			else if (d2 == "C") {
-				_RegA -= _RegC;
-			}
-			else if (d2 == "A") {
-				_RegA -= _RegA;
-			}
-			else {
-				_RegA -= std::stoi(d2);
-			}
-		}
-		else if (d1 == "B") {
-			if (d2 == "A") {
-				_RegB -= _RegA;
-			}
-			else if (d2 == "C") {
-				_RegB -= _RegC;
-			}
-			else if (d2 == "B") {
-				_RegB -= _RegB;
-			}
-			else {
-				_RegB -= std::stoi(d2);
-			}
-		}
-		else if (d1 == "C") {
-			if (d2 == "A") {
-				_RegC -= _RegA;
-			}
-			else if (d2 == "B") {
-				_RegC -= _RegB;
-			}
-			else if (d2 == "C") {
-				_RegC -= _RegC;
-			}
-			else {
-				_RegC -= std::stoi(d2);
-			}
-		}
-	}
-
-	// DV nazwa_rejestru liczba/nazwa_rejestru
-	else if (operation == ("DV")) {
-		std::string d1 = instruction[1];
-		std::string d2 = instruction[2];
-		if (d1 == "A") {
-			if (d2 == "A") {
-				_RegA /= _RegA;
-			}
-			else if (d2 == "B") {
-				_RegA /= _RegB;
-			}
-			else if (d2 == "C") {
-				_RegA /= _RegC;
-			}
-			else {
-				_RegA /= std::stoi(d2);
-			}
-		}
-		else if (d1 == "B") {
-			if (d2 == "A") {
-				_RegB /= _RegA;
-			}
-			else if (d2 == "B") {
-				_RegB /= _RegB;
-			}
-			else if (d2 == "C") {
-				_RegB /= _RegC;
-			}
-			else {
-				_RegB /= std::stoi(d2);
-			}
-		}
-		else if (d1 == "C") {
-			if (d2 == "A") {
-				_RegC /= _RegA;
-			}
-			else if (d2 == "B") {
-				_RegC /= _RegB;
-			}
-			else if (d2 == "C") {
-				_RegC /= _RegC;
-			}
-			else {
-				if (std::stoi(d2) == 0) {
-					std::cout << "ERROR! Nie mozna dzielic przez 0\n";
+	if (running->ProcessState == State::AKTYWNY) {
+		_done = true; // ustalamy, ¿e rozkaz siê wykona. Jak nast¹pi¹ probelmy to _done = false;
+		loadRegister();
+		// Rozkaz do wykonania
+		std::string operation = loadInstruction(RAM).substr(0, 2);
+		/* Operacje logiczne */
+		// MV nazwa_rejestru liczba
+		if (operation == ("MV")) {
+			setInstruction(RAM, 2);
+			std::string d1 = instruction[1];
+			std::string d2 = instruction[2];
+			if (d1 == "A") {
+				if (d2 == "B") {
+					_RegA = _RegB;
 				}
-				else _RegC /= std::stoi(d2);
+				else if (d2 == "C") {
+					_RegA = _RegC;
+				}
+				else if (d2 == "A") {
+					_RegA = _RegA;
+				}
+				else {
+					_RegA = std::stoi(d2);
+				}
+			}
+			else if (d1 == "B") {
+				if (d2 == "A") {
+					_RegB = _RegA;
+				}
+				else if (d2 == "C") {
+					_RegB = _RegC;
+				}
+				else if (d2 == "B") {
+					_RegB = _RegB;
+				}
+				else {
+					_RegB = std::stoi(d2);
+				}
+			}
+			else if (d1 == "C") {
+				if (d2 == "A") {
+					_RegC = _RegA;
+				}
+				else if (d2 == "B") {
+					_RegC = _RegB;
+				}
+				else if (d2 == "C") {
+					_RegC = _RegC;
+				}
+				else {
+					_RegC = std::stoi(d2);
+				}
 			}
 		}
-	}
 
-	// IC nazwa_rejestru
-	else if (operation == ("IC")) {
-		std::string reg = instruction[1];
-		if (reg == "A") {
-			_RegA++;
+		// EQ nazwa_rejestru nazwa_rejestru
+		else if (operation == ("EQ")) {
+			setInstruction(RAM, 2);
+			std::string d1 = instruction[1];
+			std::string d2 = instruction[2];
+			if (d1 == d2 || d1 == "A" && d2 == "B" && _RegA == _RegB ||
+				d1 == "A" && d2 == "C" && _RegA == _RegC ||
+				d1 == "B" && d2 == "A" && _RegB == _RegA ||
+				d1 == "B" && d2 == "C" && _RegB == _RegC ||
+				d1 == "C" && d2 == "A" && _RegC == _RegA ||
+				d1 == "C" && d2 == "B" && _RegC == _RegB) {
+				std::cout << "Wartosci sa sobie rowne!" << std::endl;
+				_flagEQ = true;
+			}
+			else {
+				_flagEQ = false;
+				std::cout << "Wartosci sa rozne!" << std::endl;
+			}
 		}
-		else if (reg == "B") {
-			_RegA++;
+		// JP gdzie
+		else if (operation == ("JP")) {
+			setInstruction(RAM, 1);
+			std::string d1 = instruction[1];
+			_IP = std::stoi(d1);
 		}
-		else if (reg == "C") {
-			_RegA++;
+		// JT gdzie(jesli prawda)
+		else if (operation == ("JT")) {
+			setInstruction(RAM, 1);
+			std::string d1 = instruction[1];
+			if (_flagEQ == true) _IP = std::stoi(d1);
 		}
-	}
-	// DC nazwa_rejestru
-	else if (operation == ("DC")) {
-		std::string reg = instruction[1];
-		if (reg == "A") {
-			_RegA--;
+		// JF gdzie(jeœli falsz)
+		else if (operation == ("JF")) {
+			setInstruction(RAM, 1);
+			std::string d1 = instruction[1];
+			if (_flagEQ == false) {
+				_IP = std::stoi(d1);
+				_IP--;
+			}
 		}
-		else if (reg == "B") {
-			_RegB--;
-		}
-		else if (reg == "C") {
-			_RegC--;
-		}
-	}
 
-	/* Operacje wykonywane na dysku */
-	// OF nazwa_pliku
-	else if (operation == ("OF")) {
-		std::string d1 = instruction[1];
-		dysk.open_file(d1, false);
-	}
-	// ZF nazwa_pliku
-	else if (operation == ("ZF")) {
-		std::string d1 = instruction[1];
-		dysk.close_file(d1, false);
-	}
-	// CF nazwa_pliku
-	else if (operation == ("CF")) {
-		std::string d1 = instruction[1];
-		//dysk.create_file(d1);
-		dysk.create_file(d1);
-	}
-	// WF nazwa_pliku dane
-	else if (operation == ("WF")) {
-		std::string d1 = instruction[1];
-		std::string d2 = instruction[2];
-		dysk.write_file(d1, d2);
-	}
-	// PF nazwa_pliku
-	else if (operation == ("PF")) {
-		std::string d1 = instruction[1];
-		dysk.print_file(d1);
-	}
-	// DF nazwa_pliku
-	else if (operation == ("DF")) {
-		std::string d1 = instruction[1];
-		dysk.delete_file(d1);
-	}
-	// RF nazwa_pliku_stara nazwa_pliku_nowa
-	else if (operation == ("RF")) {
-		std::string d1 = instruction[1];
-		std::string d2 = instruction[2];
-		dysk.rename_file(d1, d2);
-	}
-	// AF nazwa_pliku dane
-	else if (operation == ("AF")) {
-		std::string d1 = instruction[1];
-		std::string d2 = instruction[2];
-		if (d2 == "[A]") {
-			d2 = std::to_string(_RegA);
+		/* Operacje arytmetyczne */
+		// AD nazwa_rejestru liczba/nazwa_rejestru
+		else if (operation == ("AD")) {
+			setInstruction(RAM, 2);
+			std::string d1 = instruction[1];
+			std::string d2 = instruction[2];
+			if (d1 == "A") {
+				if (d2 == "B") {
+					_RegA += _RegB;
+				}
+				else if (d2 == "C") {
+					_RegA += _RegC;
+				}
+				else if (d2 == "A") {
+					_RegA += _RegA;
+				}
+				else {
+					_RegA += std::stoi(d2);
+				}
+			}
+			else if (d1 == "B") {
+				if (d2 == "A") {
+					_RegB += _RegA;
+				}
+				else if (d2 == "C") {
+					_RegB += _RegC;
+				}
+				else if (d2 == "B") {
+					_RegB += _RegB;
+				}
+				else {
+					_RegB += std::stoi(d2);
+				}
+			}
+			else if (d1 == "C") {
+				if (d2 == "A") {
+					_RegC += _RegA;
+				}
+				else if (d2 == "B") {
+					_RegC += _RegB;
+				}
+				else if (d2 == "C") {
+					_RegC += _RegC;
+				}
+				else {
+					_RegC += std::stoi(d2);
+				}
+			}
 		}
-		else if (d2 == "[B]") {
-			d2 = std::to_string(_RegB);
+
+		// ML nazwa_rejestru liczba/nazwa_rejestru
+		else if (operation == ("ML")) {
+			setInstruction(RAM, 2);
+			std::string d1 = instruction[1];
+			std::string d2 = instruction[2];
+			if (d1 == "A") {
+				if (d2 == "B") {
+					_RegA *= _RegB;
+				}
+				else if (d2 == "C") {
+					_RegA *= _RegC;
+				}
+				else if (d2 == "A") {
+					_RegA *= _RegA;
+				}
+				else {
+					_RegA *= std::stoi(d2);
+				}
+			}
+			else if (d1 == "B") {
+				if (d2 == "A") {
+					_RegB *= _RegA;
+				}
+				else if (d2 == "C") {
+					_RegB *= _RegC;
+				}
+				else if (d2 == "B") {
+					_RegB *= _RegB;
+				}
+				else {
+					_RegB *= std::stoi(d2);
+				}
+			}
+			else if (d1 == "C") {
+				if (d2 == "A") {
+					_RegC *= _RegA;
+				}
+				else if (d2 == "B") {
+					_RegC *= _RegB;
+				}
+				else if (d2 == "C") {
+					_RegC *= _RegC;
+				}
+				else {
+					_RegC *= std::stoi(d2);
+				}
+			}
 		}
-		else if (d2 == "[C]") {
-			d2 = std::to_string(_RegC);
+
+		// SB nazwa_rejestru liczba/nazwa_rejestru
+		else if (operation == ("SB")) {
+			setInstruction(RAM, 2);
+			std::string d1 = instruction[1];
+			std::string d2 = instruction[2];
+			if (d1 == "A") {
+				if (d2 == "B") {
+					_RegA -= _RegB;
+				}
+				else if (d2 == "C") {
+					_RegA -= _RegC;
+				}
+				else if (d2 == "A") {
+					_RegA -= _RegA;
+				}
+				else {
+					_RegA -= std::stoi(d2);
+				}
+			}
+			else if (d1 == "B") {
+				if (d2 == "A") {
+					_RegB -= _RegA;
+				}
+				else if (d2 == "C") {
+					_RegB -= _RegC;
+				}
+				else if (d2 == "B") {
+					_RegB -= _RegB;
+				}
+				else {
+					_RegB -= std::stoi(d2);
+				}
+			}
+			else if (d1 == "C") {
+				if (d2 == "A") {
+					_RegC -= _RegA;
+				}
+				else if (d2 == "B") {
+					_RegC -= _RegB;
+				}
+				else if (d2 == "C") {
+					_RegC -= _RegC;
+				}
+				else {
+					_RegC -= std::stoi(d2);
+				}
+			}
 		}
-		dysk.add_to_file(d1, d2);
-	}
-	// LF
-	else if (operation == ("LF")) {
-		//dysk.print_file_list();
-		dysk.print_file_list();
-	}
-	// PD
-	else if (operation == ("PD")) {
-		dysk.printDisc();
-	}
+
+		// DV nazwa_rejestru liczba/nazwa_rejestru
+		else if (operation == ("DV")) {
+			setInstruction(RAM, 2);
+			std::string d1 = instruction[1];
+			std::string d2 = instruction[2];
+			if (d1 == "A") {
+				if (d2 == "A") {
+					_RegA /= _RegA;
+				}
+				else if (d2 == "B") {
+					_RegA /= _RegB;
+				}
+				else if (d2 == "C") {
+					_RegA /= _RegC;
+				}
+				else {
+					_RegA /= std::stoi(d2);
+				}
+			}
+			else if (d1 == "B") {
+				if (d2 == "A") {
+					_RegB /= _RegA;
+				}
+				else if (d2 == "B") {
+					_RegB /= _RegB;
+				}
+				else if (d2 == "C") {
+					_RegB /= _RegC;
+				}
+				else {
+					_RegB /= std::stoi(d2);
+				}
+			}
+			else if (d1 == "C") {
+				if (d2 == "A") {
+					_RegC /= _RegA;
+				}
+				else if (d2 == "B") {
+					_RegC /= _RegB;
+				}
+				else if (d2 == "C") {
+					_RegC /= _RegC;
+				}
+				else {
+					if (std::stoi(d2) == 0) {
+						std::cout << "ERROR! Nie mozna dzielic przez 0\n";
+					}
+					else _RegC /= std::stoi(d2);
+				}
+			}
+		}
+
+		// IC nazwa_rejestru
+		else if (operation == ("IC")) {
+			setInstruction(RAM, 1);
+			std::string reg = instruction[1];
+			if (reg == "A") {
+				_RegA++;
+			}
+			else if (reg == "B") {
+				_RegA++;
+			}
+			else if (reg == "C") {
+				_RegA++;
+			}
+		}
+		// DC nazwa_rejestru
+		else if (operation == ("DC")) {
+			setInstruction(RAM, 1);
+			std::string reg = instruction[1];
+			if (reg == "A") {
+				_RegA--;
+			}
+			else if (reg == "B") {
+				_RegB--;
+			}
+			else if (reg == "C") {
+				_RegC--;
+			}
+		}
+
+		/* Operacje wykonywane na dysku */
+		// OF nazwa_pliku
+		else if (operation == ("OF")) {
+			setInstruction(RAM, 1);
+			std::string d1 = instruction[1];
+			if (!dysk.open_file(d1, false)) {
+				_done = false;
+			}
+		}
+		// ZF nazwa_pliku
+		else if (operation == ("ZF")) {
+			setInstruction(RAM, 1);
+			std::string d1 = instruction[1];
+			dysk.close_file(d1, false);
+		}
+		// CF nazwa_pliku
+		else if (operation == ("CF")) {
+			setInstruction(RAM, 1);
+			std::string d1 = instruction[1];
+			//dysk.create_file(d1);
+			dysk.create_file(d1);
+		}
+		// WF nazwa_pliku dane
+		else if (operation == ("WF")) {
+			setInstruction(RAM, 2);
+			std::string d1 = instruction[1];
+			std::string d2 = instruction[2];
+			dysk.write_file(d1, d2);
+		}
+		// PF nazwa_pliku
+		else if (operation == ("PF")) {
+			setInstruction(RAM, 1);
+			std::string d1 = instruction[1];
+			dysk.print_file(d1);
+		}
+		// DF nazwa_pliku
+		else if (operation == ("DF")) {
+			setInstruction(RAM, 1);
+			std::string d1 = instruction[1];
+			dysk.delete_file(d1);
+		}
+		// RF nazwa_pliku_stara nazwa_pliku_nowa
+		else if (operation == ("RF")) {
+			setInstruction(RAM, 1);
+			std::string d1 = instruction[1];
+			std::string d2 = instruction[2];
+			dysk.rename_file(d1, d2);
+		}
+		// AF nazwa_pliku dane
+		else if (operation == ("AF")) {
+			setInstruction(RAM, 2);
+			std::string d1 = instruction[1];
+			std::string d2 = instruction[2];
+			if (d2 == "[A]") {
+				d2 = std::to_string(_RegA);
+			}
+			else if (d2 == "[B]") {
+				d2 = std::to_string(_RegB);
+			}
+			else if (d2 == "[C]") {
+				d2 = std::to_string(_RegC);
+			}
+			dysk.add_to_file(d1, d2);
+		}
+		// LF
+		else if (operation == ("LF")) {
+			setInstruction(RAM, 0);
+			dysk.print_file_list();
+		}
+		// PD
+		else if (operation == ("PD")) {
+			setInstruction(RAM, 0);
+			dysk.printDisc();
+		}
 
 
 
 
-	/* Operacje wykonywane na komunikatach */
-	// SC PID komunikat, gdzie ID_procesu to do kogo
-	else if (operation == ("SC")) {
-		std::string d1 = instruction[1];
-		std::string d2 = instruction[2];
-		Komunikat kom(_PID, d2);
-		komunikacja.send(std::stoi(d1), kom);
-	}
-	// RC PID
-	else if (operation == ("RC")) {
-		std::string d1 = instruction[1];
-		Komunikat kom;
-		kom = komunikacja.receive(std::stoi(d1));
-	}
-	// PC
-	else if (operation == ("PC")) {
-		komunikacja.wyswietl();
-	}
+		/* Operacje wykonywane na komunikatach */
+		// SC PID komunikat, gdzie ID_procesu to do kogo
+		else if (operation == ("SC")) {
+			setInstruction(RAM, 2);
+			std::string d1 = instruction[1];
+			std::string d2 = instruction[2];
+			Komunikat kom(_PID, d2);
+			komunikacja.send(std::stoi(d1), kom);
+		}
+		// RC PID
+		else if (operation == ("RC")) {
+			setInstruction(RAM, 1);
+			std::string d1 = instruction[1];
+			Komunikat kom;
+			kom = komunikacja.receive(std::stoi(d1));
+		}
+		// PC
+		else if (operation == ("PC")) {
+			setInstruction(RAM, 0);
+			komunikacja.wyswietl();
+		}
 
-	/* Operacje wykonywane na procesach */
-	// CP nazwa_procesu grupa_procesu
-	else if (operation == ("CP")) {
-		//create a new process
-		std::string d1 = instruction[1];
-		std::string d2 = instruction[2];
-		NewProcess(d1, std::stoi(d2));
-		scheduler.Schedule();
-	}
-	// DP PID
-	else if (operation == ("DP")) {
-		std::string d1 = instruction[1];
-		DeleteProcess(std::stoi(d1));
+		/* Operacje wykonywane na procesach */
+		// CP nazwa_procesu grupa_procesu
+		else if (operation == ("CP")) {
+			setInstruction(RAM, 2);
+			//create a new process
+			std::string d1 = instruction[1];
+			std::string d2 = instruction[2];
+			NewProcess(d1, std::stoi(d2));
+			scheduler.Schedule();
+		}
+		// DP PID
+		else if (operation == ("DP")) {
+			setInstruction(RAM, 1);
+			std::string d1 = instruction[1];
+			DeleteProcess(std::stoi(d1));
 
-	}
+		}
 
-	// Aktywny proces: AP
-	else if (operation == ("AP")) {
-		scheduler.print_running();
+		// Aktywny proces: AP
+		else if (operation == ("AP")) {
+			setInstruction(RAM, 0);
+			scheduler.print_running();
+		}
+		// Gotowe procesy: RP
+		else if (operation == ("RP")) {
+			setInstruction(RAM, 0);
+			scheduler.wyswietl_gotowe();
+		}
+		/* Operacje wykonywane na pamieci RAM */
+		// SR
+		else if (operation == ("SR")) {
+			setInstruction(RAM, 0);
+			RAM.show();
+		}
+		// SF
+		else if (operation == ("SF")) {
+			setInstruction(RAM, 0);
+			RAM.showFIFO();
+		}
+		// operator zamkniecia procesu
+		else if (operation == ("EX")) {
+			setInstruction(RAM, 0);
+			// killujemy proces
+			DeleteProcess(_PID);
+			running->SetState(State::ZAKONCZONY);
+		}
+		// Blad interpretacji
+		else {
+			std::cout << "Brak takiej instrukcji";
+			_done = false;
+		}
+		if (_done) {
+			_IP++;
+			saveRegisters();
+		}
 	}
-	// Gotowe procesy: RP
-	else if (operation == ("RP")) {
-		scheduler.wyswietl_gotowe();
-	}
-	/* Operacje wykonywane na pamieci RAM */
-	// SR
-	else if (operation == ("SR")) {
-		RAM.show();
-	}
-	// SF
-	else if (operation == ("SF")) {
-		RAM.showFIFO();
-	}
-	// Blad interpretacji
 	else {
-		std::cout << "Brak takiej instrukcji";
-		_done = false;
-	}
-	if (_done) {
-		_IP++;
-		saveRegisters();
+		std::cout << "Aktywny proces bezczynnosci.\n";
 	}
 }
 
