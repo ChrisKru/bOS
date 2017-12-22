@@ -1,6 +1,7 @@
 #ifndef komunikacja_h
 #define komunikacja_h
 
+#include <iostream>
 #include <deque>
 #include "../ProcessM/ProcessM.h"
 

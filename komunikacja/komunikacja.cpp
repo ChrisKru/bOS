@@ -1,6 +1,5 @@
 
 #include "komunikacja.h"
-#include <iostream>
 
 //--------metody dla komuniaktu
 
@@ -86,7 +85,7 @@ void Kolejka::send(int id_odbiorcy, Komunikat komunikat)
 {	//dostêp do kolejki: id procesu jest potrzebne. Wykorzystujê funkcjê GetPCB, któa zwraca shared pointer do PCB. Wtedy bêdzie PCB->kolejka
 	//std::list<Group>ProcessGroupsList;
 	bool wyslano = false;
-	std::shared_ptr<PCB> odbioca = GetPCB(id_odbiorcy);
+	std::shared_ptr<PCB> odbiorca = GetPCB(id_odbiorcy);
 	int grupa_odbiorcy = odbiorca->ProcessGroup;
 	std::shared_ptr<PCB> nadawca = GetPCB(komunikat.id_nadawcy);
 	int grupa_nadawcy = nadawca->ProcessGroup;
@@ -108,6 +107,6 @@ void Kolejka::send(int id_odbiorcy, Komunikat komunikat)
 	}
 	if (wyslano == false)
 	{
-	std:cout << "Nie wyslano komunikatu" << std::endl;
+	std::cout << "Nie wyslano komunikatu" << std::endl;
 	}
 }
