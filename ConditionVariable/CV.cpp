@@ -1,13 +1,11 @@
 #include "CV.h"
 
 bool CV::wait() {
-	bool temp;
+	bool temp = false;
 
 	if (pcb_waiting_list.size() > 0) {
 		if (pcb_waiting_list.front()->GetState() == State::ZAKONCZONY)
 			temp = true;
-		else
-			temp = false;
 
 		pcb_waiting_list.remove_if([](std::shared_ptr<PCB> proces) { if (proces->GetState() == State::ZAKONCZONY) return proces; });
 
