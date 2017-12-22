@@ -167,7 +167,10 @@ bool Disc::open_file(std::string filename, bool is_shell)
 
 		if (!is_shell)
 		{
-			katalog_[kat_nr].cv_.wait();
+			if (katalog_[kat_nr].cv_.wait())
+			{
+				katalog_[kat_nr].open = false;
+			}
 		}
 
 
