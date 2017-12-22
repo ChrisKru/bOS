@@ -24,7 +24,7 @@ public:
 	bool _flagEQ;							// flaga ustawiana przy operacji EQ -> równe sobie
 
 private:
-	std::array<std::string, 3> instruction;	/* tablica zmiennych, znajduje siê w niej kolejno: 
+	std::array<std::string, 4> instruction;	/* tablica zmiennych, znajduje siê w niej kolejno: 
 											 [0] operacja, zawsze dwu znakowa
 											 [1] (opcjonalne) dana do operacji
 											 [2] (opcjonalne) dana do operacji

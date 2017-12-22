@@ -23,6 +23,7 @@ std::string Interpreter::loadInstruction(Memory& RAM) {
 	// wywolanie pamieci operacyjnej
 	// zwraca nam rozkaz jaki ma zostac wykonany
 	// return STRING Z ROZKAZEM
+	std::cout << "Rozkaz:$ " << RAM.getCommand(_PID, _IP) << " $ dla procesu: " << _PID << std::endl;
 	return RAM.getCommand(_PID,_IP);
 }
 
@@ -32,6 +33,7 @@ void Interpreter::setInstruction(Memory& RAM, int num_parameters)
 	instruction[0] = "";
 	instruction[1] = "";
 	instruction[2] = "";
+	instruction[3] = "";
 	command = loadInstruction(RAM);
 	instruction[0] = command.substr(0, 2);
 	command = command.substr(2);
@@ -48,8 +50,25 @@ void Interpreter::setInstruction(Memory& RAM, int num_parameters)
 			instruction[1] += command[i];
 			i++;
 		}
+		i++;
+		while (command[i] != ' ' && command[i] != '\0') {
+			instruction[2] += command[i];
 			i++;
-			instruction[2] = command.substr(i);
+		}
+	}
+	if (num_parameters == 3) {
+		int i = 1;
+		while (command[i] != ' ') {
+			instruction[1] += command[i];
+			i++;
+		}
+		i++;
+		while (command[i] != ' ') {
+			instruction[2] += command[i];
+			i++;
+		}
+		i++;
+		instruction[3] = command.substr(i);
 	}
 }
 
@@ -480,7 +499,7 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 			setInstruction(RAM, 2);
 			std::string d1 = instruction[1];
 			std::string d2 = instruction[2];
-			Komunikat kom(_PID, d2);
+			Komunikat kom(std::stoi(d1), d2);
 			komunikacja.send(std::stoi(d1), kom);
 		}
 		// RC PID
@@ -499,11 +518,15 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 		/* Operacje wykonywane na procesach */
 		// CP nazwa_procesu grupa_procesu
 		else if (operation == ("CP")) {
-			setInstruction(RAM, 2);
+			setInstruction(RAM, 3);
 			//create a new process
 			std::string d1 = instruction[1];
 			std::string d2 = instruction[2];
-			NewProcess(d1, std::stoi(d2));
+			std::string d3 = instruction[3];
+			running->SetState(State::OCZEKUJACY);
+			std::shared_ptr<PCB> process = NewProcess(d1, std::stoi(d2));
+			process->SetFileName(d3);
+			RAM.loadProcess(process->GetID(), d3);
 			scheduler.Schedule();
 		}
 		// DP PID
@@ -562,6 +585,7 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 ROZKAZY -> deasmbleracja
 D1 - pierwsza dana
 D2 - druga dana
+D3 - trzecia dana
 
 1. Operacja zamkniecia
 	EX => zamyka proces, kill program
@@ -599,7 +623,7 @@ D2 - druga dana
 	
 
 6. Operacje wykonywane na procesach
-	CP nazwa_procesu						=> Create a new process
+	CP nazwa_procesu numer_grupy plik.txt	=> Create a new process
 	DP nazwa_procesu						=> Delete a process
 	AP										=> Print active process
 	RP										=> print ready process
