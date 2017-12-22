@@ -199,7 +199,7 @@ void Disc::close_file(std::string filename, bool is_shell)
 	{
 		int kat_nr = find_file(filename);
 
-		if(!is_shell)
+		if (!is_shell)
 		{
 			katalog_[kat_nr].cv_.signal();
 		}
@@ -288,7 +288,7 @@ void Disc::print_file(std::string filename)
 	{
 		/*if (katalog_[kat_nr].open == true)
 		{*/
-			std::cout << getFile(filename) << std::endl;
+		std::cout << getFile(filename) << std::endl;
 		/*}
 		else
 		{
@@ -345,7 +345,7 @@ void Disc::print_file_list()
 			std::cout << katalog_[i].filename << std::endl;
 		}
 	}
-	if(pusty)
+	if (pusty)
 	{
 		std::cout << "Brak plikow" << std::endl;
 	}
@@ -418,7 +418,7 @@ void Disc::add_to_file(std::string filename, std::string data)
 						}
 						int j = next_block * 32 + temp_size;
 						int end;
-						if(temp_size+data.size()>31)
+						if (temp_size + data.size() > 31)
 						{
 							end = next_block * 32 + 31;
 						}
@@ -473,15 +473,7 @@ std::string Disc::getFile(std::string filename)
 	int kat_nr = find_file(filename);
 	if (kat_nr != -1)
 	{
-		if (katalog_[kat_nr].open == true)
-		{
-			temp += print_block(katalog_[kat_nr].first_block, katalog_[kat_nr].size);
-		}
-		else
-		{
-			std::cout << "Nalezy otworzyc plik" << std::endl;
-		}
-
+		temp += print_block(katalog_[kat_nr].first_block, katalog_[kat_nr].size);
 	}
 	else
 	{
