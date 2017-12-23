@@ -12,7 +12,7 @@ Scheduler::Scheduler() //to wywoluja wszyscy oprocz shella na poczatku w main
 Scheduler::Scheduler(int a) // to wywoluje Shell w main
 	{
 		time = 0;
-		NewProcessGroup("bezczynny1");
+		NewProcessGroup("bezczynny");
 		running = GetPCB(0);
 	}
 void Scheduler::Schedule()
@@ -64,7 +64,7 @@ void Scheduler::Schedule()
 					running = procesy_gotowe_queue.top();
 					procesy_gotowe_queue.pop();
 					running->SetState(State::AKTYWNY);
-					cout << "Aktywny: " << running->ProcessName << " z tau = " << running->GetTau() << endl;
+					cout << "Wybrano: " << running->ProcessName << " z tau = " << running->GetTau() << endl;
 
 				}
 			}
@@ -72,7 +72,7 @@ void Scheduler::Schedule()
 			{
 				if (procesy_gotowe_queue.size() == 0) // jesli nie ma nic w kolejce
 				{
-					cout << "Brak gotowych procesow!" << endl;
+					cout << "Brak gotowych procesow" << endl;
 					running = GetPCB(0);
 				}
 				else // jesli jest to przelicz tau i wybierz nowy proces
@@ -102,7 +102,7 @@ void Scheduler::Schedule()
 					running = procesy_gotowe_queue.top();
 					procesy_gotowe_queue.pop();
 					running->SetState(State::AKTYWNY);
-					cout << "Aktywny: " << running->ProcessName << " z tau = " << running->GetTau() << endl;
+					cout << "Wybrano: " << running->ProcessName << " z tau = " << running->GetTau() << endl;
 				}
 
 			}
@@ -110,16 +110,14 @@ void Scheduler::Schedule()
 	}
 void Scheduler::print_running()
 	{
-	if(running->ProcessState == State::AKTYWNY)
-		cout << "Akutalnie wykonywany jest proces o nazwie: " << running->ProcessName << endl;
-	else cout << "Nie jest wykonywany zaden proces!" << endl;
+	if(running->ProcessState == State::AKTYWNY) cout << "Akutalnie wykonywany proces: " << running->ProcessName << endl;
+	else cout << "Nie jest wykonywany zaden proces" << endl;
 	}
 void Scheduler::wyswietl_gotowe()
 	{
 		priority_queue<shared_ptr<PCB>, vector<shared_ptr<PCB>>, komparator> procesy_gotowe_queue2 = procesy_gotowe_queue;
 		if (procesy_gotowe_queue2.size() > 0 && procesy_otrzymane.size() > 0)
 		{
-			cout << "Procesy gotowe:" << endl;
 			for (int i = 0; i <= procesy_gotowe_queue2.size(); i++)
 			{
 				cout << "Nazwa: " << procesy_gotowe_queue2.top()->ProcessName << endl;
@@ -132,7 +130,6 @@ void Scheduler::wyswietl_gotowe()
 		}
 		else if (procesy_gotowe_queue2.size() > 0)
 		{
-			cout << "Procesy gotowe:" << endl;
 			for (int i = 0; i <= procesy_gotowe_queue2.size(); i++)
 			{
 				cout << "Nazwa: " << procesy_gotowe_queue2.top()->ProcessName << endl;
@@ -141,7 +138,6 @@ void Scheduler::wyswietl_gotowe()
 		}
 		else if (procesy_otrzymane.size() > 0)
 		{
-			cout << "Procesy gotowe: " << endl;
 			for (auto proces : procesy_otrzymane)
 			{
 				cout << "Nazwa: " << proces->ProcessName << endl;
@@ -149,7 +145,7 @@ void Scheduler::wyswietl_gotowe()
 		}
 		else
 		{
-			cout << "Brak procesow gotowych!" << endl;
+			cout << "Brak procesow gotowych" << endl;
 		}
 	}
 void Scheduler::killprocess()
