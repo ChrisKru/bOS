@@ -1,0 +1,12 @@
+MV A 5
+MV C 0
+CF usun
+OF usun
+WF usun Ocena:
+AF usun [A]
+AF usun ,
+AF usun [C]
+ZF usun
+PF usun
+DF usun
+EX

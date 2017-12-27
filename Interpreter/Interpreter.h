@@ -31,6 +31,7 @@ private:
 											 */
 
 	void setInstruction(Memory& RAM, int num_parameters);			// ustawiamy w nim nasza tablice instruction
+	void eraseReg();												// zerujemy rejestry
 	
 
 public:

@@ -1,0 +1,24 @@
+CF Numer1
+CF Numer2
+CF Numer3
+LF
+OF Numer2
+OF Numer3
+WF Numer2 Kons
+RF Numer2 Numer4
+ZF Numer2
+RF Numer2 Numer4
+OF Numer4
+WF Numer4 tel
+AF Numer4 acja
+WF Numer3 Gwia
+AF Numer3 zd
+DF Numer4
+DF Numer1
+LF
+PD
+ZF Numer4
+DF Numer4
+LF
+ZF Numer3
+EX

@@ -6,5 +6,6 @@ IC A
 DC B
 EQ B C
 JF 3
+WP
 SC 1 zegnaj.
 EX

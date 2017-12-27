@@ -23,7 +23,6 @@ std::string Interpreter::loadInstruction(Memory& RAM) {
 	// wywolanie pamieci operacyjnej
 	// zwraca nam rozkaz jaki ma zostac wykonany
 	// return STRING Z ROZKAZEM
-	std::cout << "Rozkaz:$ " << RAM.getCommand(_PID, _IP) << " $ dla procesu: " << _PID << std::endl;
 	return RAM.getCommand(_PID,_IP);
 }
 
@@ -72,6 +71,15 @@ void Interpreter::setInstruction(Memory& RAM, int num_parameters)
 	}
 }
 
+void Interpreter::eraseReg()
+{
+	_PID = 0;
+	_RegA = 0;
+	_RegB = 0;
+	_RegC = 0;
+	_IP = -1;
+}
+
 void Interpreter::saveRegisters() {
 	running->SetCommandCounter(_IP);
 	running->A = _RegA;
@@ -81,12 +89,14 @@ void Interpreter::saveRegisters() {
 }
 
 void Interpreter::showRegisters() {
-	std::cout << std::endl << "Stan reejestrow dla procesu: " << _PID << std::endl;
+	std::cout << std::endl << "Stan rejestrow dla procesu: " << _PID << std::endl;
 	std::cout << "A: " << _RegA << std::endl;
 	std::cout << "B: " << _RegB << std::endl;
 	std::cout << "C: " << _RegC << std::endl;
 	std::cout << "Licznik rozkazow: " << _IP << std::endl;
 }
+
+
 
 void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, Kolejka komunikacja) {
 
@@ -95,6 +105,9 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 		loadRegister();
 		// Rozkaz do wykonania
 		std::string operation = loadInstruction(RAM).substr(0, 2);
+		std::cout << "Rozkaz:$ " << RAM.getCommand(_PID, _IP) << " $ dla procesu: " << _PID << std::endl;
+
+
 		/* Operacje logiczne */
 		// MV nazwa_rejestru liczba
 		if (operation == ("MV")) {
@@ -534,7 +547,7 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 			setInstruction(RAM, 1);
 			std::string d1 = instruction[1];
 			DeleteProcess(std::stoi(d1));
-
+			eraseReg();
 		}
 
 		// Aktywny proces: AP
@@ -547,6 +560,7 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 			setInstruction(RAM, 0);
 			scheduler.wyswietl_gotowe();
 		}
+		// Ustaw wykonywany proces na stan oczekiwania: WP
 		/* Operacje wykonywane na pamieci RAM */
 		// SR
 		else if (operation == ("SR")) {
@@ -564,6 +578,10 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 			// killujemy proces
 			DeleteProcess(_PID);
 			running->SetState(State::ZAKONCZONY);
+			eraseReg();
+		}
+		else if (operation == ("DN")) {
+			// Do nothing! Wiêc nic nie robimy :) Ma³y psikus dla procesu!
 		}
 		// Blad interpretacji
 		else {
@@ -587,8 +605,9 @@ D1 - pierwsza dana
 D2 - druga dana
 D3 - trzecia dana
 
-1. Operacja zamkniecia
-	EX => zamyka proces, kill program
+1. Operacja zamkniecia i bezczynnosci
+	EX										=> zamyka proces, kill program
+	DN										=> Do nothing, nic nie robi
 
 2. Operacje logiczne
 	MV nazwa_rejestru nazwa_rejestru/liczba => D1 <- D2
@@ -606,16 +625,16 @@ D3 - trzecia dana
 	DC nazwa_rejestru						=> D1--
 
 4. Operacje wykonywane na dysku
-	OF nazwa_pliku							=> otwarcie pliku
-	ZF nazwa_pliku							=> zamkniecie pliku
-	CF nazwa_pliku							=> utworzenie pliku
-	WF nazwa_pliku dane						=> zapis do pliku
+	OF nazwa_pliku							=> open file
+	ZF nazwa_pliku							=> close file
+	CF nazwa_pliku							=> create file
+	WF nazwa_pliku dane						=> write to file
 	PF nazwa_pliku							=> Print File
 	DF nazwa_pliku							=> Delete File
 	RF nazwa_pliku_stara nazwa_pliku_nowa	=> Rename File
 	AF nazwa_pliku dane						=> Add to File. Dopisuje do pliku
-	LF										=> wyœwietla pliki na dysku
-	PD										=> wyœwietla cala zawartosc dysku
+	LF										=> list file, wyœwietla pliki na dysku
+	PD										=> print disk, wyœwietla cala zawartosc dysku
 
 5. Operacje wykonywane na komunikatach
 	SC nazwa_procesu						=> Send communicate
@@ -627,6 +646,7 @@ D3 - trzecia dana
 	DP nazwa_procesu						=> Delete a process
 	AP										=> Print active process
 	RP										=> print ready process
+	WP										=> waiting process
 
 7. Operacje wykonywane na pamieci RAM
 	SR										=> Show RAM

@@ -13,9 +13,11 @@ EQ B C
 JF 7
 AF num [A]
 PF num
+SR
 LF
 ZF num
 DF num
+SF
 LF
 PF num
 EX

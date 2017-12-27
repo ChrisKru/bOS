@@ -1,0 +1,16 @@
+MV A 6
+MV B 1
+MV C B
+ML C A
+DC A
+EQ B A
+JF 3
+CF silnia
+OF silnia
+WF silnia Wynik:
+AF silnia [C]
+SF
+SR
+ZF silnia
+PF silnia
+EX
