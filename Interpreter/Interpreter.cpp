@@ -536,11 +536,11 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 			std::string d1 = instruction[1];
 			std::string d2 = instruction[2];
 			std::string d3 = instruction[3];
-			running->SetState(State::OCZEKUJACY);
+			//running->SetState(State::OCZEKUJACY);
 			std::shared_ptr<PCB> process = NewProcess(d1, std::stoi(d2));
 			process->SetFileName(d3);
 			RAM.loadProcess(process->GetID(), d3);
-			scheduler.Schedule();
+			//scheduler.Schedule();
 		}
 		// DP PID
 		else if (operation == ("DP")) {
@@ -561,6 +561,10 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 			scheduler.wyswietl_gotowe();
 		}
 		// Ustaw wykonywany proces na stan oczekiwania: WP
+		else if (operation == ("WP")) {
+			setInstruction(RAM, 0);
+			running->SetState(State::OCZEKUJACY);
+		}
 		/* Operacje wykonywane na pamieci RAM */
 		// SR
 		else if (operation == ("SR")) {
