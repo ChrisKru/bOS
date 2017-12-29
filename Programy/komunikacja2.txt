@@ -1,11 +1,11 @@
 MV B 6
 MV A 1
 MV C 0
-RC 2
+RC 1
+PC
 IC A
 DC B
 EQ B C
 JF 3
-WP
-SC 2 zegnaj.
+SC 1 zegnaj.
 EX

@@ -1,4 +1,4 @@
-#include "../Interpreter/Interpreter.h"
+#include "Interpreter.h"
 
 
 Interpreter::Interpreter() {
@@ -512,20 +512,21 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 			setInstruction(RAM, 2);
 			std::string d1 = instruction[1];
 			std::string d2 = instruction[2];
-			Komunikat kom(std::stoi(d1), d2);
-			komunikacja.send(std::stoi(d1), kom);
+			std::shared_ptr<Komunikat> kom = std::make_shared<Komunikat>(running->GetID(), d2);
+			running->kolejka.send(std::stoi(d1), kom);
+
 		}
 		// RC PID
 		else if (operation == ("RC")) {
 			setInstruction(RAM, 1);
 			std::string d1 = instruction[1];
-			Komunikat kom;
-			kom = komunikacja.receive(std::stoi(d1));
+			std::shared_ptr<Komunikat> kom;
+			kom = running->kolejka.receive(std::stoi(d1));
 		}
 		// PC
 		else if (operation == ("PC")) {
 			setInstruction(RAM, 0);
-			komunikacja.wyswietl();
+			running->kolejka.wyswietl();
 		}
 
 		/* Operacje wykonywane na procesach */
@@ -643,6 +644,7 @@ D3 - trzecia dana
 5. Operacje wykonywane na komunikatach
 	SC nazwa_procesu						=> Send communicate
 	RC nazwa_procesu						=> Receive communicate
+	PC										=> Print communicate
 	
 
 6. Operacje wykonywane na procesach
