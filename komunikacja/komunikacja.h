@@ -1,9 +1,9 @@
-#ifndef komunikacja_h
-#define komunikacja_h
-
+#pragma once
 #include <iostream>
 #include <deque>
-#include "../ProcessM/ProcessM.h"
+#include <memory>
+
+//extern bool obudz_nadawce = false, obudz_odbiorce = false;
 
 class Komunikat
 {
@@ -15,8 +15,8 @@ public:
 	//--------metody
 	Komunikat();
 	Komunikat(int nadawca, std::string tresc);
-	//int Komunikat::getId();
-	//int Komunikat::getRozmair();
+	//int getId();
+	//int getRozmair();
 	std::string getTresc();
 };
 
@@ -24,15 +24,15 @@ class Kolejka
 {
 public:
 	//--------pola
-	std::deque<Komunikat> kolejka;
-	Komunikat* wskaznik;	//mo¿e niech ka¿dy proces dysponuje takim wskaŸnikiem, którego bêdzie u¿ywa³ przy metodach zwracaj¹cych wskaŸniki, np przy odbierz
+	std::deque<std::shared_ptr<Komunikat>> kolejka;
+	//Komunikat* wskaznik;	
 	Komunikat niewskaznik;
+	std::shared_ptr<Komunikat> wskaznik;
 	//--------metody
 	Kolejka();
-	void dodaj_komunikat(Komunikat komunikat);
+	void dodaj_komunikat(std::shared_ptr<Komunikat> komunikat);
 	void usun_komunikat();
-	void send(int id_odbiorcy, Komunikat komunikat);
-	Komunikat receive(int id_nadawcy);
+	void send(int id_odbiorcy, std::shared_ptr<Komunikat> komunikat);
+	std::shared_ptr<Komunikat> receive(int id_nadawcy);
 	void wyswietl();
 };
-#endif
