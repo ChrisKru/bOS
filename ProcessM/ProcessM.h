@@ -1,4 +1,5 @@
 #pragma once
+#include "../komunikacja/komunikacja.h"
 #include <string>
 #include <iostream>
 #include <list>
@@ -57,6 +58,10 @@ struct PCB {
 	int CommandCounter;
 	int Tau;
 	int Timmer;
+
+	// pole dla komunikacji
+
+	Kolejka kolejka;
 
 	// nazwa otwartego pliku
 
