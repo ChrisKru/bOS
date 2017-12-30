@@ -1,0 +1,17 @@
+MV A 1
+MV B 2
+CP aryt 3 a1.txt
+RP
+WP
+ML A B
+MV B 3
+CP kom 2 k1.txt
+WP
+MV C A
+CP aryt2 4 a2.txt
+RP
+MV A 0
+SF
+MV B 1
+MV C B
+EX

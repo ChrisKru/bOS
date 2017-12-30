@@ -1,11 +1,11 @@
 MV B 5
 MV A 1
 MV C 0
-SC 2 Witaj,
+SC 1 Witaj,
 IC A
 DC B
 EQ B C
 JF 3
 WP
-RC 2
+SC 1 zegnaj.
 EX

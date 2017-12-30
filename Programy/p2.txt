@@ -1,0 +1,9 @@
+RP
+AP
+CP dU1 2 pusty.txt
+RP
+CP dU2 3 pusty2.txt
+DP dU1
+DP dU2
+RP
+EX

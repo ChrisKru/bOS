@@ -1,9 +1,0 @@
-RP
-AP
-CP doUsuniecia 2 pusty.txt
-RP
-CP doUsuniecia2 3 pusty2.txt
-DP doUsuniecia
-DP doUsuniecia2
-RP
-EX
