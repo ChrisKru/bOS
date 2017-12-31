@@ -27,7 +27,7 @@ void CV::signal() {
 	pcb_waiting_list.remove_if([](std::shared_ptr<PCB> proces) {return proces->GetState() == State::ZAKONCZONY; });
 
 	if (pcb_waiting_list.size() > 0) {
-		if (pcb_waiting_list.front()->GetState() != State::AKTYWNY) {
+		if (pcb_waiting_list.front()->GetState() == State::OCZEKUJACY) {
 			pcb_waiting_list.front()->PCB::SetState(State::GOTOWY);
 			dodaj_do_procesow_gotowych(pcb_waiting_list.front());
 		}
