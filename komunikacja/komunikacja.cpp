@@ -113,7 +113,7 @@ void Kolejka::wyswietl()
 		}
 	}
 }
-void Kolejka::send(int id_odbiorcy, std::shared_ptr<Komunikat> komunikat)
+bool Kolejka::send(int id_odbiorcy, std::shared_ptr<Komunikat> komunikat)
 {	//dostêp do kolejki: id procesu jest potrzebne. Wykorzystujê funkcjê GetPCB, któa zwraca shared pointer do PCB. Wtedy bêdzie PCB->kolejka
 	//std::list<Group>ProcessGroupsList;
 	bool wyslano = false;
@@ -170,4 +170,5 @@ void Kolejka::send(int id_odbiorcy, std::shared_ptr<Komunikat> komunikat)
 	{
 		std::cout << "Proces odbiorcy nie istnieje, nie mozna wyslac komunikatu" << std::endl;
 	}
+	return wyslano;
 }
