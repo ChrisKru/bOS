@@ -169,6 +169,7 @@ bool Kolejka::send(int id_odbiorcy, std::shared_ptr<Komunikat> komunikat)
 	else if (czy_istnieje == false)
 	{
 		std::cout << "Proces odbiorcy nie istnieje, nie mozna wyslac komunikatu" << std::endl;
+		wyslano = true;
 	}
 	return wyslano;
 }
