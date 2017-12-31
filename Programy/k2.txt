@@ -1,11 +1,6 @@
-MV B 6
-MV A 1
-MV C 0
+SC 1 one
 RC 1
-IC A
-DC B
-EQ B C
-JF 3
-WP
-SC 1 zegnaj.
+SC 1 two
+SC 1 three
+SC 1 four
 EX

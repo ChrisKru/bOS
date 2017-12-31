@@ -50,36 +50,54 @@ void Kolejka::usun_komunikat()
 	else
 		kolejka.pop_front();
 }
-std::shared_ptr<Komunikat> Kolejka::receive(int id_nadawcy)
+std::shared_ptr<Komunikat> Kolejka::receive(int id_nadawcy /*std::string nadawca*/)
 {
-	std::shared_ptr<PCB> nadawca = GetPCB(id_nadawcy);	//to bêdzie u¿ywane dalej, przy budzeniu
-	std::cout << "Rozmiar kolejki: " << kolejka.size() << std::endl;
-	if (kolejka.size() > 0)
+	bool czy_istnieje = false;
+	for (auto &v : ProcessGroupsList) 
 	{
-		for (auto &it : kolejka)
+		for (auto &x : v.ProcessList) 
 		{
-			if (it->id_nadawcy == id_nadawcy)
-			{
-				std::shared_ptr<Komunikat> odebrany = kolejka.front();	//mo¿e to daæ w jednej linii jednak z tym u góry
-				usun_komunikat();	//po odczytaniu komunikatu z kolejki, musi zostaæ z niej usuniêty
-				if (nadawca->GetState() == State::OCZEKUJACY)
-				{
-					nadawca->SetState(State::GOTOWY);
-					dodaj_do_procesow_gotowych(nadawca);
-				}
-				std::cout << "Tresc odebranego komunikatu: " << odebrany->tresc_komunikatu;
-				return odebrany;
-			}
+			if (x->ProcessID == id_nadawcy)	//sprawdzenie, czy nadawca nie zakoñczy³ do tej pory dzia³ania
+				czy_istnieje = true;
 		}
-
 	}
-	else if (kolejka.size() == 0)
+	if (czy_istnieje == true)
 	{
-		std::cout << "Kolejka komunikatow dla tego procesu jest pusta" << std::endl;
-		running->SetState(State::OCZEKUJACY);
+		std::shared_ptr<PCB> nadawca = GetPCB(id_nadawcy);	//to bêdzie u¿ywane dalej, przy budzeniu
+		std::cout << "Rozmiar kolejki: " << kolejka.size() << std::endl;
+		if (kolejka.size() > 0)
+		{
+			for (auto &it : kolejka)
+			{
+				if (it->id_nadawcy == id_nadawcy)
+				{
+					std::shared_ptr<Komunikat> odebrany = kolejka.front();
+					usun_komunikat();	//po odczytaniu komunikatu z kolejki, musi zostaæ z niej usuniêty
+					if (nadawca->GetState() == State::OCZEKUJACY && kolejka.size()==2)
+					{
+						nadawca->SetState(State::GOTOWY);
+						dodaj_do_procesow_gotowych(nadawca);
+					}
+					std::cout << "Tresc odebranego komunikatu: " << odebrany->tresc_komunikatu;
+					return odebrany;
+				}
+			}
+
+		}
+		else if (kolejka.size() == 0)
+		{
+			std::cout << "Kolejka komunikatow dla tego procesu jest pusta" << std::endl;
+			running->SetState(State::OCZEKUJACY);
+			std::shared_ptr<Komunikat> odebrany = std::make_shared<Komunikat>(id_nadawcy, "----");
+			return odebrany;
+			//jeœli ju¿ bêdê robi³ tak, ¿e Komunikat bêdzie wskaŸnikiem, to tutaj zwrócê nullptr, bo kompilator sie sra, ¿e nic tutaj na razie nie jest zwracane
+		}
+	}
+	else if (czy_istnieje == false)
+	{
+		std::cout << "Proces nadawcy nie istnieje, nie mozna odebrac komunikatu" << std::endl;
 		std::shared_ptr<Komunikat> odebrany = std::make_shared<Komunikat>(id_nadawcy, "----");
 		return odebrany;
-		//jeœli ju¿ bêdê robi³ tak, ¿e Komunikat bêdzie wskaŸnikiem, to tutaj zwrócê nullptr, bo kompilator sie sra, ¿e nic tutaj na razie nie jest zwracane
 	}
 }
 void Kolejka::wyswietl()
@@ -100,55 +118,56 @@ void Kolejka::send(int id_odbiorcy, std::shared_ptr<Komunikat> komunikat)
 	//std::list<Group>ProcessGroupsList;
 	bool wyslano = false;
 	bool czy_pelna = false;
-	std::cout << "przed ta funkcja " << std::endl;
-	std::shared_ptr<PCB> odbiorca = GetPCB(id_odbiorcy);
-	std::shared_ptr<PCB> nadawca = GetPCB(komunikat->id_nadawcy);
-	if (odbiorca->kolejka.kolejka.size()>=2)
+	bool czy_istnieje = false;
+	for (auto &v : ProcessGroupsList)
 	{
-		nadawca->SetState(State::OCZEKUJACY);
-		czy_pelna = true;
-	}
-	if(czy_pelna==false)
-	{ 
-	std::cout << "zawartosc listy globalnej: " << std::endl;
-	for (auto &v : ProcessGroupsList) {
-		for (auto &x : v.ProcessList) {
-			std::cout << x->ProcessName << " " << x->ProcessID << " " << x->ProcessGroup << std::endl;
+		for (auto &x : v.ProcessList)
+		{
+			if (x->ProcessID == id_odbiorcy)	//sprawdzenie, czy nadawca nie zakoñczy³ do tej pory dzia³ania
+				czy_istnieje = true;
 		}
 	}
-	std::cout << "wykonana funkcja GetPCB()" << std::endl;
-	std::cout << "test odbiorcy: " << odbiorca->ProcessName << " " << odbiorca->ProcessID << " " << odbiorca->ProcessGroup;
-	std::cout << " %%" << std::endl;
-	int grupa_odbiorcy = odbiorca->ProcessGroup;
-
-	std::cout << "test nadawcy: " << nadawca->ProcessName << " " << nadawca->ProcessID << " " << nadawca->ProcessGroup;
-	std::cout << " %%" << std::endl;
-	int grupa_nadawcy = nadawca->ProcessGroup;
-	for (auto &it : ProcessGroupsList)
+	if (czy_istnieje == true)
 	{
-		if (it.ProcessGroup == grupa_odbiorcy && it.ProcessGroup == grupa_nadawcy)
+		std::shared_ptr<PCB> odbiorca = GetPCB(id_odbiorcy);
+		std::shared_ptr<PCB> nadawca = GetPCB(komunikat->id_nadawcy);
+		if (odbiorca->kolejka.kolejka.size() >= 2)
 		{
-			for (auto &e : it.ProcessList)
+			nadawca->SetState(State::OCZEKUJACY);
+			czy_pelna = true;
+		}
+		if (czy_pelna == false)
+		{
+			if (odbiorca->GetState() == State::OCZEKUJACY && odbiorca->kolejka.kolejka.size() == 0)
 			{
-				if (e->ProcessID == id_odbiorcy)
+				odbiorca->SetState(State::GOTOWY);
+				dodaj_do_procesow_gotowych(odbiorca);
+			}
+			int grupa_odbiorcy = odbiorca->ProcessGroup;
+			int grupa_nadawcy = nadawca->ProcessGroup;
+			for (auto &it : ProcessGroupsList)
+			{
+				if (it.ProcessGroup == grupa_odbiorcy && it.ProcessGroup == grupa_nadawcy)
 				{
-					e->kolejka.dodaj_komunikat(komunikat);
-					wyslano = true;
-				}
+					for (auto &e : it.ProcessList)
+					{
+						if (e->ProcessID == id_odbiorcy)
+						{
+							e->kolejka.dodaj_komunikat(komunikat);
+							wyslano = true;
+						}
 
+					}
+				}
 			}
 		}
+		if (wyslano == false)
+		{
+			std::cout << "Nie wyslano komunikatu" << std::endl;
+		}
 	}
-	if (odbiorca->GetState() == State::OCZEKUJACY)
+	else if (czy_istnieje == false)
 	{
-		odbiorca->SetState(State::GOTOWY);
-		dodaj_do_procesow_gotowych(odbiorca);
+		std::cout << "Proces odbiorcy nie istnieje, nie mozna wyslac komunikatu" << std::endl;
 	}
-	}
-	if (wyslano == false)
-	{
-	std::cout << "Nie wyslano komunikatu" << std::endl;
-	}
-	std::cout << "koniec metody" << std::endl;
-	
 }
