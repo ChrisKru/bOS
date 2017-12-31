@@ -71,13 +71,13 @@ std::shared_ptr<Komunikat> Kolejka::receive(int id_nadawcy /*std::string nadawca
 			{
 				if (it->id_nadawcy == id_nadawcy)
 				{
-					std::shared_ptr<Komunikat> odebrany = kolejka.front();
-					usun_komunikat();	//po odczytaniu komunikatu z kolejki, musi zostaæ z niej usuniêty
-					if (nadawca->GetState() == State::OCZEKUJACY && kolejka.size()==2)
+					if (nadawca->GetState() == State::OCZEKUJACY && kolejka.size() == 2)
 					{
 						nadawca->SetState(State::GOTOWY);
 						dodaj_do_procesow_gotowych(nadawca);
 					}
+					std::shared_ptr<Komunikat> odebrany = kolejka.front();
+					usun_komunikat();	//po odczytaniu komunikatu z kolejki, musi zostaæ z niej usuniêty
 					std::cout << "Tresc odebranego komunikatu: " << odebrany->tresc_komunikatu;
 					return odebrany;
 				}
