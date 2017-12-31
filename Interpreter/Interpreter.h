@@ -30,9 +30,9 @@ private:
 											 [2] (opcjonalne) dana do operacji
 											 */
 
-	void setInstruction(Memory& RAM, int num_parameters);			// ustawiamy w nim nasza tablice instruction
-	void eraseReg();												// zerujemy rejestry
-	
+	void setInstruction(Memory& RAM, int num_parameters, std::string rozkaz);			// ustawiamy w nim nasza tablice instruction
+	void eraseReg();																	// zerujemy rejestry
+	bool isNum(std::string param);
 
 public:
 	Interpreter();
@@ -42,7 +42,7 @@ public:
 	void saveRegisters();;			// ustawia dane zawarte w running naszymi danymi(rejestry, PID, IP, timer++)
 	void showRegisters();			// wyswietla stany rejestrow, PID oraz IP
 
-	void runInstruction(Disc& ds, Memory& mm, Scheduler& sc, Kolejka km);			// glowna metoda, zawiera interpretacje rozkazow
+	void runInstruction(Disc& ds, Memory& mm, Scheduler& sc, std::string command);			// glowna metoda, zawiera interpretacje rozkazow
 
 };
 

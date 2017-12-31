@@ -14,7 +14,7 @@
 class Shell{
 public:
 	Shell();
-	void systemInit(Disc disc, Memory memory, Scheduler scheduler, Kolejka kolejka, Interpreter interpreter);
+	void systemInit(Disc disc, Memory memory, Scheduler scheduler, Interpreter interpreter);
 	void Loop();
 private:
 	std::string waitUserInput();

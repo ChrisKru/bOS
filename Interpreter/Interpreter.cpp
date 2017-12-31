@@ -26,14 +26,19 @@ std::string Interpreter::loadInstruction(Memory& RAM) {
 	return RAM.getCommand(_PID,_IP);
 }
 
-void Interpreter::setInstruction(Memory& RAM, int num_parameters)
+void Interpreter::setInstruction(Memory& RAM, int num_parameters, std::string rozkaz)
 {
-	std::string command = "";
+	std::string command;
+	if (rozkaz == "runp") {
+		command = loadInstruction(RAM);
+	}
+	else {
+		command = rozkaz;
+	}
 	instruction[0] = "";
 	instruction[1] = "";
 	instruction[2] = "";
 	instruction[3] = "";
-	command = loadInstruction(RAM);
 	instruction[0] = command.substr(0, 2);
 	command = command.substr(2);
 	if (num_parameters == 1) {
@@ -71,6 +76,8 @@ void Interpreter::setInstruction(Memory& RAM, int num_parameters)
 	}
 }
 
+
+
 void Interpreter::eraseReg()
 {
 	_PID = 0;
@@ -98,20 +105,26 @@ void Interpreter::showRegisters() {
 
 
 
-void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, Kolejka komunikacja) {
+void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, std::string command) {
 
 	if (running->ProcessState == State::AKTYWNY) {
 		_done = true; // ustalamy, ¿e rozkaz siê wykona. Jak nast¹pi¹ probelmy to _done = false;
 		loadRegister();
+		std::string operation;
 		// Rozkaz do wykonania
-		std::string operation = loadInstruction(RAM).substr(0, 2);
-		std::cout << "Rozkaz:$ " << RAM.getCommand(_PID, _IP) << " $ dla procesu: " << _PID << std::endl;
-
+		if (command == "runp") {
+			operation = loadInstruction(RAM).substr(0, 2);
+			std::cout << "Rozkaz:$ " << RAM.getCommand(_PID, _IP) << " $ dla procesu: " << _PID << std::endl;
+		}
+		else {
+			operation = command.substr(0, 2);
+			std::cout << "Rozkaz:$ " << command << " $ dla procesu: " << _PID << std::endl;
+		}
 
 		/* Operacje logiczne */
 		// MV nazwa_rejestru liczba
 		if (operation == ("MV")) {
-			setInstruction(RAM, 2);
+			setInstruction(RAM, 2, command);
 			std::string d1 = instruction[1];
 			std::string d2 = instruction[2];
 			if (d1 == "A") {
@@ -125,7 +138,11 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 					_RegA = _RegA;
 				}
 				else {
-					_RegA = std::stoi(d2);
+					if (!isNum(d2)) {
+						_done = false;
+					}
+					else
+						_RegA = std::stoi(d2);
 				}
 			}
 			else if (d1 == "B") {
@@ -139,7 +156,11 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 					_RegB = _RegB;
 				}
 				else {
-					_RegB = std::stoi(d2);
+					if (!isNum(d2)) {
+						_done = false;
+					}
+					else
+						_RegB = std::stoi(d2);
 				}
 			}
 			else if (d1 == "C") {
@@ -153,14 +174,18 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 					_RegC = _RegC;
 				}
 				else {
-					_RegC = std::stoi(d2);
+					if (!isNum(d2)) {
+						_done = false;
+					}
+					else
+						_RegC = std::stoi(d2);
 				}
 			}
 		}
 
 		// EQ nazwa_rejestru nazwa_rejestru
 		else if (operation == ("EQ")) {
-			setInstruction(RAM, 2);
+			setInstruction(RAM, 2, command);
 			std::string d1 = instruction[1];
 			std::string d2 = instruction[2];
 			if (d1 == d2 || d1 == "A" && d2 == "B" && _RegA == _RegB ||
@@ -169,29 +194,29 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 				d1 == "B" && d2 == "C" && _RegB == _RegC ||
 				d1 == "C" && d2 == "A" && _RegC == _RegA ||
 				d1 == "C" && d2 == "B" && _RegC == _RegB) {
-				std::cout << "Wartosci sa sobie rowne!" << std::endl;
+				//std::cout << "Wartosci sa sobie rowne!" << std::endl;
 				_flagEQ = true;
 			}
 			else {
 				_flagEQ = false;
-				std::cout << "Wartosci sa rozne!" << std::endl;
+				//std::cout << "Wartosci sa rozne!" << std::endl;
 			}
 		}
 		// JP gdzie
 		else if (operation == ("JP")) {
-			setInstruction(RAM, 1);
+			setInstruction(RAM, 1,command);
 			std::string d1 = instruction[1];
 			_IP = std::stoi(d1);
 		}
 		// JT gdzie(jesli prawda)
 		else if (operation == ("JT")) {
-			setInstruction(RAM, 1);
+			setInstruction(RAM, 1, command);
 			std::string d1 = instruction[1];
 			if (_flagEQ == true) _IP = std::stoi(d1);
 		}
 		// JF gdzie(jeœli falsz)
 		else if (operation == ("JF")) {
-			setInstruction(RAM, 1);
+			setInstruction(RAM, 1, command);
 			std::string d1 = instruction[1];
 			if (_flagEQ == false) {
 				_IP = std::stoi(d1);
@@ -202,7 +227,7 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 		/* Operacje arytmetyczne */
 		// AD nazwa_rejestru liczba/nazwa_rejestru
 		else if (operation == ("AD")) {
-			setInstruction(RAM, 2);
+			setInstruction(RAM, 2, command);
 			std::string d1 = instruction[1];
 			std::string d2 = instruction[2];
 			if (d1 == "A") {
@@ -216,7 +241,11 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 					_RegA += _RegA;
 				}
 				else {
-					_RegA += std::stoi(d2);
+					if (!isNum(d2)) {
+						_done = false;
+					}
+					else
+						_RegA += std::stoi(d2);
 				}
 			}
 			else if (d1 == "B") {
@@ -230,7 +259,11 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 					_RegB += _RegB;
 				}
 				else {
-					_RegB += std::stoi(d2);
+					if (!isNum(d2)) {
+						_done = false;
+					}
+					else
+						_RegB += std::stoi(d2);
 				}
 			}
 			else if (d1 == "C") {
@@ -244,14 +277,18 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 					_RegC += _RegC;
 				}
 				else {
-					_RegC += std::stoi(d2);
+					if (!isNum(d2)) {
+						_done = false;
+					}
+					else
+						_RegC += std::stoi(d2);
 				}
 			}
 		}
 
 		// ML nazwa_rejestru liczba/nazwa_rejestru
 		else if (operation == ("ML")) {
-			setInstruction(RAM, 2);
+			setInstruction(RAM, 2, command);
 			std::string d1 = instruction[1];
 			std::string d2 = instruction[2];
 			if (d1 == "A") {
@@ -265,7 +302,11 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 					_RegA *= _RegA;
 				}
 				else {
-					_RegA *= std::stoi(d2);
+					if (!isNum(d2)) {
+						_done = false;
+					}
+					else
+						_RegA *= std::stoi(d2);
 				}
 			}
 			else if (d1 == "B") {
@@ -279,7 +320,11 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 					_RegB *= _RegB;
 				}
 				else {
-					_RegB *= std::stoi(d2);
+					if (!isNum(d2)) {
+						_done = false;
+					}
+					else
+						_RegB *= std::stoi(d2);
 				}
 			}
 			else if (d1 == "C") {
@@ -293,14 +338,18 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 					_RegC *= _RegC;
 				}
 				else {
-					_RegC *= std::stoi(d2);
+					if (!isNum(d2)) {
+						_done = false;
+					}
+					else
+						_RegC *= std::stoi(d2);
 				}
 			}
 		}
 
 		// SB nazwa_rejestru liczba/nazwa_rejestru
 		else if (operation == ("SB")) {
-			setInstruction(RAM, 2);
+			setInstruction(RAM, 2, command);
 			std::string d1 = instruction[1];
 			std::string d2 = instruction[2];
 			if (d1 == "A") {
@@ -314,7 +363,11 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 					_RegA -= _RegA;
 				}
 				else {
-					_RegA -= std::stoi(d2);
+					if (!isNum(d2)) {
+						_done = false;
+					}
+					else
+						_RegA -= std::stoi(d2);
 				}
 			}
 			else if (d1 == "B") {
@@ -328,7 +381,11 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 					_RegB -= _RegB;
 				}
 				else {
-					_RegB -= std::stoi(d2);
+					if (!isNum(d2)) {
+						_done = false;
+					}
+					else
+						_RegB -= std::stoi(d2);
 				}
 			}
 			else if (d1 == "C") {
@@ -342,14 +399,18 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 					_RegC -= _RegC;
 				}
 				else {
-					_RegC -= std::stoi(d2);
+					if (!isNum(d2)) {
+						_done = false;
+					}
+					else
+						_RegC -= std::stoi(d2);
 				}
 			}
 		}
 
 		// DV nazwa_rejestru liczba/nazwa_rejestru
 		else if (operation == ("DV")) {
-			setInstruction(RAM, 2);
+			setInstruction(RAM, 2, command);
 			std::string d1 = instruction[1];
 			std::string d2 = instruction[2];
 			if (d1 == "A") {
@@ -363,7 +424,11 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 					_RegA /= _RegC;
 				}
 				else {
-					_RegA /= std::stoi(d2);
+					if (!isNum(d2)) {
+						_done = false;
+					}
+					else
+						_RegA /= std::stoi(d2);
 				}
 			}
 			else if (d1 == "B") {
@@ -377,7 +442,11 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 					_RegB /= _RegC;
 				}
 				else {
-					_RegB /= std::stoi(d2);
+					if (!isNum(d2)) {
+						_done = false;
+					}
+					else
+						_RegB /= std::stoi(d2);
 				}
 			}
 			else if (d1 == "C") {
@@ -391,17 +460,22 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 					_RegC /= _RegC;
 				}
 				else {
-					if (std::stoi(d2) == 0) {
-						std::cout << "ERROR! Nie mozna dzielic przez 0\n";
+					if (!isNum(d2)) {
+						_done = false;
 					}
-					else _RegC /= std::stoi(d2);
+					else {
+						if (std::stoi(d2) == 0) {
+							std::cout << "ERROR! Nie mozna dzielic przez 0\n";
+						}
+						else _RegC /= std::stoi(d2);
+					}
 				}
 			}
 		}
 
 		// IC nazwa_rejestru
 		else if (operation == ("IC")) {
-			setInstruction(RAM, 1);
+			setInstruction(RAM, 1, command);
 			std::string reg = instruction[1];
 			if (reg == "A") {
 				_RegA++;
@@ -415,7 +489,7 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 		}
 		// DC nazwa_rejestru
 		else if (operation == ("DC")) {
-			setInstruction(RAM, 1);
+			setInstruction(RAM, 1, command);
 			std::string reg = instruction[1];
 			if (reg == "A") {
 				_RegA--;
@@ -431,7 +505,7 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 		/* Operacje wykonywane na dysku */
 		// OF nazwa_pliku
 		else if (operation == ("OF")) {
-			setInstruction(RAM, 1);
+			setInstruction(RAM, 1, command);
 			std::string d1 = instruction[1];
 			if (!dysk.open_file(d1, false)) {
 				_done = false;
@@ -439,46 +513,45 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 		}
 		// ZF nazwa_pliku
 		else if (operation == ("ZF")) {
-			setInstruction(RAM, 1);
+			setInstruction(RAM, 1, command);
 			std::string d1 = instruction[1];
 			dysk.close_file(d1, false);
 		}
 		// CF nazwa_pliku
 		else if (operation == ("CF")) {
-			setInstruction(RAM, 1);
+			setInstruction(RAM, 1, command);
 			std::string d1 = instruction[1];
-			//dysk.create_file(d1);
 			dysk.create_file(d1);
 		}
 		// WF nazwa_pliku dane
 		else if (operation == ("WF")) {
-			setInstruction(RAM, 2);
+			setInstruction(RAM, 2, command);
 			std::string d1 = instruction[1];
 			std::string d2 = instruction[2];
 			dysk.write_file(d1, d2);
 		}
 		// PF nazwa_pliku
 		else if (operation == ("PF")) {
-			setInstruction(RAM, 1);
+			setInstruction(RAM, 1, command);
 			std::string d1 = instruction[1];
 			dysk.print_file(d1);
 		}
 		// DF nazwa_pliku
 		else if (operation == ("DF")) {
-			setInstruction(RAM, 1);
+			setInstruction(RAM, 1, command);
 			std::string d1 = instruction[1];
 			dysk.delete_file(d1);
 		}
 		// RF nazwa_pliku_stara nazwa_pliku_nowa
 		else if (operation == ("RF")) {
-			setInstruction(RAM, 1);
+			setInstruction(RAM, 1, command);
 			std::string d1 = instruction[1];
 			std::string d2 = instruction[2];
 			dysk.rename_file(d1, d2);
 		}
 		// AF nazwa_pliku dane
 		else if (operation == ("AF")) {
-			setInstruction(RAM, 2);
+			setInstruction(RAM, 2, command);
 			std::string d1 = instruction[1];
 			std::string d2 = instruction[2];
 			if (d2 == "[A]") {
@@ -494,12 +567,12 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 		}
 		// LF
 		else if (operation == ("LF")) {
-			setInstruction(RAM, 0);
+			setInstruction(RAM, 0, command);
 			dysk.print_file_list();
 		}
 		// PD
 		else if (operation == ("PD")) {
-			setInstruction(RAM, 0);
+			setInstruction(RAM, 0, command);
 			dysk.printDisc();
 		}
 
@@ -509,30 +582,32 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 		/* Operacje wykonywane na komunikatach */
 		// SC PID komunikat, gdzie ID_procesu to do kogo
 		else if (operation == ("SC")) {
-			setInstruction(RAM, 2);
+			setInstruction(RAM, 2, command);
 			std::string d1 = instruction[1];
 			std::string d2 = instruction[2];
 			std::shared_ptr<Komunikat> kom = std::make_shared<Komunikat>(running->GetID(), d2);
-			running->kolejka.send(std::stoi(d1), kom);
+			if (!(running->kolejka.send(std::stoi(d1), kom))) {
+				_done = false;
+			}
 
 		}
 		// RC PID
 		else if (operation == ("RC")) {
-			setInstruction(RAM, 1);
+			setInstruction(RAM, 1, command);
 			std::string d1 = instruction[1];
 			std::shared_ptr<Komunikat> kom;
 			kom = running->kolejka.receive(std::stoi(d1));
 		}
 		// PC
 		else if (operation == ("PC")) {
-			setInstruction(RAM, 0);
+			setInstruction(RAM, 0, command);
 			running->kolejka.wyswietl();
 		}
 
 		/* Operacje wykonywane na procesach */
 		// CP nazwa_procesu grupa_procesu
 		else if (operation == ("CP")) {
-			setInstruction(RAM, 3);
+			setInstruction(RAM, 3, command);
 			//create a new process
 			std::string d1 = instruction[1];
 			std::string d2 = instruction[2];
@@ -545,7 +620,7 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 		}
 		// DP PID
 		else if (operation == ("DP")) {
-			setInstruction(RAM, 1);
+			setInstruction(RAM, 1, command);
 			std::string d1 = instruction[1];
 			DeleteProcess(std::stoi(d1));
 			eraseReg();
@@ -553,33 +628,33 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 
 		// Aktywny proces: AP
 		else if (operation == ("AP")) {
-			setInstruction(RAM, 0);
+			setInstruction(RAM, 0, command);
 			scheduler.print_running();
 		}
 		// Gotowe procesy: RP
 		else if (operation == ("RP")) {
-			setInstruction(RAM, 0);
+			setInstruction(RAM, 0, command);
 			scheduler.wyswietl_gotowe();
 		}
 		// Ustaw wykonywany proces na stan oczekiwania: WP
 		else if (operation == ("WP")) {
-			setInstruction(RAM, 0);
+			setInstruction(RAM, 0, command);
 			running->SetState(State::OCZEKUJACY);
 		}
 		/* Operacje wykonywane na pamieci RAM */
 		// SR
 		else if (operation == ("SR")) {
-			setInstruction(RAM, 0);
+			setInstruction(RAM, 0, command);
 			RAM.show();
 		}
 		// SF
 		else if (operation == ("SF")) {
-			setInstruction(RAM, 0);
+			setInstruction(RAM, 0, command);
 			RAM.showFIFO();
 		}
 		// operator zamkniecia procesu
 		else if (operation == ("EX")) {
-			setInstruction(RAM, 0);
+			setInstruction(RAM, 0, command);
 			// killujemy proces
 			DeleteProcess(_PID);
 			running->SetState(State::ZAKONCZONY);
@@ -601,6 +676,21 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 	else {
 		std::cout << "Aktywny proces bezczynnosci.\n";
 	}
+}
+
+bool Interpreter::isNum(std::string param)
+{
+	bool good_param = true;
+	for (int i = 0; i < param.length(); i++)
+	{
+		if (!isdigit(param[i]))
+		{
+			std::cout << "Blad w parametrach!" << std::endl;
+			good_param = false;
+			break;
+		}
+	}
+	return good_param;
 }
 
 

@@ -2,11 +2,10 @@
 
 Shell::Shell(){}
 
-void Shell::systemInit(Disc disc, Memory memory, Scheduler scheduler, Kolejka kolejka, Interpreter interpreter){
+void Shell::systemInit(Disc disc, Memory memory, Scheduler scheduler, Interpreter interpreter){
 	_disc = disc;
 	_memory = memory;
 	_scheduler = scheduler;
-	_kolejka = kolejka;
 	_interpreter = interpreter;
 }
 
@@ -187,7 +186,7 @@ bool Shell::executeCommand(std::vector<std::string> parameters) {
 			return 0;
 		}
 		_scheduler.Schedule();
-		_interpreter.runInstruction(_disc, _memory, _scheduler, _kolejka);
+		_interpreter.runInstruction(_disc, _memory, _scheduler, "runp");
 	}else if(parameters[0] == "reg"){
 		if(parameters.size() != 1){
 			ErrorPM();
