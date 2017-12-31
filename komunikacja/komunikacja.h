@@ -33,6 +33,6 @@ public:
 	void dodaj_komunikat(std::shared_ptr<Komunikat> komunikat);
 	void usun_komunikat();
 	bool send(int id_odbiorcy /*std::string odbiorca*/, std::shared_ptr<Komunikat> komunikat);
-	std::shared_ptr<Komunikat> receive(int id_nadawcy /*std::string nadawca*/);
+	bool receive(int id_nadawcy /*std::string nadawca*/);
 	void wyswietl();
 };

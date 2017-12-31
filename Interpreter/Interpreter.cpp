@@ -595,8 +595,9 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 		else if (operation == ("RC")) {
 			setInstruction(RAM, 1, command);
 			std::string d1 = instruction[1];
-			std::shared_ptr<Komunikat> kom;
-			kom = running->kolejka.receive(std::stoi(d1));
+			if (!(running->kolejka.receive(std::stoi(d1)))) {
+				_done = false;
+			}
 		}
 		// PC
 		else if (operation == ("PC")) {

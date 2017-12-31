@@ -50,8 +50,9 @@ void Kolejka::usun_komunikat()
 	else
 		kolejka.pop_front();
 }
-std::shared_ptr<Komunikat> Kolejka::receive(int id_nadawcy /*std::string nadawca*/)
+bool Kolejka::receive(int id_nadawcy /*std::string nadawca*/)
 {
+	bool flagR = false;
 	bool czy_istnieje = false;
 	for (auto &v : ProcessGroupsList) 
 	{
@@ -77,9 +78,10 @@ std::shared_ptr<Komunikat> Kolejka::receive(int id_nadawcy /*std::string nadawca
 						dodaj_do_procesow_gotowych(nadawca);
 					}
 					std::shared_ptr<Komunikat> odebrany = kolejka.front();
+					flagR = true;
 					usun_komunikat();	//po odczytaniu komunikatu z kolejki, musi zostaæ z niej usuniêty
 					std::cout << "Tresc odebranego komunikatu: " << odebrany->tresc_komunikatu;
-					return odebrany;
+					return flagR;
 				}
 			}
 
@@ -89,7 +91,7 @@ std::shared_ptr<Komunikat> Kolejka::receive(int id_nadawcy /*std::string nadawca
 			std::cout << "Kolejka komunikatow dla tego procesu jest pusta" << std::endl;
 			running->SetState(State::OCZEKUJACY);
 			std::shared_ptr<Komunikat> odebrany = std::make_shared<Komunikat>(id_nadawcy, "----");
-			return odebrany;
+			return flagR;
 			//jeœli ju¿ bêdê robi³ tak, ¿e Komunikat bêdzie wskaŸnikiem, to tutaj zwrócê nullptr, bo kompilator sie sra, ¿e nic tutaj na razie nie jest zwracane
 		}
 	}
@@ -97,7 +99,8 @@ std::shared_ptr<Komunikat> Kolejka::receive(int id_nadawcy /*std::string nadawca
 	{
 		std::cout << "Proces nadawcy nie istnieje, nie mozna odebrac komunikatu" << std::endl;
 		std::shared_ptr<Komunikat> odebrany = std::make_shared<Komunikat>(id_nadawcy, "----");
-		return odebrany;
+		flagR = true;
+		return flagR;
 	}
 }
 void Kolejka::wyswietl()
@@ -116,7 +119,7 @@ void Kolejka::wyswietl()
 bool Kolejka::send(int id_odbiorcy, std::shared_ptr<Komunikat> komunikat)
 {	//dostêp do kolejki: id procesu jest potrzebne. Wykorzystujê funkcjê GetPCB, któa zwraca shared pointer do PCB. Wtedy bêdzie PCB->kolejka
 	//std::list<Group>ProcessGroupsList;
-	bool wyslano = false;
+	bool flagS = false;
 	bool czy_pelna = false;
 	bool czy_istnieje = false;
 	for (auto &v : ProcessGroupsList)
@@ -154,14 +157,14 @@ bool Kolejka::send(int id_odbiorcy, std::shared_ptr<Komunikat> komunikat)
 						if (e->ProcessID == id_odbiorcy)
 						{
 							e->kolejka.dodaj_komunikat(komunikat);
-							wyslano = true;
+							flagS = true;
 						}
 
 					}
 				}
 			}
 		}
-		if (wyslano == false)
+		if (flagS == false)
 		{
 			std::cout << "Nie wyslano komunikatu" << std::endl;
 		}
@@ -169,7 +172,7 @@ bool Kolejka::send(int id_odbiorcy, std::shared_ptr<Komunikat> komunikat)
 	else if (czy_istnieje == false)
 	{
 		std::cout << "Proces odbiorcy nie istnieje, nie mozna wyslac komunikatu" << std::endl;
-		wyslano = true;
+		flagS = true;
 	}
-	return wyslano;
+	return flagS;
 }
