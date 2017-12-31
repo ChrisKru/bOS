@@ -80,7 +80,7 @@ bool Kolejka::receive(int id_nadawcy /*std::string nadawca*/)
 					std::shared_ptr<Komunikat> odebrany = kolejka.front();
 					flagR = true;
 					usun_komunikat();	//po odczytaniu komunikatu z kolejki, musi zostaæ z niej usuniêty
-					std::cout << "Tresc odebranego komunikatu: " << odebrany->tresc_komunikatu;
+					std::cout << "Tresc odebranego komunikatu: " << odebrany->tresc_komunikatu << std::endl;
 					return flagR;
 				}
 			}

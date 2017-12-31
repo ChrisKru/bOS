@@ -27,8 +27,10 @@ void CV::signal() {
 	pcb_waiting_list.remove_if([](std::shared_ptr<PCB> proces) {return proces->GetState() == State::ZAKONCZONY; });
 
 	if (pcb_waiting_list.size() > 0) {
-		pcb_waiting_list.front()->PCB::SetState(State::GOTOWY);
-		dodaj_do_procesow_gotowych(pcb_waiting_list.front());
+		if (pcb_waiting_list.front()->GetState() != State::AKTYWNY) {
+			pcb_waiting_list.front()->PCB::SetState(State::GOTOWY);
+			dodaj_do_procesow_gotowych(pcb_waiting_list.front());
+		}
 	}
 }
 bool CV::is_empty() {
