@@ -223,11 +223,18 @@ void Disc::create_file(std::string filename)
 	{
 		if (kat_nr != -1 && block_nr != -1)
 		{
-			katalog_[kat_nr].filename = filename;
-			katalog_[kat_nr].free = false;
-			katalog_[kat_nr].first_block = block_nr;
-			katalog_[kat_nr].size = 0;
-			block_[block_nr] = false;
+			if (filename.size() == 0)
+			{
+				std::cout << "Nazwa pliku nie moze byc pusta" << std::endl;
+			}
+			else
+			{
+				katalog_[kat_nr].filename = filename;
+				katalog_[kat_nr].free = false;
+				katalog_[kat_nr].first_block = block_nr;
+				katalog_[kat_nr].size = 0;
+				block_[block_nr] = false;
+			}
 		}
 		else
 		{
@@ -359,8 +366,16 @@ void Disc::rename_file(std::string filename, std::string new_filename)
 	{
 		if (katalog_[kat_nr].open == true)
 		{
-			katalog_[kat_nr].filename = new_filename;
-			std::cout << "Zmieniono nazwe pliku \"" << filename << "\" na \"" << new_filename << "\"" << std::endl;
+			if (new_filename.size() == 0)
+			{
+				std::cout << "Nazwa pliku nie moze byc pusta" << std::endl;
+			}
+			else
+			{
+				katalog_[kat_nr].filename = new_filename;
+				std::cout << "Zmieniono nazwe pliku \"" << filename << "\" na \"" << new_filename << "\"" << std::endl;
+			}
+
 		}
 		else
 		{
