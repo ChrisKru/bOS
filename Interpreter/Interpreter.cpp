@@ -96,7 +96,7 @@ void Interpreter::saveRegisters() {
 }
 
 void Interpreter::showRegisters() {
-	std::cout << std::endl << "Stan rejestrow dla procesu: " << _PID << std::endl;
+	std::cout << "Stan rejestrow dla procesu: " << _PID << std::endl;
 	std::cout << "A: " << _RegA << std::endl;
 	std::cout << "B: " << _RegB << std::endl;
 	std::cout << "C: " << _RegC << std::endl;
@@ -646,17 +646,14 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 			process->SetFileName(d3);
 			RAM.loadProcess(process->GetID(), d3);*/
 			//scheduler.Schedule();
-			if (!isNum(d2)) {
+			if (!isNum(d2) || d1 == ("") || d2 == ("") || d3 == ("")) {
 				_done = false;
 			}
 			else {
 				try {
 					std::shared_ptr<PCB> process = NewProcess(d1, std::stoi(d2));
 					process->SetFileName(d3);
-					if (!(RAM.loadProcess(process->GetID(), d3))) {
-						std::cout << "Brak pliku o takiej nazwie." << std::endl;
-						_done = false;
-					}
+					RAM.loadProcess(process->GetID(), d3);
 				}
 				catch (std::exception exception) {
 					std::cout << "Zla forma parametru" << "\n";
