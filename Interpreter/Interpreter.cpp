@@ -634,7 +634,9 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 			}
 			else {
 				//kom = 
-				running->kolejka.receive(std::stoi(d1));
+				if (!running->kolejka.receive(std::stoi(d1))) {
+					_done = false;
+				}
 			}
 		}
 		// PC
