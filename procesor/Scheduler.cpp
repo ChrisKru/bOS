@@ -19,6 +19,7 @@ void Scheduler::Schedule()
 	{
 		if (procesy_otrzymane.size() == 0 && procesy_gotowe_queue.size() == 0)
 		{
+			bool a = false;
 		for (auto & x : ProcessGroupsList)
 		{
 			for (auto y : x.ProcessList)
@@ -27,9 +28,11 @@ void Scheduler::Schedule()
 				{
 					y->SetState(State::GOTOWY);
 					procesy_otrzymane.push_back(y);
+					a = true;
 					break;
 				}
 			}
+			if (a == true) break;
 		}
 		}
 		if (running != nullptr && running->GetState() == State::ZAKONCZONY)
