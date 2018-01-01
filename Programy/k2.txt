@@ -1,6 +1,11 @@
-SC 1 one
+SC 1 Hello
+MV B 6
+MV A 1
+MV C 0
 RC 1
-SC 1 two
-SC 1 three
-SC 1 four
+IC A
+DC B
+EQ B C
+JF 4
+SC 1 zegnaj.
 EX

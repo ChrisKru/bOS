@@ -1,0 +1,12 @@
+MV B 5
+MV A 1
+MV C 0
+SC 2 Witaj
+IC A
+DC B
+EQ B C
+JF 3
+RC 2
+SC 2 Bye
+RC 2
+EX

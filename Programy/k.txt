@@ -1,6 +1,0 @@
-SC 2 jeden
-RC 2
-SC 2 dwa
-RC 2
-RC 2
-EX

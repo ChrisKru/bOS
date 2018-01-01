@@ -1,0 +1,10 @@
+MV A 0
+MV B 1
+AD A B
+MV C A
+MV A B
+MV B C
+EQ C 89
+JF 2
+SR
+EX

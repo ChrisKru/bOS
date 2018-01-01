@@ -1,11 +1,11 @@
 MV A 1
 MV B 2
-CP aryt 3 a1.txt
+CP silnia 3 S6.txt
 RP
 WP
 ML A B
 MV B 3
-CP kom 2 k1.txt
+CP aryt1 2 a1.txt
 WP
 MV C A
 CP aryt2 4 a2.txt

@@ -223,6 +223,10 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 				_IP--;
 			}
 		}
+		else if (operation == ("SR")) {
+			setInstruction(RAM, 0, command);
+			showRegisters();
+		}
 
 		/* Operacje arytmetyczne */
 		// AD nazwa_rejestru liczba/nazwa_rejestru
@@ -507,21 +511,36 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 		else if (operation == ("OF")) {
 			setInstruction(RAM, 1, command);
 			std::string d1 = instruction[1];
-			if (!dysk.open_file(d1, false)) {
-				_done = false;
+			if (d1 == ("")) {
+				std::cout << "Blad w parametrach!" << std::endl;
+			}
+			else {
+				if (!dysk.open_file(d1, false)) {
+					_done = false;
+				}
 			}
 		}
 		// ZF nazwa_pliku
 		else if (operation == ("ZF")) {
 			setInstruction(RAM, 1, command);
 			std::string d1 = instruction[1];
-			dysk.close_file(d1, false);
+			if (d1 == ("")) {
+				std::cout << "Blad w parametrach!" << std::endl;
+			}
+			else {
+				dysk.close_file(d1, false);
+			}
 		}
 		// CF nazwa_pliku
 		else if (operation == ("CF")) {
 			setInstruction(RAM, 1, command);
 			std::string d1 = instruction[1];
-			dysk.create_file(d1);
+			if (d1 == ("")) {
+				std::cout << "Blad w parametrach!" << std::endl;
+			}
+			else {
+				dysk.create_file(d1);
+			}
 		}
 		// WF nazwa_pliku dane
 		else if (operation == ("WF")) {
@@ -586,17 +605,26 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 			std::string d1 = instruction[1];
 			std::string d2 = instruction[2];
 			std::shared_ptr<Komunikat> kom = std::make_shared<Komunikat>(running->GetID(), d2);
-			if (!(running->kolejka.send(std::stoi(d1), kom))) {
+			if (!isNum(d1)) {
 				_done = false;
 			}
-
+			else {
+				if (!(running->kolejka.send(std::stoi(d1), kom))) {
+					_done = false;
+				}
+			}
 		}
 		// RC PID
 		else if (operation == ("RC")) {
 			setInstruction(RAM, 1, command);
 			std::string d1 = instruction[1];
-			if (!(running->kolejka.receive(std::stoi(d1)))) {
+			//std::shared_ptr<Komunikat> kom;
+			if (!isNum(d1)) {
 				_done = false;
+			}
+			else {
+				//kom = 
+				running->kolejka.receive(std::stoi(d1));
 			}
 		}
 		// PC
@@ -614,17 +642,38 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 			std::string d2 = instruction[2];
 			std::string d3 = instruction[3];
 			//running->SetState(State::OCZEKUJACY);
-			std::shared_ptr<PCB> process = NewProcess(d1, std::stoi(d2));
+			/*std::shared_ptr<PCB> process = NewProcess(d1, std::stoi(d2));
 			process->SetFileName(d3);
-			RAM.loadProcess(process->GetID(), d3);
+			RAM.loadProcess(process->GetID(), d3);*/
 			//scheduler.Schedule();
+			if (!isNum(d2)) {
+				_done = false;
+			}
+			else {
+				try {
+					std::shared_ptr<PCB> process = NewProcess(d1, std::stoi(d2));
+					process->SetFileName(d3);
+					if (!(RAM.loadProcess(process->GetID(), d3))) {
+						std::cout << "Brak pliku o takiej nazwie." << std::endl;
+						_done = false;
+					}
+				}
+				catch (std::exception exception) {
+					std::cout << "Zla forma parametru" << "\n";
+					_done = false;
+				}
+			}
 		}
 		// DP PID
 		else if (operation == ("DP")) {
 			setInstruction(RAM, 1, command);
 			std::string d1 = instruction[1];
-			DeleteProcess(std::stoi(d1));
-			eraseReg();
+			if (!isNum(d1)) {
+				_done = false;
+			}
+			else {
+				DeleteProcess(std::stoi(d1));
+			}
 		}
 
 		// Aktywny proces: AP
@@ -642,6 +691,11 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 			setInstruction(RAM, 0, command);
 			running->SetState(State::OCZEKUJACY);
 		}
+		else if (operation == ("NP")) {
+			setInstruction(RAM, 0, command);
+			std::cout << "Nazwa aktualnego wykonywanego procesu: " << running->GetName() << "\nPID: " << running->GetID() << std::endl;
+		}
+
 		/* Operacje wykonywane na pamieci RAM */
 		// SR
 		else if (operation == ("SR")) {
@@ -669,8 +723,11 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 			std::cout << "Brak takiej instrukcji";
 			_done = false;
 		}
-		if (_done) {
+		if (_done && command == ("runp")) {
 			_IP++;
+			saveRegisters();
+		}
+		else if (_done) {
 			saveRegisters();
 		}
 	}
