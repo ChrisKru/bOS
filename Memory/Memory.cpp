@@ -231,7 +231,7 @@ std::string Memory::getCommand(int PID, int commandCounter) {
 	}
 }
 
-void Memory::loadProcess(int PID, std::string filename) {
+bool Memory::loadProcess(int PID, std::string filename) {
 	//ustalanie wielkosci pliku - wielkosci procesu
 	int size;
 	std::string line, allfile;
@@ -243,6 +243,9 @@ void Memory::loadProcess(int PID, std::string filename) {
 			allfile += line + ";";
 		}
 	}
+	else {
+		return false;
+	}
 	size = allfile.size();
 
 	txtfile.close();
@@ -250,6 +253,8 @@ void Memory::loadProcess(int PID, std::string filename) {
 	PageTable table(PID, size);
 	table = file.DataToFile(PID, filename, size);
 	pagetables.push_back(table);
+
+	return true;
 }
 
 void Memory::show() {

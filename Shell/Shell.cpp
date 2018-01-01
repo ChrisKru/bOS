@@ -165,7 +165,9 @@ bool Shell::executeCommand(std::vector<std::string> parameters) {
 			try {
 				std::shared_ptr<PCB> process = NewProcess(parameters[1], std::stoi(parameters[2]));
 				process->SetFileName(parameters[3]);
-				_memory.loadProcess(process->GetID(), parameters[3]);
+				if (!(_memory.loadProcess(process->GetID(), parameters[3]))) {
+					ErrorFI();
+				}
 			}catch(std::exception exception){
 				ErrorIP();
 				return 0;
@@ -215,6 +217,12 @@ void Shell::ErrorPM(){
 void Shell::ErrorIP(){
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED);
 	std::cout << "Zla forma parametru" << "\n";
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
+}
+
+void Shell::ErrorFI() {
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN | FOREGROUND_BLUE);
+	std::cout << "Brak pliku o podanej nazwie" << "\n";
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
 }
 

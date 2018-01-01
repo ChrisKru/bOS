@@ -23,6 +23,7 @@ private:
 	void ErrorIC();
 	void ErrorPM();
 	void ErrorIP();
+	void ErrorFI();
 	void printHelp();
 	Disc _disc;
 	Memory _memory;
