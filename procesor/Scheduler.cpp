@@ -17,11 +17,25 @@ Scheduler::Scheduler(int a) // to wywoluje Shell w main
 	}
 void Scheduler::Schedule()
 	{
+		if (procesy_otrzymane.size() == 0 && procesy_gotowe_queue.size() == 0)
+		{
+		for (auto & x : ProcessGroupsList)
+		{
+			for (auto y : x.ProcessList)
+			{
+				if (y->GetState() == State::OCZEKUJACY)
+				{
+					y->SetState(State::GOTOWY);
+					procesy_otrzymane.push_back(y);
+					break;
+				}
+			}
+		}
+		}
 		if (running != nullptr && running->GetState() == State::ZAKONCZONY)
 		{
 			time = running->Timmer;
-
-		}
+		} 
 		if (running != nullptr && running->GetState() != State::AKTYWNY)
 		{
 			if (procesy_otrzymane.size() > 0)
@@ -72,9 +86,10 @@ void Scheduler::Schedule()
 			{
 				if (procesy_gotowe_queue.size() == 0) // jesli nie ma nic w kolejce
 				{
+					
 					cout << "Brak gotowych procesow" << endl;
 					running = GetPCB(0);
-				}
+				} 
 				else // jesli jest to przelicz tau i wybierz nowy proces
 				{
 					for (int i = 0; i <= procesy_gotowe_queue.size(); i++)
