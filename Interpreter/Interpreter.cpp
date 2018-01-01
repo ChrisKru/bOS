@@ -563,7 +563,7 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 		}
 		// RF nazwa_pliku_stara nazwa_pliku_nowa
 		else if (operation == ("RF")) {
-			setInstruction(RAM, 1, command);
+			setInstruction(RAM, 2, command);
 			std::string d1 = instruction[1];
 			std::string d2 = instruction[2];
 			dysk.rename_file(d1, d2);
