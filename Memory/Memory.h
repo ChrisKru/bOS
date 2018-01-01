@@ -33,7 +33,7 @@ public:
 		// zwraca komendê, o któr¹ prosi interpreter
 		// trzeba dodaæ j¹ do RAMu
 
-	bool loadProcess(int PID, std::string filename);
+	void loadProcess(int PID, std::string filename);
 		// metoda ³aduj¹ca proces do pliku wymiany
 		// konieczne jest wywo³anie tej metody zawsze wtedy gdy rusza proces
 

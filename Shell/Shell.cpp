@@ -162,12 +162,17 @@ bool Shell::executeCommand(std::vector<std::string> parameters) {
 		}
 	} else if (parameters[0] == "cp") {
 		if (parameters.size() == 4) {
-			try {
+			if (std::stoi(parameters[2]) < 0) {
+					ErrorIP();
+					return 0;
+				}
+				if (!std::ifstream(parameters[3])) {
+					ErrorIF();
+					return 0;
+				}
 				std::shared_ptr<PCB> process = NewProcess(parameters[1], std::stoi(parameters[2]));
 				process->SetFileName(parameters[3]);
-				if (!(_memory.loadProcess(process->GetID(), parameters[3]))) {
-					ErrorFI();
-				}
+				_memory.loadProcess(process->GetID(), parameters[3]);
 			}catch(std::exception exception){
 				ErrorIP();
 				return 0;
