@@ -81,7 +81,7 @@ void Scheduler::Schedule()
 				running = procesy_gotowe_queue.top();
 				procesy_gotowe_queue.pop();
 				running->SetState(State::AKTYWNY);
-				cout << "Wybrano: " << running->ProcessName << " " << running->ProcessID << " z tau = " << running->GetTau() << endl;
+				cout << "Wybrano: " << running->ProcessName << " PID: " << running->ProcessID << " z tau = " << running->GetTau() << endl;
 
 			}
 		}
@@ -120,7 +120,7 @@ void Scheduler::Schedule()
 				running = procesy_gotowe_queue.top();
 				procesy_gotowe_queue.pop();
 				running->SetState(State::AKTYWNY);
-				cout << "Wybrano: " << running->ProcessName << " " << running->ProcessID << " z tau = " << running->GetTau() << endl;
+				cout << "Wybrano: " << running->ProcessName << " PID: " << running->ProcessID << " z tau = " << running->GetTau() << endl;
 			}
 
 		}
@@ -128,7 +128,7 @@ void Scheduler::Schedule()
 }
 void Scheduler::print_running()
 {
-	if (running->ProcessState == State::AKTYWNY) cout << "Akutalnie wykonywany proces: " << running->ProcessName << " " << running->ProcessID << endl;
+	if (running->ProcessState == State::AKTYWNY) cout << "Akutalnie wykonywany proces: " << running->ProcessName << " PID: " << running->ProcessID << endl;
 	else cout << "Nie jest wykonywany zaden proces" << endl;
 }
 void Scheduler::wyswietl_gotowe()
@@ -138,19 +138,19 @@ void Scheduler::wyswietl_gotowe()
 	{
 		for (int i = 0; i <= procesy_gotowe_queue2.size(); i++)
 		{
-			cout << "Nazwa: " << procesy_gotowe_queue2.top()->ProcessName << " " << procesy_gotowe_queue2.top()->ProcessID << endl;
+			cout << "Nazwa: " << procesy_gotowe_queue2.top()->ProcessName << " PID: " << procesy_gotowe_queue2.top()->ProcessID << endl;
 			procesy_gotowe_queue2.pop();
 		}
 		for (auto proces : procesy_otrzymane)
 		{
-			cout << "Nazwa: " << proces->ProcessName << " " << proces->ProcessID << endl;
+			cout << "Nazwa: " << proces->ProcessName << " PID: " << proces->ProcessID << endl;
 		}
 	}
 	else if (procesy_gotowe_queue2.size() > 0)
 	{
 		for (int i = 0; i <= procesy_gotowe_queue2.size(); i++)
 		{
-			cout << "Nazwa: " << procesy_gotowe_queue2.top()->ProcessName << " " << procesy_gotowe_queue2.top()->ProcessID << endl;
+			cout << "Nazwa: " << procesy_gotowe_queue2.top()->ProcessName << " PID: " << procesy_gotowe_queue2.top()->ProcessID << endl;
 			procesy_gotowe_queue2.pop();
 		}
 	}
@@ -158,7 +158,7 @@ void Scheduler::wyswietl_gotowe()
 	{
 		for (auto proces : procesy_otrzymane)
 		{
-			cout << "Nazwa: " << proces->ProcessName << " " << proces->ProcessID << endl;
+			cout << "Nazwa: " << proces->ProcessName << " PID: " << proces->ProcessID << endl;
 		}
 	}
 	else
