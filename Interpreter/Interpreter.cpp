@@ -197,6 +197,16 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 				//std::cout << "Wartosci sa sobie rowne!" << std::endl;
 				_flagEQ = true;
 			}
+			else if(forEQ(d2)) {
+				if (d1 == "A" && _RegA == std::stoi(d2) ||
+					d1 == "B" && _RegB == std::stoi(d2) ||
+					d1 == "C" && _RegC == std::stoi(d2)) {
+					_flagEQ = true;
+				}
+				else {
+					_flagEQ = false;
+				}
+			}
 			else {
 				_flagEQ = false;
 				//std::cout << "Wartosci sa rozne!" << std::endl;
@@ -647,16 +657,21 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 			RAM.loadProcess(process->GetID(), d3);*/
 			//scheduler.Schedule();
 			if (!isNum(d2) || d1 == ("") || d2 == ("") || d3 == ("")) {
-				_done = false;
+				std::cout << "Blad w parametrach." << std::endl;
 			}
 			else {
 				try {
-					std::shared_ptr<PCB> process = NewProcess(d1, std::stoi(d2));
-					process->SetFileName(d3);
-					RAM.loadProcess(process->GetID(), d3);
+					if (!std::ifstream(d3)) {
+						std::cout << "Blad w parametrach." << std::endl;
+					}
+					else {
+						std::shared_ptr<PCB> process = NewProcess(d1, std::stoi(d2));
+						process->SetFileName(d3);
+						RAM.loadProcess(process->GetID(), d3);
+					}
 				}
 				catch (std::exception exception) {
-					std::cout << "Zla forma parametru" << "\n";
+					std::cout << "Zla forma parametru" << std::endl;
 					_done = false;
 				}
 			}
@@ -741,6 +756,20 @@ bool Interpreter::isNum(std::string param)
 		if (!isdigit(param[i]))
 		{
 			std::cout << "Blad w parametrach!" << std::endl;
+			good_param = false;
+			break;
+		}
+	}
+	return good_param;
+}
+
+bool Interpreter::forEQ(std::string param)
+{
+	bool good_param = true;
+	for (int i = 0; i < param.length(); i++)
+	{
+		if (!isdigit(param[i]))
+		{
 			good_param = false;
 			break;
 		}

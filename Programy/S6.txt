@@ -9,8 +9,6 @@ CF silnia
 OF silnia
 WF silnia Wynik:
 AF silnia [C]
-SF
-SR
 ZF silnia
 PF silnia
 DF silnia

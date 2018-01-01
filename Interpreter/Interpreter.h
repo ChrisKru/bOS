@@ -33,7 +33,7 @@ private:
 	void setInstruction(Memory& RAM, int num_parameters, std::string rozkaz);			// ustawiamy w nim nasza tablice instruction
 	void eraseReg();																	// zerujemy rejestry
 	bool isNum(std::string param);
-
+	bool forEQ(std::string param);
 public:
 	Interpreter();
 

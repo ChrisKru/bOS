@@ -1,0 +1,8 @@
+CF synch
+OF synch
+WF synch Trzy
+AF synch ,
+RC 4
+ZF synch
+SC 2 bye
+EX
