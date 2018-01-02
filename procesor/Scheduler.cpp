@@ -17,7 +17,7 @@ Scheduler::Scheduler(int a) // to wywoluje Shell w main
 }
 void Scheduler::Schedule()
 {
-	if (procesy_otrzymane.size() == 0 && procesy_gotowe_queue.size() == 0 && running == GetPCB(0))
+	if (procesy_otrzymane.size() == 0 && procesy_gotowe_queue.size() == 0 && running->GetName() == "bezczynny")
 	{
 		bool a = false;
 		for (auto & x : ProcessGroupsList)
@@ -190,6 +190,34 @@ void Scheduler::killprocess()
 	{
 		running->SetState(State::ZAKONCZONY);
 		DeleteProcess(running->GetID());
+	}
+}
+void Scheduler::usun(string name)
+{
+	if (procesy_otrzymane.size() > 0)
+	{
+		procesy_otrzymane.erase(remove_if(procesy_otrzymane.begin(), procesy_otrzymane.end(),
+			[name](shared_ptr<PCB> p) {return p->GetName() == name; }));
+	}
+	if (procesy_gotowe_queue.size() > 0)
+	{
+		priority_queue<shared_ptr<PCB>, vector<shared_ptr<PCB>>, komparator> a = procesy_gotowe_queue;
+		priority_queue<shared_ptr<PCB>, vector<shared_ptr<PCB>>, komparator> b;
+		int si = procesy_gotowe_queue.size();
+		for (int i = 0; i < si; i++)
+		{
+			if (a.top()->GetName() == name)
+			{
+				a.pop();
+			}
+			else
+			{
+				shared_ptr<PCB> t = a.top();
+				a.pop();
+				b.push(t);
+			}
+		}
+		procesy_gotowe_queue = b;
 	}
 }
 void dodaj_do_procesow_gotowych(shared_ptr<PCB> proces)
