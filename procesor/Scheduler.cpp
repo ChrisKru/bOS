@@ -35,7 +35,7 @@ void Scheduler::Schedule()
 			if (a == true) break;
 		}
 	}
-	if (running != nullptr && running->GetState() == State::ZAKONCZONY)
+	if (running != nullptr && (running->GetState() == State::ZAKONCZONY || running->GetState() == State::OCZEKUJACY))
 	{
 		time = running->Timmer;
 	}
