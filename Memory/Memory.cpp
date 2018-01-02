@@ -8,6 +8,9 @@ Memory::Memory() {
 	for (int i = 0;i < 8;i++) {
 		PIDinFrame[i] = -1;
 	}
+	for (int i = 0;i < 128;i++) {
+		RAM[i] = ' ';
+	}
 }
 
 
@@ -256,7 +259,7 @@ void Memory::show() {
 	std::cout << "RAM" << std::endl;
 	int it = 0;
 	for (int i = 0;i < 8;i++) {
-		std::cout << "Ramka " << i << ": ";
+		std::cout << "Ramka " << i << ":";
 		for (int j = 0;j < 16;j++) {
 			std::cout << RAM[it++];
 		}
@@ -284,16 +287,15 @@ void Memory::showFIFO() {
 }
 
 void Memory::showPageTable(int PID) {
+	bool exist = false;
 	for (int i = 0;i < pagetables.size();i++) {
 		if (pagetables[i].getID() == PID) {
 			pagetables[i].show();
+			exist = true;
+			break;
 		}
 	}
-}
-
-void Memory::getCommandRange(int PID, int counter) {
-	int a, b;
-	a = file.getFirstIndex(PID, counter);
-	b = file.getLastIndex(PID, counter);
-	std::cout << "Pocz: " << a << ", kon: " << b << std::endl;
+	if (!exist) {
+		std::cout << "Tablica stronic dla wskazanego procesu nie istnieje" << std::endl;
+	}
 }

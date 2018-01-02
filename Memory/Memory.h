@@ -49,11 +49,4 @@ public:
 
 	void showPageTable(int PID);
 		// wyœwietla zawartoœæ tablicy stronic dla danego procesu
-
-	void getCommandRange(int PID, int counter);
-		// metoda tylko do sprawdzania czy dobrze wyznacza³em
-		// przedzia³y w pliku wymiany
-
-		// nie bêdzie nigdzie nigdy u¿ywana, ale zostawiam bo mog¹
-		// przytrafiæ siê jakieœ poprawki
 };
