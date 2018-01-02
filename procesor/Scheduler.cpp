@@ -17,7 +17,7 @@ Scheduler::Scheduler(int a) // to wywoluje Shell w main
 }
 void Scheduler::Schedule()
 {
-	if (procesy_otrzymane.size() == 0 && procesy_gotowe_queue.size() == 0)
+	if (procesy_otrzymane.size() == 0 && procesy_gotowe_queue.size() == 0 && running == GetPCB(0))
 	{
 		bool a = false;
 		for (auto & x : ProcessGroupsList)
