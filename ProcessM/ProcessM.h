@@ -114,6 +114,10 @@ std::shared_ptr<PCB> NewProcess(std::string ProcessName, int ProcessGroup);
 /*Usuwanie procesu znj¹c tylko jego Id*/
 void DeleteProcess(int ProcessID);
 
+/*Usuwanie procesu znj¹c tylko jego Name*/
+
+void DeleteProcessName(std::string ProcessName);
+
 /*Usuwanie calej grupybprocesów, bez wzglêdu na to czy jakiœ jest w œrodku*/
 void DeleteProcessGroup(int ProcessGroup);
 
