@@ -46,9 +46,10 @@ void Scheduler::Schedule()
 		{
 			if (procesy_gotowe_queue.size() > 0)
 			{
+				int size = procesy_gotowe_queue.size();
 				vector<shared_ptr<PCB>> temp = procesy_otrzymane;
 				procesy_otrzymane.clear();
-				for (int i = 0; i < procesy_gotowe_queue.size(); i++)
+				for (int i = 0; i < size; i++)
 				{
 					procesy_otrzymane.push_back(procesy_gotowe_queue.top());
 					procesy_gotowe_queue.pop();
@@ -100,7 +101,7 @@ void Scheduler::Schedule()
 
 			}
 		}
-		else //if procesy_gotowe.size() == 0
+		else //if procesy_orzymane.size() == 0
 		{
 			if (procesy_gotowe_queue.size() == 0) // jesli nie ma nic w kolejce
 			{
@@ -110,7 +111,8 @@ void Scheduler::Schedule()
 			}
 			else // jesli jest to przelicz tau i wybierz nowy proces
 			{
-				for (int i = 0; i <= procesy_gotowe_queue.size(); i++)
+				int siz = procesy_gotowe_queue.size();
+				for (int i = 0; i < siz ; i++)
 				{
 					procesy_otrzymane.push_back(procesy_gotowe_queue.top());
 					procesy_gotowe_queue.pop();
@@ -149,12 +151,16 @@ void Scheduler::print_running()
 void Scheduler::wyswietl_gotowe()
 {
 	priority_queue<shared_ptr<PCB>, vector<shared_ptr<PCB>>, komparator> procesy_gotowe_queue2 = procesy_gotowe_queue;
-	if (procesy_gotowe_queue2.size() > 0) {
+	if (procesy_gotowe_queue2.size() > 0 && procesy_otrzymane.size() > 0) {
 		int temp = procesy_gotowe_queue2.size();
 		for (int i = 0; i < temp; i++)
 		{
 			cout << "Nazwa: " << procesy_gotowe_queue2.top()->ProcessName << " PID: " << procesy_gotowe_queue2.top()->ProcessID << endl;
 			procesy_gotowe_queue2.pop();
+		}
+		for (auto proces : procesy_otrzymane)
+		{
+			cout << "Nazwa: " << proces->ProcessName << " PID: " << proces->ProcessID << endl;
 		}
 	}
 	else if (procesy_otrzymane.size() > 0)
@@ -162,6 +168,15 @@ void Scheduler::wyswietl_gotowe()
 		for (auto proces : procesy_otrzymane)
 		{
 			cout << "Nazwa: " << proces->ProcessName << " PID: " << proces->ProcessID << endl;
+		}
+	}
+	else if (procesy_gotowe_queue2.size() > 0)
+	{
+		int temp = procesy_gotowe_queue2.size();
+		for (int i = 0; i < temp; i++)
+		{
+			cout << "Nazwa: " << procesy_gotowe_queue2.top()->ProcessName << " PID: " << procesy_gotowe_queue2.top()->ProcessID << endl;
+			procesy_gotowe_queue2.pop();
 		}
 	}
 	else
