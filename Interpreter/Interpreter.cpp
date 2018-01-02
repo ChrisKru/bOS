@@ -615,29 +615,17 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 			std::string d1 = instruction[1];
 			std::string d2 = instruction[2];
 			std::shared_ptr<Komunikat> kom = std::make_shared<Komunikat>(running->GetID(), d2);
-			if (!isNum(d1)) {
-				_done = false;
-			}
-			else {
-				if (!(running->kolejka.send(std::stoi(d1), kom))) {
+				if (!(running->kolejka.send(d1, kom))) {
 					_done = false;
 				}
-			}
 		}
 		// RC PID
 		else if (operation == ("RC")) {
 			setInstruction(RAM, 1, command);
 			std::string d1 = instruction[1];
-			//std::shared_ptr<Komunikat> kom;
-			if (!isNum(d1)) {
-				_done = false;
-			}
-			else {
-				//kom = 
-				if (!running->kolejka.receive(std::stoi(d1))) {
+				if (!running->kolejka.receive(d1)) {
 					_done = false;
 				}
-			}
 		}
 		// PC
 		else if (operation == ("PC")) {
