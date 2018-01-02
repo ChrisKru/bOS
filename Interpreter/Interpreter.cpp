@@ -678,6 +678,10 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 			}*/
 			DeleteProcessName(d1);
 			scheduler.usun(d1);
+			if (d1 == running->GetName()) {
+				RAM.deleteProcess(running->GetID());
+				scheduler.killprocess();
+			}
 		}
 
 		// Aktywny proces: AP
