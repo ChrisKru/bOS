@@ -25,14 +25,12 @@ class Kolejka
 public:
 	//--------pola
 	std::deque<std::shared_ptr<Komunikat>> kolejka;
-	//Komunikat* wskaznik;	
-	Komunikat niewskaznik;
 	std::shared_ptr<Komunikat> wskaznik;
 	//--------metody
 	Kolejka();
 	void dodaj_komunikat(std::shared_ptr<Komunikat> komunikat);
 	void usun_komunikat();
-	bool send(int id_odbiorcy /*std::string odbiorca*/, std::shared_ptr<Komunikat> komunikat);
-	bool receive(int id_nadawcy /*std::string nadawca*/);
+	bool send(std::string odbiorca, std::shared_ptr<Komunikat> komunikat);
+	bool receive(std::string nadawca);
 	void wyswietl();
 };

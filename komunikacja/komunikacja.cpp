@@ -50,16 +50,21 @@ void Kolejka::usun_komunikat()
 	else
 		kolejka.pop_front();
 }
-bool Kolejka::receive(int id_nadawcy /*std::string nadawca*/)
+bool Kolejka::receive(std::string nazwa_nadawcy)
 {
 	bool flagR = false;
 	bool czy_istnieje = false;
+	int id_nadawcy;
 	for (auto &v : ProcessGroupsList) 
 	{
 		for (auto &x : v.ProcessList) 
 		{
-			if (x->ProcessID == id_nadawcy)	//sprawdzenie, czy nadawca nie zakoñczy³ do tej pory dzia³ania
+			if (x->ProcessName == nazwa_nadawcy)	//sprawdzenie, czy nadawca nie zakoñczy³ do tej pory dzia³ania
+			{
 				czy_istnieje = true;
+				id_nadawcy = x->GetID();
+
+			}
 		}
 	}
 	if (czy_istnieje == true)
@@ -114,18 +119,27 @@ void Kolejka::wyswietl()
 		}
 	}
 }
-bool Kolejka::send(int id_odbiorcy, std::shared_ptr<Komunikat> komunikat)
+bool Kolejka::send(std::string nazwa_odbiorcy, std::shared_ptr<Komunikat> komunikat)
 {	//dostêp do kolejki: id procesu jest potrzebne. Wykorzystujê funkcjê GetPCB, któa zwraca shared pointer do PCB. Wtedy bêdzie PCB->kolejka
 	//std::list<Group>ProcessGroupsList;
 	bool flagS = false;
 	bool czy_pelna = false;
 	bool czy_istnieje = false;
+	int id_odbiorcy;
+	if (nazwa_odbiorcy == running->ProcessName)
+	{
+		std::cout << "Proba wyslania komunikatu do samego siebie, zdefiniuj innego odbiorce" << std::endl;
+		flagS = true;
+	}
 	for (auto &v : ProcessGroupsList)
 	{
 		for (auto &x : v.ProcessList)
 		{
-			if (x->ProcessID == id_odbiorcy)	//sprawdzenie, czy nadawca nie zakoñczy³ do tej pory dzia³ania
+			if (x->ProcessName == nazwa_odbiorcy)	//sprawdzenie, czy nadawca nie zakoñczy³ do tej pory dzia³ania
+			{
 				czy_istnieje = true;
+				id_odbiorcy = x->GetID();
+			}
 		}
 	}
 	if (czy_istnieje == true)
