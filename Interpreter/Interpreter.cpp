@@ -734,7 +734,7 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 		}
 		// Blad interpretacji
 		else {
-			std::cout << "Brak takiej instrukcji";
+			std::cout << "Brak takiej instrukcji" << std::endl;
 			_done = false;
 		}
 		if (_done && command == ("runp")) {

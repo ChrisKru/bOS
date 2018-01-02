@@ -149,21 +149,9 @@ void Scheduler::print_running()
 void Scheduler::wyswietl_gotowe()
 {
 	priority_queue<shared_ptr<PCB>, vector<shared_ptr<PCB>>, komparator> procesy_gotowe_queue2 = procesy_gotowe_queue;
-	if (procesy_gotowe_queue2.size() > 0 && procesy_otrzymane.size() > 0)
-	{
-		for (int i = 0; i <= procesy_gotowe_queue2.size(); i++)
-		{
-			cout << "Nazwa: " << procesy_gotowe_queue2.top()->ProcessName << " PID: " << procesy_gotowe_queue2.top()->ProcessID << endl;
-			procesy_gotowe_queue2.pop();
-		}
-		for (auto proces : procesy_otrzymane)
-		{
-			cout << "Nazwa: " << proces->ProcessName << " PID: " << proces->ProcessID << endl;
-		}
-	}
-	else if (procesy_gotowe_queue2.size() > 0)
-	{
-		for (int i = 0; i <= procesy_gotowe_queue2.size(); i++)
+	if (procesy_gotowe_queue2.size() > 0) {
+		int temp = procesy_gotowe_queue2.size();
+		for (int i = 0; i < temp; i++)
 		{
 			cout << "Nazwa: " << procesy_gotowe_queue2.top()->ProcessName << " PID: " << procesy_gotowe_queue2.top()->ProcessID << endl;
 			procesy_gotowe_queue2.pop();
