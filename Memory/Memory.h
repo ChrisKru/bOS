@@ -37,6 +37,11 @@ public:
 		// metoda ³aduj¹ca proces do pliku wymiany
 		// konieczne jest wywo³anie tej metody zawsze wtedy gdy rusza proces
 
+	void deleteProcess(int PID);
+		// metoda usuwa proces z PLIKU WYMIANY
+		// nie ma potrzeby usuwania procesu z pamiêci, bo dane i tak bêd¹
+		// nadpisywane, natomiast plik wymiany nie mo¿e byæ nieskoñczenie wielki
+
 	void show();
 		// wyœwietla zawartoœæ pamiêci
 

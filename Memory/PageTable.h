@@ -19,8 +19,10 @@ public:
 		// zwraca stronicê, w której powinien znajdowaæ siê wskazany adres
 
 	int getPages();
+		// zwraca iloœæ stronic
 
 	int getID();
+		// zwraca ID procesu, do którego nale¿y tablica stronic
 
 	void show();
 		// wyswietla zawartosc tablicy stronic

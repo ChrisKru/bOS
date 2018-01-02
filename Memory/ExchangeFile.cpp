@@ -105,10 +105,14 @@ int ExchangeFile::getLastIndex(int PID, int commandCounter) {
 }
 
 void ExchangeFile::deleteProcessData(int PID) {
-
+	for (int i = 0;i < file.size();i++) {
+		if (file[i].PID == PID) {
+			file.erase(file.begin() + i);
+			container.erase(container.begin() + i);
+			i--;
+		}
+	}
 }
-
-
 
 void ExchangeFile::show() {
 

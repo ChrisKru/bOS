@@ -9,6 +9,7 @@ PageTable::PageTable(int PID, int ProcessSize) {
 	else pages = ProcessSize / 16 + 1;
 
 	for (int i = 0;i < pages;i++) {
+		// domyœlne wartoœci
 		FrameNumber.push_back(-1);
 		VIBit.push_back(false);
 	}

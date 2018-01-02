@@ -255,6 +255,10 @@ void Memory::loadProcess(int PID, std::string filename) {
 
 }
 
+void Memory::deleteProcess(int PID) {
+	file.deleteProcessData(PID);
+}
+
 void Memory::show() {
 	std::cout << "RAM" << std::endl;
 	int it = 0;
