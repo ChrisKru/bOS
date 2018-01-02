@@ -187,6 +187,7 @@ bool Shell::executeCommand(std::vector<std::string> parameters) {
 			ErrorPM();
 			return 0;
 		}
+		_memory.deleteProcess(running->GetID());
 		_scheduler.killprocess();
 	} else if (parameters[0] == "runp") {
 		if (parameters.size() != 1) {
