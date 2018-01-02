@@ -124,7 +124,7 @@ void DeleteProcess(int ProcessID) {
 };
 void DeleteProcessName(std::string ProcessName){
 	for (auto it = ProcessGroupsList.begin(); it != ProcessGroupsList.end(); ++it) {
-		it->ProcessList.remove_if([ProcessName](std::shared_ptr<PCB> n) { return n->GetName == ProcessName; });
+		it->ProcessList.remove_if([ProcessName](std::shared_ptr<PCB> n) { return n->GetName() == ProcessName; });
 	}// co zrobiæ gdy usuniemy ostatni proces z danje grupy, usun¹c odrazu grupê ?
 };
 void DeleteProcessGroup(int ProcessGroup) {
