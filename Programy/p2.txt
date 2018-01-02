@@ -1,8 +1,8 @@
 RP
 AP
-CP dU1 2 pusty.txt
+CP dU1 2 dU1.txt
+CP dU2 3 dU2.txt
 RP
-CP dU2 3 pusty2.txt
 DP dU1
 DP dU2
 RP

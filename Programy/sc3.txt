@@ -1,0 +1,10 @@
+SC synch1 Moi
+SC synch2 Moi
+CF synch
+OF synch
+WF synch Five
+AF synch ,
+RC synch2
+ZF synch
+RC synch1
+EX

@@ -1,7 +1,0 @@
-SC 3 Hi
-OF synch
-WF synch Cztery
-AF synch ,
-ZF synch
-RC 3
-EX

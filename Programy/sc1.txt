@@ -2,7 +2,9 @@ CF synch
 OF synch
 WF synch Trzy
 AF synch ,
-RC 4
+RC synch2
+RC synch3
 ZF synch
-SC 2 bye
+SC synch2 bye
+SC synch1 ciao
 EX
