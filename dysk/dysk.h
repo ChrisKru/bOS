@@ -9,7 +9,6 @@ struct Katalog
 	int first_block;			//numer pierwszego bloku
 	int size;					//rozmir pliku w znakach
 	bool free;					//wolny do zapisu
-	bool open = false;					//czy plik otwarty
 	CV cv_;						//Zmienna warunkowa
 };
 

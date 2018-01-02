@@ -164,28 +164,21 @@ bool Disc::open_file(std::string filename, bool is_shell)
 	if (file_exist(filename))
 	{
 		int kat_nr = find_file(filename);
+		katalog_[kat_nr].cv_.remove_killed();
 
-		if (!is_shell)
-		{
-			if (katalog_[kat_nr].cv_.wait())
-			{
-				katalog_[kat_nr].open = false;
+		if (!is_shell) {
+			return katalog_[kat_nr].cv_.wait();
+		}
+		else {
+			if (katalog_[kat_nr].cv_.is_used()) {
+				std::cout << "Plik jest juz otwarty" << std::endl;
 				return false;
 			}
+			else {
+				katalog_[kat_nr].cv_.set_used(true);
+				return true;
+			}
 		}
-
-
-		if (katalog_[kat_nr].open == true)
-		{
-			std::cout << "Plik jest juz otwarty" << std::endl;
-			return false;
-		}
-		else
-		{
-			katalog_[kat_nr].open = true;
-			return true;
-		}
-
 	}
 	else
 	{
@@ -201,12 +194,9 @@ void Disc::close_file(std::string filename, bool is_shell)
 		int kat_nr = find_file(filename);
 
 		if (!is_shell)
-		{
 			katalog_[kat_nr].cv_.signal();
-		}
-
-		katalog_[kat_nr].open = false;
-
+		else
+			katalog_[kat_nr].cv_.set_used(false);
 	}
 	else
 	{
@@ -252,7 +242,7 @@ void Disc::write_file(std::string filename, std::string data)
 	if (file_exist(filename))
 	{
 		int kat_nr = find_file(filename);
-		if (katalog_[kat_nr].open == true)
+		if (katalog_[kat_nr].cv_.is_used() == true)
 		{
 			if (kat_nr != -1)
 			{
@@ -315,21 +305,15 @@ void Disc::delete_file(std::string filename)
 	if (file_exist(filename))
 	{
 		int kat_nr = find_file(filename);
-		if (katalog_[kat_nr].open == false)
+		katalog_[kat_nr].cv_.remove_killed();
+
+		if (katalog_[kat_nr].cv_.is_used() == false)
 		{
-			if (katalog_[kat_nr].cv_.is_empty())
-			{
 				delete_block(katalog_[kat_nr].first_block);
 				block_[katalog_[kat_nr].first_block] = true;
 				katalog_[kat_nr].free = true;
 				katalog_[kat_nr].size = 0;
 				katalog_[kat_nr].filename = "";
-			}
-			else
-			{
-				std::cout << "Plik jest uzywany przez inny proces" << std::endl;
-			}
-
 		}
 		else
 		{
@@ -364,7 +348,7 @@ void Disc::rename_file(std::string filename, std::string new_filename)
 	int kat_nr = find_file(filename);
 	if (kat_nr != -1)
 	{
-		if (katalog_[kat_nr].open == true)
+		if (katalog_[kat_nr].cv_.is_used() == true)
 		{
 			if (new_filename.size() == 0)
 			{
@@ -393,7 +377,7 @@ void Disc::add_to_file(std::string filename, std::string data)
 	int kat_nr = find_file(filename);
 	if (kat_nr != -1)
 	{
-		if (katalog_[kat_nr].open == true)
+		if (katalog_[kat_nr].cv_.is_used() == true)
 		{
 			if (katalog_[kat_nr].size == 0)
 			{
