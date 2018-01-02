@@ -129,8 +129,8 @@ void Scheduler::Schedule()
 }
 void Scheduler::print_running()
 {
-	if (running->ProcessState == State::AKTYWNY) cout << "Akutalnie wykonywany proces: " << running->ProcessName << " PID: " << running->ProcessID << endl;
-	else cout << "Nie jest wykonywany zaden proces" << endl;
+	if (running->ProcessState == State::AKTYWNY) cout << "Akutalnie wykonywany proces o nazwie: " << running->ProcessName << " PID: " << running->ProcessID << endl;
+	else cout << "Nie jest wykonywany zaden proces, aktywny proces bezczynnosci" << endl;
 }
 void Scheduler::wyswietl_gotowe()
 {
