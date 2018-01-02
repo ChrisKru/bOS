@@ -1,10 +1,10 @@
-SC synch1 Moi
-SC synch2 Moi
+SC sc1 Moi
+SC sc2 Moi
+RC sc2
+SC sc2 Czekam
 CF synch
 OF synch
-WF synch Five
-AF synch ,
-RC synch2
+AF synch Five
+AF synch .
 ZF synch
-RC synch1
 EX

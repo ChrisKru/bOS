@@ -1,10 +1,9 @@
-SC synch1 Hi
-SC synch3 Hi
+SC sc1 Hi
+SC sc3 Hi
 CF synch
 OF synch
-WF synch Cztery
+AF synch Cztery
 AF synch ,
-RC synch3
+RC sc3
 ZF synch
-RC synch1
 EX
