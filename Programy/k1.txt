@@ -1,4 +1,3 @@
-SC k3 Jeden
 MV B 5
 MV A 1
 MV C 0
@@ -7,7 +6,6 @@ IC A
 DC B
 EQ B C
 JF 3
-RC k3
 RC k2
 SC k2 Bye
 RC k2

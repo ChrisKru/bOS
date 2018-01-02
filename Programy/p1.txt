@@ -6,7 +6,6 @@ CP sc3 0 sc3.txt
 CP k1 0 k1.txt
 CP k2 0 k2.txt
 CP aryt1 2 a1.txt
-CP
 CP aryt2 4 a2.txt
 RP
 SF
