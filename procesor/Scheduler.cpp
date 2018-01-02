@@ -44,6 +44,20 @@ void Scheduler::Schedule()
 	{
 		if (procesy_otrzymane.size() > 0)
 		{
+			if (procesy_gotowe_queue.size() > 0)
+			{
+				vector<shared_ptr<PCB>> temp = procesy_otrzymane;
+				procesy_otrzymane.clear();
+				for (int i = 0; i < procesy_gotowe_queue.size(); i++)
+				{
+					procesy_otrzymane.push_back(procesy_gotowe_queue.top());
+					procesy_gotowe_queue.pop();
+				}
+				for (int i = 0; i < temp.size(); i++)
+				{
+					procesy_otrzymane.push_back(temp[i]);
+				}
+			}
 			bool x = false;
 			for (auto proces : procesy_otrzymane)
 			{
