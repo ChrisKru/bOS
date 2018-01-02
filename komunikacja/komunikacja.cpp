@@ -90,7 +90,6 @@ bool Kolejka::receive(int id_nadawcy /*std::string nadawca*/)
 		{
 			std::cout << "Kolejka komunikatow dla tego procesu jest pusta" << std::endl;
 			running->SetState(State::OCZEKUJACY);
-			std::shared_ptr<Komunikat> odebrany = std::make_shared<Komunikat>(id_nadawcy, "----");
 			return flagR;
 			//jeœli ju¿ bêdê robi³ tak, ¿e Komunikat bêdzie wskaŸnikiem, to tutaj zwrócê nullptr, bo kompilator sie sra, ¿e nic tutaj na razie nie jest zwracane
 		}
@@ -98,7 +97,6 @@ bool Kolejka::receive(int id_nadawcy /*std::string nadawca*/)
 	else if (czy_istnieje == false)
 	{
 		std::cout << "Proces nadawcy nie istnieje, nie mozna odebrac komunikatu" << std::endl;
-		std::shared_ptr<Komunikat> odebrany = std::make_shared<Komunikat>(id_nadawcy, "----");
 		flagR = true;
 		return flagR;
 	}
