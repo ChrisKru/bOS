@@ -670,12 +670,14 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 		else if (operation == ("DP")) {
 			setInstruction(RAM, 1, command);
 			std::string d1 = instruction[1];
-			if (!isNum(d1)) {
+			/*if (!isNum(d1)) {
 				_done = false;
 			}
 			else {
 				DeleteProcess(std::stoi(d1));
-			}
+			}*/
+			DeleteProcessName(d1);
+			scheduler.usun(d1);
 		}
 
 		// Aktywny proces: AP
