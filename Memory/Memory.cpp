@@ -135,7 +135,7 @@ std::string Memory::getCommand(int PID, int commandCounter) {
 					return command;
 				}
 				else {
-					while (it > 16) {
+					while (it < 16) {
 						command += data_.data[it];
 						it++;
 					}
