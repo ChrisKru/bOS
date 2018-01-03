@@ -31,10 +31,10 @@ std::vector<std::string> Shell::parseInput(std::string input){
 	while(parser >> param){
 		parameters.push_back(param);
 		if (edit_mode) {
-			getline(parser, param);
-			if(parser.eof()){
+			if (parser.eof()) {
 				break;
 			}
+			getline(parser, param);
 			param.erase(0, 1);
 			parameters.push_back(param);
 			break;
