@@ -164,17 +164,14 @@ bool Shell::executeCommand(std::vector<std::string> parameters) {
 	}else if (parameters[0] == "lsg") {
 		if (parameters.size() == 1) {
 			PrintProcessListInformation();
-		}
-		else if (parameters.size() == 2) {
+		} else if (parameters.size() == 2) {
 			if (parameters[1] == "-g") {
 				PrintGroupInformation();
-			}
-			else {
+			}else {
 				ErrorPM();
 				return 0;
 			}
-		}
-		else {
+		}else {
 			ErrorPM();
 			return 0;
 		}
@@ -225,12 +222,6 @@ bool Shell::executeCommand(std::vector<std::string> parameters) {
 			ErrorPM();
 			return 0;
 		}
-	} else if (parameters[0] == "cpg") {
-		if (parameters.size() != 1) {
-			ErrorPM();
-			return 0;
-		}
-		NewProcessGroup("bezczynny");
 	} else if (parameters[0] == "killp") {
 		if (parameters.size() != 1) {
 			ErrorPM();
@@ -301,8 +292,7 @@ void Shell::printHelp(){
 	std::cout << "lsg                                              lista grup\n";
 	std::cout << "lsg -g                                           lista procesow w grupach\n";
 	std::cout << "cp          nazwa_procesu id_grupy nazwa_pliku   utworzenie procesu z pliku\n";
-	std::cout << "cpg                                              utworzenie nowej grupy procesow\n";
-	std::cout << "cgp        nazwa_procesu  nazwa_pliku            utworzenie nowej grupy z pierwszym procesem\n";
+	std::cout << "cgp         nazwa_procesu  nazwa_pliku           utworzenie nowej grupy z pierwszym procesem\n";
 	std::cout << "killp                                            usuniecie procesu wykonywanego\n";
 	std::cout << "runp                                             uruchomienie procesu\n";
 	std::cout << "reg                                              zawartosc rejestru\n";
