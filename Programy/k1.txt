@@ -8,5 +8,5 @@ EQ B C
 JF 3
 RC k2
 SC k2 Bye
-RC k2
+SC k2 Postscriptum
 EX
