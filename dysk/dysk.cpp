@@ -357,7 +357,6 @@ void Disc::rename_file(std::string filename, std::string new_filename)
 			else
 			{
 				katalog_[kat_nr].filename = new_filename;
-				std::cout << "Zmieniono nazwe pliku \"" << filename << "\" na \"" << new_filename << "\"" << std::endl;
 			}
 
 		}
