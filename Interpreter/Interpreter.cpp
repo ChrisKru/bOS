@@ -118,7 +118,7 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 		}
 		else {
 			operation = command.substr(0, 2);
-			std::cout << "Rozkaz:$ " << command << " $ dla procesu: " << _PID << " o nazwie: " << running->GetName() << std::endl;
+			std::cout << "Rozkaz:$ " << RAM.getCommand(_PID, _IP) << " $ dla procesu o ID: " << _PID << " i nazwie: " << running->GetName() << std::endl;
 		}
 
 		/* Operacje logiczne */
@@ -522,7 +522,7 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 			setInstruction(RAM, 1, command);
 			std::string d1 = instruction[1];
 			if (d1 == ("")) {
-				std::cout << "Blad w parametrach!" << std::endl;
+				std::cout << "Blad w parametrach" << std::endl;
 			}
 			else {
 				if (!dysk.open_file(d1, false)) {
@@ -535,7 +535,7 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 			setInstruction(RAM, 1, command);
 			std::string d1 = instruction[1];
 			if (d1 == ("")) {
-				std::cout << "Blad w parametrach!" << std::endl;
+				std::cout << "Blad w parametrach" << std::endl;
 			}
 			else {
 				dysk.close_file(d1, false);
@@ -546,7 +546,7 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 			setInstruction(RAM, 1, command);
 			std::string d1 = instruction[1];
 			if (d1 == ("")) {
-				std::cout << "Blad w parametrach!" << std::endl;
+				std::cout << "Blad w parametrach" << std::endl;
 			}
 			else {
 				dysk.create_file(d1);
@@ -789,7 +789,7 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 		}
 	}
 	else {
-		std::cout << "dziala proces bezczynnosci.\n";
+		std::cout << "dziala proces bezczynnosci\n";
 	}
 }
 
@@ -800,7 +800,7 @@ bool Interpreter::isNum(std::string param)
 	{
 		if (!isdigit(param[i]))
 		{
-			std::cout << "Blad w parametrach!" << std::endl;
+			std::cout << "Blad w parametrach" << std::endl;
 			good_param = false;
 			break;
 		}
