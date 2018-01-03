@@ -96,7 +96,7 @@ void Interpreter::saveRegisters() {
 }
 
 void Interpreter::showRegisters() {
-	std::cout << "Stan rejestrow dla procesu: " << _PID << std::endl;
+	std::cout << "Stan rejestrow dla procesu: " << running->GetName() << " PID: " <<_PID << std::endl;
 	std::cout << "A: " << _RegA << std::endl;
 	std::cout << "B: " << _RegB << std::endl;
 	std::cout << "C: " << _RegC << std::endl;
@@ -114,7 +114,7 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 		// Rozkaz do wykonania
 		if (command == "runp") {
 			operation = loadInstruction(RAM).substr(0, 2);
-			std::cout << "Rozkaz:$ " << RAM.getCommand(_PID, _IP) << " $ dla procesu: " << _PID << " o nazwie: " << running->GetName() << std::endl;
+			std::cout << "Rozkaz:$ " << RAM.getCommand(_PID, _IP) << " $ dla procesu o ID: " << _PID << " i nazwie: " << running->GetName() << std::endl;
 		}
 		else {
 			operation = command.substr(0, 2);
@@ -652,7 +652,7 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 			else {
 				try {
 					if (!std::ifstream(d3)) {
-						std::cout << "Blad w parametrach." << std::endl;
+						std::cout << "Brak pliku." << std::endl;
 					}
 					else {
 						std::shared_ptr<PCB> process = NewProcess(d1, std::stoi(d2));
@@ -678,12 +678,12 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 			RAM.loadProcess(process->GetID(), d3);*/
 			//scheduler.Schedule();
 			if (d1 == ("") || d2 == ("")) {
-				std::cout << "Blad w parametrach." << std::endl;
+				std::cout << "Blad w parametrach" << std::endl;
 			}
 			else {
 				try {
 					if (!std::ifstream(d2)) {
-						std::cout << "Blad w parametrach." << std::endl;
+						std::cout << "Brak pliku" << std::endl;
 					}
 					else {
 						std::shared_ptr<PCB> process = NewProcessGroupProcess(d1);
@@ -708,7 +708,6 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 				DeleteProcess(std::stoi(d1));
 			}*/
 			// dodaæ Macieja tutaj! Potrzebna metoda, która po podaniu nazwy procesu, zwraca nam jej PID :P
-			// potrzebna metoda: która po podaniu jego nazwy/id procesu ustawia dany proces na zakoñczony
 			DeleteProcessName(d1);
 			scheduler.usun(d1);
 			if (d1 == running->GetName()) {
