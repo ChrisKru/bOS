@@ -300,3 +300,5 @@ void Shell::printHelp(){
 	std::cout << "runp                                             uruchomienie procesu\n";
 	std::cout << "reg                                              zawartosc rejestru\n";
 }
+
+//
