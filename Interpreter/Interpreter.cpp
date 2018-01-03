@@ -114,11 +114,11 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 		// Rozkaz do wykonania
 		if (command == "runp") {
 			operation = loadInstruction(RAM).substr(0, 2);
-			std::cout << "Rozkaz:$ " << RAM.getCommand(_PID, _IP) << " $ dla procesu: " << _PID << std::endl;
+			std::cout << "Rozkaz:$ " << RAM.getCommand(_PID, _IP) << " $ dla procesu: " << _PID << " o nazwie: " << running->GetName() << std::endl;
 		}
 		else {
 			operation = command.substr(0, 2);
-			std::cout << "Rozkaz:$ " << command << " $ dla procesu: " << _PID << std::endl;
+			std::cout << "Rozkaz:$ " << command << " $ dla procesu: " << _PID << " o nazwie: " << running->GetName() << std::endl;
 		}
 
 		/* Operacje logiczne */
