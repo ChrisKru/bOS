@@ -70,6 +70,11 @@ bool Kolejka::receive(std::string nazwa_nadawcy)
 	if (czy_istnieje == true)
 	{
 		std::shared_ptr<PCB> nadawca = GetPCB(id_nadawcy);	//to bêdzie u¿ywane dalej, przy budzeniu
+
+		if (nadawca->GetProcessGroup() != running->GetProcessGroup()) {
+			std::cout << "Procesy naleza do roznych grup" << std::endl;
+			return true;
+		}
 		std::cout << "Rozmiar kolejki: " << kolejka.size() << std::endl;
 		if (kolejka.size() > 0)
 		{
@@ -146,6 +151,11 @@ bool Kolejka::send(std::string nazwa_odbiorcy, std::shared_ptr<Komunikat> komuni
 	{
 		std::shared_ptr<PCB> odbiorca = GetPCB(id_odbiorcy);
 		std::shared_ptr<PCB> nadawca = GetPCB(komunikat->id_nadawcy);
+
+		if (nadawca->GetProcessGroup() != odbiorca->GetProcessGroup()) {
+			std::cout << "Procesy naleza do roznych grup" << std::endl;
+			return true;
+		}
 		if (odbiorca->kolejka.kolejka.size() >= 2)
 		{
 			nadawca->SetState(State::OCZEKUJACY);
