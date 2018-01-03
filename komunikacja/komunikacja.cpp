@@ -15,17 +15,17 @@ Komunikat::Komunikat(int nadawca, std::string tresc)
 	tresc_komunikatu = tresc;
 	rozmiar_komunikatu = tresc_komunikatu.size();
 }
-/*
+
 int Komunikat::getID()
 {
 	return id_nadawcy;
 }
 
-int Komunikat::getRozmair()
+int Komunikat::getRozmiar()
 {
 	return rozmiar_komunikatu;
 }
-*/
+
 std::string Komunikat::getTresc()
 {
 	return tresc_komunikatu;
@@ -54,12 +54,19 @@ bool Kolejka::receive(std::string nazwa_nadawcy)
 {
 	bool flagR = false;
 	bool czy_istnieje = false;
+	bool rozne_grupy = true;
 	int id_nadawcy;
+	if (nazwa_nadawcy == running->ProcessName)
+	{
+		std::cout << "Proba odebrania komunikatu od samego siebie, zdefiniuj innego nadawce" << std::endl;
+		flagR = true;
+		return flagR;
+	}
 	for (auto &v : ProcessGroupsList) 
 	{
 		for (auto &x : v.ProcessList) 
 		{
-			if (x->ProcessName == nazwa_nadawcy)	//sprawdzenie, czy nadawca nie zakoñczy³ do tej pory dzia³ania
+			if (x->ProcessName == nazwa_nadawcy)	//sprawdzenie, czy nadawca nie zakoñczy³ do tej pory dzia³ania(tzn czy jest na liœcie procesów)
 			{
 				czy_istnieje = true;
 				id_nadawcy = x->GetID();
@@ -69,39 +76,40 @@ bool Kolejka::receive(std::string nazwa_nadawcy)
 	}
 	if (czy_istnieje == true)
 	{
-		std::shared_ptr<PCB> nadawca = GetPCB(id_nadawcy);	//to bêdzie u¿ywane dalej, przy budzeniu
-
-		if (nadawca->GetProcessGroup() != running->GetProcessGroup()) {
-			std::cout << "Procesy naleza do roznych grup" << std::endl;
-			return true;
-		}
+		std::shared_ptr<PCB> nadawca = GetPCB(id_nadawcy);
 		std::cout << "Rozmiar kolejki: " << kolejka.size() << std::endl;
-		if (kolejka.size() > 0)
+		int grupa_odbiorcy = running->ProcessGroup;
+		int grupa_nadawcy = nadawca->ProcessGroup;
+		for (auto &it : ProcessGroupsList)
 		{
-			for (auto &it : kolejka)
-			{
-				if (it->id_nadawcy == id_nadawcy)
-				{
-					if (nadawca->GetState() == State::OCZEKUJACY && kolejka.size() == 2)
+			if (it.ProcessGroup == grupa_odbiorcy && it.ProcessGroup == grupa_nadawcy)
+				rozne_grupy = false;
+		}
+		if (kolejka.size() > 0 && rozne_grupy==false)
+		{
+					for (auto &it : kolejka)
 					{
-						nadawca->SetState(State::GOTOWY);
-						dodaj_do_procesow_gotowych(nadawca);
+						if (it->id_nadawcy == id_nadawcy)
+						{
+							if (nadawca->GetState() == State::OCZEKUJACY && kolejka.size() == 2)	//budzenie nadawcy, jeœli jest uœpiony i kolejka odbiorcy by³a pe³na
+							{
+								nadawca->SetState(State::GOTOWY);
+								dodaj_do_procesow_gotowych(nadawca);
+							}
+							std::shared_ptr<Komunikat> odebrany = kolejka.front();
+							flagR = true;
+							usun_komunikat();	//po odczytaniu komunikatu z kolejki, musi zostaæ z niej usuniêty
+							std::cout << "Tresc odebranego komunikatu: " << odebrany->tresc_komunikatu << std::endl;
+							return flagR;
+						}
 					}
-					std::shared_ptr<Komunikat> odebrany = kolejka.front();
-					flagR = true;
-					usun_komunikat();	//po odczytaniu komunikatu z kolejki, musi zostaæ z niej usuniêty
-					std::cout << "Tresc odebranego komunikatu: " << odebrany->tresc_komunikatu << std::endl;
-					return flagR;
-				}
-			}
 
 		}
-		else if (kolejka.size() == 0)
+		else if (kolejka.size() == 0 && rozne_grupy == false)	//usypianie odbiorcy, gdy jego kolejka jest pusta
 		{
 			std::cout << "Kolejka komunikatow dla tego procesu jest pusta" << std::endl;
 			running->SetState(State::OCZEKUJACY);
 			return flagR;
-			//jeœli ju¿ bêdê robi³ tak, ¿e Komunikat bêdzie wskaŸnikiem, to tutaj zwrócê nullptr, bo kompilator sie sra, ¿e nic tutaj na razie nie jest zwracane
 		}
 	}
 	else if (czy_istnieje == false)
@@ -110,6 +118,13 @@ bool Kolejka::receive(std::string nazwa_nadawcy)
 		flagR = true;
 		return flagR;
 	}
+	if (rozne_grupy == true)
+	{
+		std::cout << "Procesy naleza do roznych grupy, nie udalo sie odebrac komunikatu" << std::endl;
+		flagR = true;
+		return flagR;
+	}
+	return flagR;
 }
 void Kolejka::wyswietl()
 {
@@ -120,21 +135,22 @@ void Kolejka::wyswietl()
 		std::cout << "Kolejka zawiera nastepujace komunikaty: " << std::endl;
 		for (auto e : kolejka)
 		{
-			std::cout << e->getTresc() << std::endl;		//chyba powinno wyœwietliæ, nie mam jeszcze pewnoœci
+			std::cout << e->getTresc() << std::endl;
 		}
 	}
 }
 bool Kolejka::send(std::string nazwa_odbiorcy, std::shared_ptr<Komunikat> komunikat)
-{	//dostêp do kolejki: id procesu jest potrzebne. Wykorzystujê funkcjê GetPCB, któa zwraca shared pointer do PCB. Wtedy bêdzie PCB->kolejka
-	//std::list<Group>ProcessGroupsList;
+{
 	bool flagS = false;
 	bool czy_pelna = false;
 	bool czy_istnieje = false;
+	bool rozne_grupy = true;
 	int id_odbiorcy;
 	if (nazwa_odbiorcy == running->ProcessName)
 	{
 		std::cout << "Proba wyslania komunikatu do samego siebie, zdefiniuj innego odbiorce" << std::endl;
 		flagS = true;
+		return flagS;
 	}
 	for (auto &v : ProcessGroupsList)
 	{
@@ -151,28 +167,26 @@ bool Kolejka::send(std::string nazwa_odbiorcy, std::shared_ptr<Komunikat> komuni
 	{
 		std::shared_ptr<PCB> odbiorca = GetPCB(id_odbiorcy);
 		std::shared_ptr<PCB> nadawca = GetPCB(komunikat->id_nadawcy);
-
-		if (nadawca->GetProcessGroup() != odbiorca->GetProcessGroup()) {
-			std::cout << "Procesy naleza do roznych grup" << std::endl;
-			return true;
+		int grupa_odbiorcy = odbiorca->ProcessGroup;
+		int grupa_nadawcy = nadawca->ProcessGroup;
+		for (auto &it : ProcessGroupsList)
+		{
+			if (it.ProcessGroup == grupa_odbiorcy && it.ProcessGroup == grupa_nadawcy)
+				rozne_grupy = false;
 		}
-		if (odbiorca->kolejka.kolejka.size() >= 2)
+		if (odbiorca->kolejka.kolejka.size() >= 2 && rozne_grupy==false)	//usypianie nadawcy, gdy kolejka odbiorcy jest pe³na
 		{
 			nadawca->SetState(State::OCZEKUJACY);
 			czy_pelna = true;
 		}
-		if (czy_pelna == false)
+		if (czy_pelna == false && rozne_grupy == false)
 		{
-			if (odbiorca->GetState() == State::OCZEKUJACY && odbiorca->kolejka.kolejka.size() == 0)
-			{
-				odbiorca->SetState(State::GOTOWY);
-				dodaj_do_procesow_gotowych(odbiorca);
-			}
-			int grupa_odbiorcy = odbiorca->ProcessGroup;
-			int grupa_nadawcy = nadawca->ProcessGroup;
-			for (auto &it : ProcessGroupsList)
-			{
-				if (it.ProcessGroup == grupa_odbiorcy && it.ProcessGroup == grupa_nadawcy)
+			if (odbiorca->GetState() == State::OCZEKUJACY && odbiorca->kolejka.kolejka.size() == 0)	//budzenie odbiorcy, jeœli jest uœpiony i jego kolejka jest pusta
+				{
+					odbiorca->SetState(State::GOTOWY);
+					dodaj_do_procesow_gotowych(odbiorca);
+				}
+				for (auto &it : ProcessGroupsList)
 				{
 					for (auto &e : it.ProcessList)
 					{
@@ -184,11 +198,15 @@ bool Kolejka::send(std::string nazwa_odbiorcy, std::shared_ptr<Komunikat> komuni
 
 					}
 				}
-			}
 		}
-		if (flagS == false)
+		if (flagS == false && rozne_grupy==false)
 		{
 			std::cout << "Nie wyslano komunikatu" << std::endl;
+		}
+		else if (flagS == false && rozne_grupy == true)
+		{
+			std::cout << "Procesy naleza do roznych grup, nie udalo sie wyslac komunikatu" << std::endl;
+			flagS = true;
 		}
 	}
 	else if (czy_istnieje == false)
