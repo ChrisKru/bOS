@@ -134,8 +134,17 @@ std::shared_ptr<PCB> NewProcess(std::string ProcessName, int ProcessGroup) {
 };
 void DeleteProcess(int ProcessID) {
 	int i;
+	bool f = false;
 	for (auto it = ProcessGroupsList.begin(); it != ProcessGroupsList.end(); ++it) {
 		it->ProcessList.remove_if([ProcessID](std::shared_ptr<PCB> n) { return n->GetID() == ProcessID; });
+		if (it->ProcessList.size() == 0) {
+			i = it->ProcessGroup;
+			std::cout << "To jest nr grupy ktora bedzie pusta " << i << std::endl;
+			f = true;
+		}
+	}
+	if (f == true) {
+		DeleteProcessGroup(i);
 	}
 };
 void DeleteProcessName(std::string ProcessName){
