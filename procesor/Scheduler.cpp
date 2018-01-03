@@ -12,7 +12,8 @@ Scheduler::Scheduler() //to wywoluja wszyscy oprocz shella na poczatku w main
 Scheduler::Scheduler(int a) // to wywoluje Shell w main
 {
 	time = 0;
-	running = FirstProcess(0);
+	idle = FirstProcess(0);
+	running = idle;
 }
 void Scheduler::Schedule()
 {
@@ -106,7 +107,7 @@ void Scheduler::Schedule()
 			{
 
 				cout << "Brak gotowych procesow, ";
-				running = FirstProcess(0);
+				running = idle;
 			}
 			else // jesli jest to przelicz tau i wybierz nowy proces
 			{

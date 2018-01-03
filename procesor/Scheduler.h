@@ -16,6 +16,7 @@ class Scheduler
 	float alpha = 0.5;
 	vector<shared_ptr<PCB>> procesy_gotowe;
 	priority_queue<shared_ptr<PCB>, vector<shared_ptr<PCB>>, komparator> procesy_gotowe_queue;
+	shared_ptr<PCB> idle;
 public:
 	Scheduler();
 	Scheduler(int a);
