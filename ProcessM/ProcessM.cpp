@@ -23,7 +23,7 @@ int OverseerID::GetFreeID() {
 
 		}
 	}
-
+	return -1;
 }
 
 void OverseerID::ClearID(int ID) {
@@ -128,7 +128,8 @@ std::shared_ptr<PCB> NewProcess(std::string ProcessName, int ProcessGroup) {
 		return New = NULL;
 	}
 	else {
-		procesy_otrzymane.push_back(New); // funkcja niebezpieczna potrzebna dla procesora !!!
+		New->SetState(State::GOTOWY);
+		procesy_otrzymane.push_back(New); 
 		return New;
 	}
 };
@@ -149,7 +150,7 @@ void DeleteProcess(int ProcessID) {
 void DeleteProcessName(std::string ProcessName){
 	for (auto it = ProcessGroupsList.begin(); it != ProcessGroupsList.end(); ++it) {
 		it->ProcessList.remove_if([ProcessName](std::shared_ptr<PCB> n) { return n->GetName() == ProcessName; });
-	}// co zrobiæ gdy usuniemy ostatni proces z danje grupy, usun¹c odrazu grupê ?
+	}
 };
 void DeleteProcessGroup(int ProcessGroup) {
 
@@ -163,13 +164,13 @@ std::shared_ptr<PCB> FirstProcess(int ProcessGroup) {
 	ProcessGroupsList.push_back(NewGroup);
 	return first;
 };
-void NewProcessGroup(std::string ProcessName) {//??????????????????
+void NewProcessGroup(std::string ProcessName) {
 	Group NewGroup; // numer powinien byc adany przez nadzorcê
 	NewGroup.ProcessList.push_back(FirstProcess(NewGroup.ProcessGroup));
 	ProcessGroupsList.push_back(NewGroup);
 	if (NewGroup.ProcessGroup > 0) { std::cout << "Stworzono grupe nr: " << NewGroup.ProcessGroup << std::endl; }
 };
-std::shared_ptr<PCB> NewProcessGroupProcess(std::string ProcessName) {//??????????????????
+std::shared_ptr<PCB> NewProcessGroupProcess(std::string ProcessName) {
 	Group NewGroup; // numer powinien byc adany przez nadzorcê
 	ProcessGroupsList.push_back(NewGroup);
 	std::shared_ptr<PCB> New = NewProcess(ProcessName, NewGroup.ProcessGroup);
@@ -203,7 +204,7 @@ State GetStateID(int ProcessID) {
 			if (x->GetID() == ProcessID) return x->GetState();
 		}
 	}
-
+	return State::ZAKONCZONY;
 };
 std::shared_ptr<PCB> GetPCB(int ProcessID) {
 
@@ -213,7 +214,7 @@ std::shared_ptr<PCB> GetPCB(int ProcessID) {
 			if (x->GetID() == ProcessID) return x;
 		}
 	}
-
+	return NULL;
 };
 void PrintGroupInformation() {
 	for (auto it = ProcessGroupsList.begin(); it != ProcessGroupsList.end(); ++it) {
@@ -221,7 +222,7 @@ void PrintGroupInformation() {
 			for (auto x : it->ProcessList) {
 				std::cout << "	Nazwa: " << x->GetName() << std::endl;
 				std::cout << "	Id: " << x->GetID() << std::endl;
-				std::cout << "	Stan: " << x->GetState() << std::endl;
+				std::cout << "	Stan: "; NameStane(x->GetState()); std::cout << std::endl;
 				std::cout << std::endl;
 			}
 		
@@ -237,4 +238,21 @@ void PrintProcessListInformation() {
 	}
 
 };
+void NameStane(State state) {
+	switch (state)
+	{
+	case NOWY: std::cout << "nowy";
+		break;
+	case GOTOWY:std::cout << "gotowy";
+		break;
+	case ZAKONCZONY:std::cout << "zakonczony";
+		break;
+	case AKTYWNY:std::cout << "aktywny";
+		break;
+	case OCZEKUJACY:std::cout << "oczekujacy";
+		break;
+	default:
+		break;
+	}
+}
 
