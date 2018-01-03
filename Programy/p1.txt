@@ -1,12 +1,12 @@
 CG sil6 S6.txt
 RP
-CP sc1 0 sc1.txt
-CP sc2 0 sc2.txt
-CP sc3 0 sc3.txt
-CP k1 0 k1.txt
-CP k2 0 k2.txt
+CP sc1 1 sc1.txt
+CP sc2 1 sc2.txt
+CP sc3 1 sc3.txt
 CG aryt1 a1.txt
 CG aryt2 a2.txt
 RP
+CP k1 2 k1.txt
+CP k2 2 k2.txt
 SF
 EX
