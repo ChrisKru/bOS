@@ -3,8 +3,6 @@
 #include <deque>
 #include <memory>
 
-//extern bool obudz_nadawce = false, obudz_odbiorce = false;
-
 class Komunikat
 {
 public:
@@ -15,8 +13,8 @@ public:
 	//--------metody
 	Komunikat();
 	Komunikat(int nadawca, std::string tresc);
-	//int getId();
-	//int getRozmair();
+	int getID();
+	int getRozmiar();
 	std::string getTresc();
 };
 
