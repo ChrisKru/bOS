@@ -208,7 +208,7 @@ bool Shell::executeCommand(std::vector<std::string> parameters) {
 					return 0;
 				}
 				std::shared_ptr<PCB> process = NewProcessGroupProcess(parameters[1]);
-				if (process != NULL) {
+				if (process != nullptr) {
 					process->SetFileName(parameters[2]);
 					_memory.loadProcess(process->GetID(), parameters[2]);
 				}
@@ -269,31 +269,31 @@ void Shell::ErrorIP(){
 
 void Shell::ErrorIF() {
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN | FOREGROUND_BLUE);
-	std::cout << "Brak pliku o podanej nazwie" << "\n";
+	std::cout << "Brak pliku" << "\n";
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
 }
 
 void Shell::printHelp(){
-	std::cout << "exit                                             zakonczenie dzialania\n";
-	std::cout << "cf          nazwa_pliku                          utworzenie pliku\n";
-	std::cout << "wf          nazwa_pliku  dane                    zapis do pliku\n";
-	std::cout << "catf        nazwa_pliku                          zawartosc pliku\n";
-	std::cout << "rmf         nazwa_pliku                          usuniecie pliku\n";
-	std::cout << "lsf                                              lista plikow\n";
-	std::cout << "rnamef      nazwa_pliku  nowa_nazwa              zmiana nazwy pliku\n";
-	std::cout << "weof        nazwa_pliku  dane                    zapis na koniec pliku\n";
-	std::cout << "disk                                             informacje o dysku\n";
-	std::cout << "memory                                           zawartosc pamieci\n";
-	std::cout << "exfile                                           zawartosc pliku wymiany\n";
-	std::cout << "fifo                                             zawartosc kolejki fifo\n";
-	std::cout << "pagetable   pid                                  zawartosc tablicy stronic\n";
-	std::cout << "lsp                                              lista procesow\n";
-	std::cout << "lsp -r                                           proces aktualnie wykonywany\n";
-	std::cout << "lsg                                              lista grup\n";
-	std::cout << "lsg -g                                           lista procesow w grupach\n";
-	std::cout << "cp          nazwa_procesu id_grupy nazwa_pliku   utworzenie procesu z pliku\n";
-	std::cout << "cgp         nazwa_procesu  nazwa_pliku           utworzenie nowej grupy z pierwszym procesem\n";
-	std::cout << "killp                                            usuniecie procesu wykonywanego\n";
-	std::cout << "runp                                             uruchomienie procesu\n";
-	std::cout << "reg                                              zawartosc rejestru\n";
+	std::cout << "exit                                            zakonczenie dzialania\n";
+	std::cout << "cf         nazwa_pliku                          utworzenie pliku\n";
+	std::cout << "wf         nazwa_pliku  dane                    zapis do pliku\n";
+	std::cout << "catf       nazwa_pliku                          zawartosc pliku\n";
+	std::cout << "rmf        nazwa_pliku                          usuniecie pliku\n";
+	std::cout << "lsf                                             lista plikow\n";
+	std::cout << "rnamef     nazwa_pliku  nowa_nazwa              zmiana nazwy pliku\n";
+	std::cout << "weof       nazwa_pliku  dane                    zapis na koniec pliku\n";
+	std::cout << "disk                                            informacje o dysku\n";
+	std::cout << "memory                                          zawartosc pamieci\n";
+	std::cout << "exfile                                          zawartosc pliku wymiany\n";
+	std::cout << "fifo                                            zawartosc kolejki fifo\n";
+	std::cout << "pagetable  pid                                  zawartosc tablicy stronic\n";
+	std::cout << "lsp                                             lista procesow\n";
+	std::cout << "lsp -r                                          proces aktualnie wykonywany\n";
+	std::cout << "lsg                                             lista grup\n";
+	std::cout << "lsg -g                                          lista procesow w grupach\n";
+	std::cout << "cp         nazwa_procesu  id_grupy nazwa_pliku  utworzenie procesu z pliku\n";
+	std::cout << "cgp        nazwa_procesu  nazwa_pliku           utworzenie nowej grupy z pierwszym procesem\n";
+	std::cout << "killp                                           usuniecie procesu wykonywanego\n";
+	std::cout << "runp                                            uruchomienie procesu\n";
+	std::cout << "reg                                             zawartosc rejestru\n";
 }
