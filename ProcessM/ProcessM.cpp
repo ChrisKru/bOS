@@ -78,6 +78,12 @@ return CommandCounter;
 
 };
 
+int PCB::GetProcessGroup() {
+
+	return ProcessGroup;
+
+};
+
 void PCB::SetCommandCounter(int commandcounter) {
 
 	CommandCounter = commandcounter;
@@ -108,14 +114,22 @@ Group::Group() {
 	GroupNumber++; // uproszcony nadzorca
 };
 std::shared_ptr<PCB> NewProcess(std::string ProcessName, int ProcessGroup) {
-
-	std::shared_ptr<PCB> New = std::make_shared<PCB>(ProcessName, ProcessGroup);
+	bool f = false;
+	std::shared_ptr<PCB> New;
 	for (auto it = ProcessGroupsList.begin(); it != ProcessGroupsList.end(); ++it) {
-		if (ProcessGroup == it->ProcessGroup) it->ProcessList.push_back(New);
-		//else NewProcessGroup(ProcessName); // nie wiem czy wyrzucaæ bl¹d gdy podasz grupê ktora nie stnieje czy odrazu utworzyæ tak¹ grupê
+		if (ProcessGroup == it->ProcessGroup) {
+			New = std::make_shared<PCB>(ProcessName, ProcessGroup);
+			it->ProcessList.push_back(New); f = true; 
+		}
 	}
-	procesy_otrzymane.push_back(New); // funkcja niebezpieczna potrzebna dla procesora !!!
-	return New;
+
+	if (f == false) { std::cout << "Podany nr grupy nie istnieje" << std::endl;
+	New = NULL;
+	}
+	else {
+		procesy_otrzymane.push_back(New); // funkcja niebezpieczna potrzebna dla procesora !!!
+		return New;
+	}
 };
 void DeleteProcess(int ProcessID) {
 	for (auto it = ProcessGroupsList.begin(); it != ProcessGroupsList.end(); ++it) {
@@ -142,7 +156,17 @@ void NewProcessGroup(std::string ProcessName) {//??????????????????
 	Group NewGroup; // numer powinien byc adany przez nadzorcê
 	NewGroup.ProcessList.push_back(FirstProcess(NewGroup.ProcessGroup));
 	ProcessGroupsList.push_back(NewGroup);
+	if (NewGroup.ProcessGroup > 0) { std::cout << "Stworzono grupe nr: " << NewGroup.ProcessGroup << std::endl; }
 };
+std::shared_ptr<PCB> NewProcessGroupProcess(std::string ProcessName) {//??????????????????
+	Group NewGroup; // numer powinien byc adany przez nadzorcê
+	NewGroup.ProcessList.push_back(FirstProcess(NewGroup.ProcessGroup));
+	ProcessGroupsList.push_back(NewGroup);
+	std::shared_ptr<PCB> New = NewProcess(ProcessName, NewGroup.ProcessGroup);
+	if (NewGroup.ProcessGroup > 0) { std::cout << "Stworzono grupe z procesem nr: " << NewGroup.ProcessGroup << std::endl;}
+	return New;
+};
+
 void SetStateID(int ProcessID, State state) {
 
 	for (auto &v : ProcessGroupsList) {
@@ -181,16 +205,16 @@ std::shared_ptr<PCB> GetPCB(int ProcessID) {
 	}
 
 };
-void PrintGroupInformation(int ProcessGroup) {
+void PrintGroupInformation() {
 	for (auto it = ProcessGroupsList.begin(); it != ProcessGroupsList.end(); ++it) {
-		if (ProcessGroup == it->ProcessGroup) {
+		std::cout << "Grupa nr: " << it->ProcessGroup << std::endl;
 			for (auto x : it->ProcessList) {
-				std::cout << "Nazwa: " << x->GetName() << std::endl;
-				std::cout << "Id: " << x->GetID() << std::endl;
-				std::cout << "Stan: " << x->GetState() << std::endl;
-
+				std::cout << "	Nazwa: " << x->GetName() << std::endl;
+				std::cout << "	Id: " << x->GetID() << std::endl;
+				std::cout << "	Stan: " << x->GetState() << std::endl;
+				std::cout << std::endl;
 			}
-		}
+		
 	}
 
 };
@@ -198,7 +222,7 @@ void PrintProcessListInformation() {
 
 	for (auto &v : ProcessGroupsList) {
 
-		std::cout << "Numer grupy:" << v.ProcessGroup << std::endl;
+		std::cout << "Numer grupy: " << v.ProcessGroup << std::endl;
 
 	}
 

@@ -666,6 +666,37 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 				}
 			}
 		}
+		// komenda zrobiona przez dobrego ziomka z zarzadzania procesami 
+		else if (operation == ("CG")) {
+			setInstruction(RAM, 2, command);
+			//create a new process
+			std::string d1 = instruction[1];
+			std::string d2 = instruction[2];
+			//running->SetState(State::OCZEKUJACY);
+			/*std::shared_ptr<PCB> process = NewProcess(d1, std::stoi(d2));
+			process->SetFileName(d3);
+			RAM.loadProcess(process->GetID(), d3);*/
+			//scheduler.Schedule();
+			if (d1 == ("") || d2 == ("")) {
+				std::cout << "Blad w parametrach." << std::endl;
+			}
+			else {
+				try {
+					if (!std::ifstream(d2)) {
+						std::cout << "Blad w parametrach." << std::endl;
+					}
+					else {
+						std::shared_ptr<PCB> process = NewProcessGroupProcess(d1);
+						process->SetFileName(d2);
+						RAM.loadProcess(process->GetID(), d2);
+					}
+				}
+				catch (std::exception exception) {
+					std::cout << "Zla forma parametru" << std::endl;
+					_done = false;
+				}
+			}
+		}
 		// DP PID
 		else if (operation == ("DP")) {
 			setInstruction(RAM, 1, command);
@@ -823,6 +854,7 @@ D3 - trzecia dana
 
 6. Operacje wykonywane na procesach
 	CP nazwa_procesu numer_grupy plik.txt	=> Create a new process
+	CG nazwa_procesu                        => Create gruop with process
 	DP nazwa_procesu						=> Delete a process
 	AP										=> Print active process
 	RP										=> print ready process

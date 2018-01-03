@@ -11,6 +11,11 @@ odpowiednio numery kolejnisci 0, 1, 2, ...*/
 
 enum State { NOWY, GOTOWY, ZAKONCZONY, AKTYWNY, OCZEKUJACY };
 
+
+/*Przek³adanie State na nazwy zrozumiale*/
+
+//extern std::vector<std::string> StateName = { "nowy", "gotowy", "zakonczony", "aktywny", "oczekujacy" };
+
 extern int GroupNumber;
 
 /*Nazdorca Id - on nadaje procesom Id w sposów unikatowy
@@ -78,6 +83,7 @@ struct PCB {
 	void SetState(State state);
 	void PrintPCBInformations();
 	int GetCommandCounter();
+	int GetProcessGroup();
 	void SetCommandCounter(int commandcounter);
 	int GetTau();
 	void SetTau(int tau);
@@ -142,7 +148,11 @@ std::shared_ptr<PCB> GetPCB(int ProcessID);
 
 /*Wypisywanie przyk³¹dowych info o ca³ej grupie procesów
 (czyli o wszytskich procesach znajduj¹cyzch sie w niej)*/
-void PrintGroupInformation(int ProcessGroup);
+void PrintGroupInformation();
 
 /*Wypisanie info o Liscie grup procesów*/
 void PrintProcessListInformation();
+
+/*Tworzenie grupy z dzialajacym procesem*/
+
+std::shared_ptr<PCB> NewProcessGroupProcess(std::string ProcessName);

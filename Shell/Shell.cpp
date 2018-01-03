@@ -160,6 +160,24 @@ bool Shell::executeCommand(std::vector<std::string> parameters) {
 			ErrorPM();
 			return 0;
 		}
+		// komenda zrobiona przez dobrego ziomka z zarzadzania procesami 
+	}else if (parameters[0] == "lsg") {
+		if (parameters.size() == 1) {
+			PrintProcessListInformation();
+		}
+		else if (parameters.size() == 2) {
+			if (parameters[1] == "-g") {
+				PrintGroupInformation();
+			}
+			else {
+				ErrorPM();
+				return 0;
+			}
+		}
+		else {
+			ErrorPM();
+			return 0;
+		}
 	} else if (parameters[0] == "cp") {
 		if (parameters.size() == 4) {
 			try {
@@ -172,8 +190,10 @@ bool Shell::executeCommand(std::vector<std::string> parameters) {
 					return 0;
 				}
 				std::shared_ptr<PCB> process = NewProcess(parameters[1], std::stoi(parameters[2]));
-				process->SetFileName(parameters[3]);
-				_memory.loadProcess(process->GetID(), parameters[3]);
+				if (process != NULL) {
+					process->SetFileName(parameters[3]);
+					_memory.loadProcess(process->GetID(), parameters[3]);
+				}
 			}catch(std::exception exception){
 				ErrorIP();
 				return 0;
@@ -182,6 +202,35 @@ bool Shell::executeCommand(std::vector<std::string> parameters) {
 			ErrorPM();
 			return 0;
 		}
+		// komenda zrobiona przez dobrego ziomka z zarzadzania procesami 
+	} else if (parameters[0] == "cgp") {
+		if (parameters.size() == 3) {
+			try {
+				if (!std::ifstream(parameters[2])) {
+					ErrorIF();
+					return 0;
+				}
+				std::shared_ptr<PCB> process = NewProcessGroupProcess(parameters[1]);
+				if (process != NULL) {
+					process->SetFileName(parameters[2]);
+					_memory.loadProcess(process->GetID(), parameters[2]);
+				}
+			}
+			catch (std::exception exception) {
+				ErrorIP();
+				return 0;
+			}
+		}
+		else {
+			ErrorPM();
+			return 0;
+		}
+	} else if (parameters[0] == "cpg") {
+		if (parameters.size() != 1) {
+			ErrorPM();
+			return 0;
+		}
+		NewProcessGroup("bezczynny");
 	} else if (parameters[0] == "killp") {
 		if (parameters.size() != 1) {
 			ErrorPM();
@@ -249,7 +298,11 @@ void Shell::printHelp(){
 	std::cout << "pagetable   pid                                  zawartosc tablicy stronic\n";
 	std::cout << "lsp                                              lista procesow\n";
 	std::cout << "lsp -r                                           proces aktualnie wykonywany\n";
+	std::cout << "lsg                                              lista grup\n";
+	std::cout << "lsg -g                                           lista procesow w grupach\n";
 	std::cout << "cp          nazwa_procesu id_grupy nazwa_pliku   utworzenie procesu z pliku\n";
+	std::cout << "cpg                                              utworzenie nowej grupy procesow\n";
+	std::cout << "cgp        nazwa_procesu  nazwa_pliku            utworzenie nowej grupy z pierwszym procesem\n";
 	std::cout << "killp                                            usuniecie procesu wykonywanego\n";
 	std::cout << "runp                                             uruchomienie procesu\n";
 	std::cout << "reg                                              zawartosc rejestru\n";
