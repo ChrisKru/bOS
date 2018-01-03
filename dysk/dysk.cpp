@@ -284,15 +284,7 @@ void Disc::print_file(std::string filename)
 	int kat_nr = find_file(filename);
 	if (kat_nr != -1)
 	{
-		/*if (katalog_[kat_nr].open == true)
-		{*/
 		std::cout << getFile(filename) << std::endl;
-		/*}
-		else
-		{
-			std::cout << "Nalezy otworzyc plik" << std::endl;
-		}*/
-
 	}
 	else
 	{
@@ -380,7 +372,7 @@ void Disc::add_to_file(std::string filename, std::string data)
 		{
 			if (katalog_[kat_nr].size == 0)
 			{
-				std::cout << "Plik jest pusty nie mozna dopiasc plikow, uzyj innej funkcji" << std::endl;
+				std::cout << "Plik jest pusty, uzyj innej funkcji" << std::endl;
 			}
 			else
 			{
@@ -483,7 +475,6 @@ std::string Disc::getFile(std::string filename)
 
 void Disc::printDisc()
 {
-	std::cout << "Zawartosc dysku (danego bloku):" << std::endl;
 	int indeks = 0;
 	for (int i = 0; i < 32; i++)
 	{
