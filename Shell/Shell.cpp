@@ -32,6 +32,9 @@ std::vector<std::string> Shell::parseInput(std::string input){
 		parameters.push_back(param);
 		if (edit_mode) {
 			getline(parser, param);
+			if(parser.eof()){
+				break;
+			}
 			param.erase(0, 1);
 			parameters.push_back(param);
 			break;
