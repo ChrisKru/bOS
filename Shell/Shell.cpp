@@ -186,7 +186,7 @@ bool Shell::executeCommand(std::vector<std::string> parameters) {
 	} else if (parameters[0] == "cp") {
 		if (parameters.size() == 4) {
 			try {
-				if (std::stoi(parameters[2]) < 0) {
+				if (std::stoi(parameters[2]) < 1) {
 					ErrorIP();
 					return 0;
 				}
