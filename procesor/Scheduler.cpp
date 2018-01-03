@@ -12,8 +12,7 @@ Scheduler::Scheduler() //to wywoluja wszyscy oprocz shella na poczatku w main
 Scheduler::Scheduler(int a) // to wywoluje Shell w main
 {
 	time = 0;
-	NewProcessGroup("bezczynny");
-	running = GetPCB(0);
+	running = FirstProcess(0);
 }
 void Scheduler::Schedule()
 {
@@ -97,7 +96,7 @@ void Scheduler::Schedule()
 				running = procesy_gotowe_queue.top();
 				procesy_gotowe_queue.pop();
 				running->SetState(State::AKTYWNY);
-				//cout << "Wybrano: " << running->ProcessName << " PID: " << running->ProcessID << " z tau = " << running->GetTau() << endl;
+				cout << "Przydzielono procesor: " << running->ProcessName << " PID: " << running->ProcessID << endl;// " z tau = " << running->GetTau() << endl;
 
 			}
 		}
@@ -106,8 +105,8 @@ void Scheduler::Schedule()
 			if (procesy_gotowe_queue.size() == 0) // jesli nie ma nic w kolejce
 			{
 
-				cout << "Brak gotowych procesow" << endl;
-				running = GetPCB(0);
+				cout << "Brak gotowych procesow, ";
+				running = FirstProcess(0);
 			}
 			else // jesli jest to przelicz tau i wybierz nowy proces
 			{
@@ -137,7 +136,7 @@ void Scheduler::Schedule()
 				running = procesy_gotowe_queue.top();
 				procesy_gotowe_queue.pop();
 				running->SetState(State::AKTYWNY);
-				//cout << "Wybrano: " << running->ProcessName << " PID: " << running->ProcessID << " z tau = " << running->GetTau() << endl;
+				cout << "Przydzielono procesor: " << running->ProcessName << " PID: " << running->ProcessID << endl;//" z tau = " << running->GetTau() << endl;
 			}
 
 		}
