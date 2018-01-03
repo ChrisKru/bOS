@@ -43,6 +43,11 @@ std::vector<std::string> Shell::parseInput(std::string input){
 			edit_mode = true;
 		}
 	}
+	for(int q = 0; q < parameters.size(); ++q){
+		if(parameters[q] == ""){
+			parameters.erase(parameters.begin() + q);
+		}
+	}
 	return parameters;
 }
 
