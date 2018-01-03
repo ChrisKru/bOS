@@ -119,12 +119,13 @@ std::shared_ptr<PCB> NewProcess(std::string ProcessName, int ProcessGroup) {
 	for (auto it = ProcessGroupsList.begin(); it != ProcessGroupsList.end(); ++it) {
 		if (ProcessGroup == it->ProcessGroup) {
 			New = std::make_shared<PCB>(ProcessName, ProcessGroup);
-			it->ProcessList.push_back(New); f = true; 
+			it->ProcessList.push_back(New); f = true;
 		}
 	}
 
-	if (f == false) { std::cout << "Podany nr grupy nie istnieje" << std::endl;
-	New = NULL;
+	if (f == false) {
+		std::cout << "Podany nr grupy nie istnieje" << std::endl;
+		return New = NULL;
 	}
 	else {
 		procesy_otrzymane.push_back(New); // funkcja niebezpieczna potrzebna dla procesora !!!
@@ -132,9 +133,10 @@ std::shared_ptr<PCB> NewProcess(std::string ProcessName, int ProcessGroup) {
 	}
 };
 void DeleteProcess(int ProcessID) {
+	int i;
 	for (auto it = ProcessGroupsList.begin(); it != ProcessGroupsList.end(); ++it) {
 		it->ProcessList.remove_if([ProcessID](std::shared_ptr<PCB> n) { return n->GetID() == ProcessID; });
-	}// co zrobiæ gdy usuniemy ostatni proces z danje grupy, usun¹c odrazu grupê ?
+	}
 };
 void DeleteProcessName(std::string ProcessName){
 	for (auto it = ProcessGroupsList.begin(); it != ProcessGroupsList.end(); ++it) {
@@ -147,9 +149,10 @@ void DeleteProcessGroup(int ProcessGroup) {
 
 };
 std::shared_ptr<PCB> FirstProcess(int ProcessGroup) {
-
-	std::shared_ptr<PCB>first = std::make_shared<PCB>("bezczynny", ProcessGroup); // nie wiej ajaki tu stan, sprawdz jak mieli w stystemie z c++
-
+	Group NewGroup;
+	std::shared_ptr<PCB>first = std::make_shared<PCB>("bezczynny", 0); // nie wiej ajaki tu stan, sprawdz jak mieli w stystemie z c++ !!!
+	NewGroup.ProcessList.push_back(first); 
+	ProcessGroupsList.push_back(NewGroup);
 	return first;
 };
 void NewProcessGroup(std::string ProcessName) {//??????????????????
@@ -160,7 +163,6 @@ void NewProcessGroup(std::string ProcessName) {//??????????????????
 };
 std::shared_ptr<PCB> NewProcessGroupProcess(std::string ProcessName) {//??????????????????
 	Group NewGroup; // numer powinien byc adany przez nadzorcê
-	NewGroup.ProcessList.push_back(FirstProcess(NewGroup.ProcessGroup));
 	ProcessGroupsList.push_back(NewGroup);
 	std::shared_ptr<PCB> New = NewProcess(ProcessName, NewGroup.ProcessGroup);
 	if (NewGroup.ProcessGroup > 0) { std::cout << "Stworzono grupe z procesem nr: " << NewGroup.ProcessGroup << std::endl;}
