@@ -647,17 +647,27 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 			RAM.loadProcess(process->GetID(), d3);*/
 			//scheduler.Schedule();
 			if (!isNum(d2) || d1 == ("") || d2 == ("") || d3 == ("")) {
-				std::cout << "Blad w parametrach." << std::endl;
+				std::cout << "Blad w parametrach" << std::endl;
 			}
 			else {
 				try {
 					if (!std::ifstream(d3)) {
-						std::cout << "Brak pliku." << std::endl;
+						std::cout << "Brak pliku" << std::endl;
 					}
 					else {
-						std::shared_ptr<PCB> process = NewProcess(d1, std::stoi(d2));
-						process->SetFileName(d3);
-						RAM.loadProcess(process->GetID(), d3);
+						if (d2 == "0") {
+							std::cout << "Nie mozna utworzyc procesu z grupa 0" << std::endl;
+						}
+						else {
+							std::shared_ptr<PCB> process = NewProcess(d1, std::stoi(d2));
+							if (process != NULL) {
+								process->SetFileName(d3);
+								RAM.loadProcess(process->GetID(), d3);
+							}
+							else {
+								std::cout << "Nie mozna utworzyc procesu" << std::endl;
+							}
+						}
 					}
 				}
 				catch (std::exception exception) {
@@ -687,8 +697,13 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 					}
 					else {
 						std::shared_ptr<PCB> process = NewProcessGroupProcess(d1);
-						process->SetFileName(d2);
-						RAM.loadProcess(process->GetID(), d2);
+						if (process != NULL) {
+							process->SetFileName(d2);
+							RAM.loadProcess(process->GetID(), d2);;
+						}
+						else {
+							std::cout << "Nie mozna utworzyc procesu" << std::endl;
+						}
 					}
 				}
 				catch (std::exception exception) {
