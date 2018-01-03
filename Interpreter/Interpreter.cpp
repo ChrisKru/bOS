@@ -789,7 +789,7 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 		}
 	}
 	else {
-		std::cout << "Aktywny proces bezczynnosci.\n";
+		std::cout << "dziala proces bezczynnosci.\n";
 	}
 }
 
