@@ -114,11 +114,11 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 		// Rozkaz do wykonania
 		if (command == "runp") {
 			operation = loadInstruction(RAM).substr(0, 2);
-			std::cout << "Rozkaz:$ " << RAM.getCommand(_PID, _IP) << " $ dla procesu: " << _PID << std::endl;
+			std::cout << "Rozkaz:$ " << RAM.getCommand(_PID, _IP) << " $ dla procesu: " << _PID << " o nazwie: " << running->GetName() << std::endl;
 		}
 		else {
 			operation = command.substr(0, 2);
-			std::cout << "Rozkaz:$ " << command << " $ dla procesu: " << _PID << std::endl;
+			std::cout << "Rozkaz:$ " << command << " $ dla procesu: " << _PID << " o nazwie: " << running->GetName() << std::endl;
 		}
 
 		/* Operacje logiczne */
@@ -676,6 +676,8 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 			else {
 				DeleteProcess(std::stoi(d1));
 			}*/
+			// dodaæ Macieja tutaj! Potrzebna metoda, która po podaniu nazwy procesu, zwraca nam jej PID :P
+			// potrzebna metoda: która po podaniu jego nazwy/id procesu ustawia dany proces na zakoñczony
 			DeleteProcessName(d1);
 			scheduler.usun(d1);
 			if (d1 == running->GetName()) {
@@ -719,8 +721,10 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 		else if (operation == ("EX")) {
 			setInstruction(RAM, 0, command);
 			// killujemy proces
-			DeleteProcess(_PID);
-			running->SetState(State::ZAKONCZONY);
+		/*	DeleteProcess(_PID);
+			running->SetState(State::ZAKONCZONY);*/
+			RAM.deleteProcess(running->GetID());
+			scheduler.killprocess();
 			eraseReg();
 		}
 		else if (operation == ("DN")) {
