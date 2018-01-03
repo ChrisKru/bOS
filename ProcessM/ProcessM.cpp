@@ -41,7 +41,7 @@ PCB::PCB(std::string processname, int processgroup) {
 	B = 0;
 	C = 0;
 	CommandCounter = 0;
-	Tau = 3;
+	Tau = 5;
 	Timmer = 0;
 
 
@@ -139,7 +139,6 @@ void DeleteProcess(int ProcessID) {
 		it->ProcessList.remove_if([ProcessID](std::shared_ptr<PCB> n) { return n->GetID() == ProcessID; });
 		if (it->ProcessList.size() == 0) {
 			i = it->ProcessGroup;
-			std::cout << "To jest nr grupy ktora bedzie pusta " << i << std::endl;
 			f = true;
 		}
 	}
