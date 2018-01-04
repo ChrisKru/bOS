@@ -232,6 +232,9 @@ std::string Memory::getCommand(int PID, int commandCounter) {
 			}
 		}
 	}
+	std::string com = " ";
+	return com;
+	std::cout << "Nieznany blad" << std::endl;
 }
 
 void Memory::loadProcess(int PID, std::string filename) {
