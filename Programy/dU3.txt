@@ -1,0 +1,9 @@
+MV A 100
+MV B 200
+GA C
+WR C 103
+RR C C
+AD A C
+AD B C
+EX
+

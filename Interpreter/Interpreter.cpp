@@ -137,6 +137,24 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 				else if (d2 == "A") {
 					_RegA = _RegA;
 				}
+				else if (d2[0] == '[') {
+					// wczytaæ Macieja, przekazuj¹c mu liczbê
+					bool good_param = true;
+					d2 = d2.substr(1);
+					std::string param = "";
+					for (int i = 0; i < d2.length(); i++)
+					{
+						if (!isdigit(d2[i]))
+						{
+							good_param = false;
+							break;
+						}
+						else {
+							param += d2[i];
+						}
+					}
+					// i tutaj Maciejowi przekazuje te liczbe: 200
+				}
 				else {
 					if (!isNum(d2)) {
 						_done = false;
@@ -254,6 +272,17 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 				else if (d2 == "A") {
 					_RegA += _RegA;
 				}
+
+				else if (d2 == "[B]") {
+					_RegA += std::stoi(RAM.readFromMemory(_RegB));
+				}
+				else if (d2 == "[C]") {
+					_RegA += std::stoi(RAM.readFromMemory(_RegC));
+				}
+				else if (d2 == "[A]") {
+					_RegA += std::stoi(RAM.readFromMemory(_RegA));
+				}
+
 				else {
 					if (!isNum(d2)) {
 						_done = false;
@@ -272,6 +301,15 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 				else if (d2 == "B") {
 					_RegB += _RegB;
 				}
+				else if (d2 == "[B]") {
+					_RegB += std::stoi(RAM.readFromMemory(_RegB));
+				}
+				else if (d2 == "[C]") {
+					_RegB += std::stoi(RAM.readFromMemory(_RegC));
+				}
+				else if (d2 == "[A]") {
+					_RegB += std::stoi(RAM.readFromMemory(_RegA));
+				}
 				else {
 					if (!isNum(d2)) {
 						_done = false;
@@ -289,6 +327,16 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 				}
 				else if (d2 == "C") {
 					_RegC += _RegC;
+				}
+
+				else if (d2 == "[B]") {
+					_RegC += std::stoi(RAM.readFromMemory(_RegB));
+				}
+				else if (d2 == "[C]") {
+					_RegC += std::stoi(RAM.readFromMemory(_RegC));
+				}
+				else if (d2 == "[A]") {
+					_RegC += std::stoi(RAM.readFromMemory(_RegA));
 				}
 				else {
 					if (!isNum(d2)) {
@@ -762,6 +810,62 @@ void Interpreter::runInstruction(Disc& dysk, Memory& RAM, Scheduler& scheduler, 
 			setInstruction(RAM, 0, command);
 			RAM.showFIFO();
 		}
+		// WR nazwa_rejestru(adres tam zapisany) dane_do_zapisu
+		else if (operation == ("WR")) {
+			setInstruction(RAM, 2, command);
+			std::string d1 = instruction[1];
+			std::string d2 = instruction[2];
+			if (d1 == "A") {
+				RAM.writeToMemory(_RegA, d2);
+			}
+			else if (d1 == "B") {
+				RAM.writeToMemory(_RegB, d2);
+			}
+			else if (d1 == "C") {
+				RAM.writeToMemory(_RegC, d2);
+			}
+		}
+		// RR skad dokad
+		else if (operation == ("RR")) {
+			setInstruction(RAM, 2, command);
+			std::string d1 = instruction[1];
+			std::string d2 = instruction[2];
+			std::string param;
+			if (d1 == "A") {
+				param = RAM.readFromMemory(_RegA);
+			}
+			else if (d1 == "B") {
+				param = RAM.readFromMemory(_RegB);
+			}
+			else if (d1 == "C") {
+				param = RAM.readFromMemory(_RegC);
+			}
+
+			if (d2 == "A") {
+				_RegA = std::stoi(param);
+			}
+			else if (d2 == "B") {
+				_RegB = std::stoi(param);
+			}
+			else if (d2 == "C") {
+				_RegC = std::stoi(param);
+			}
+		}
+		// GA gdzie
+		else if (operation == ("GA")) {
+			setInstruction(RAM, 1, command);
+			std::string d1 = instruction[1];
+			if (d1 == "A") {
+				_RegA = RAM.getAddress();
+			}
+			else if (d1 == "B") {
+				_RegB = RAM.getAddress();
+			}
+			else if (d1 == "C") {
+				_RegC = RAM.getAddress();
+			}
+		}
+
 		// operator zamkniecia procesu
 		else if (operation == ("EX")) {
 			setInstruction(RAM, 0, command);
@@ -868,13 +972,17 @@ D3 - trzecia dana
 
 6. Operacje wykonywane na procesach
 	CP nazwa_procesu numer_grupy plik.txt	=> Create a new process
-	CG nazwa_procesu                        => Create gruop with process
+	CG nazwa_procesu                        => Create a group with process
 	DP nazwa_procesu						=> Delete a process
 	AP										=> Print active process
 	RP										=> print ready process
 	WP										=> waiting process
+	NP										=> print info about running->process
 
 7. Operacje wykonywane na pamieci RAM
 	SR										=> Show RAM
 	SF										=> Show FIFO
+	WR logic_adr data						=> write to RAM
+	GA gdzie								=> get adress from RAM, write this adress to D1, D1 = A | B | C
+	RR skad dokad							=> read from RAM
 */
