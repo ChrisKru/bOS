@@ -156,3 +156,4 @@ void PrintProcessListInformation();
 /*Tworzenie grupy z dzialajacym procesem*/
 
 std::shared_ptr<PCB> NewProcessGroupProcess(std::string ProcessName);
+void NameStane(State state);
