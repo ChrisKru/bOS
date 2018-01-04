@@ -86,6 +86,8 @@ int ExchangeFile::getFirstIndex(int PID, int commandCounter) {
 			}
 		}
 	}
+	return 0;
+	std::cout << "Nieznany blad" << std::endl;
 }
 
 
@@ -103,6 +105,8 @@ int ExchangeFile::getLastIndex(int PID, int commandCounter) {
 			}
 		}
 	}
+	return 0;
+	std::cout << "Nieznany blad" << std::endl;
 }
 
 void ExchangeFile::deleteProcessData(int PID) {
