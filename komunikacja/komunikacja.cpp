@@ -91,7 +91,7 @@ bool Kolejka::receive(std::string nazwa_nadawcy)
 					{
 						if (it->id_nadawcy == id_nadawcy)
 						{
-							if (nadawca->GetState() == State::OCZEKUJACY && kolejka.size() == 2)	//budzenie nadawcy, jeœli jest uœpiony i kolejka odbiorcy by³a pe³na
+							if (nadawca->GetState() == State::OCZEKUJACY && kolejka.size() == 8)	//budzenie nadawcy, jeœli jest uœpiony i kolejka odbiorcy by³a pe³na
 							{
 								nadawca->SetState(State::GOTOWY);
 								dodaj_do_procesow_gotowych(nadawca);
@@ -174,7 +174,7 @@ bool Kolejka::send(std::string nazwa_odbiorcy, std::shared_ptr<Komunikat> komuni
 			if (it.ProcessGroup == grupa_odbiorcy && it.ProcessGroup == grupa_nadawcy)
 				rozne_grupy = false;
 		}
-		if (odbiorca->kolejka.kolejka.size() >= 2 && rozne_grupy==false)	//usypianie nadawcy, gdy kolejka odbiorcy jest pe³na
+		if (odbiorca->kolejka.kolejka.size() >= 8 && rozne_grupy==false)	//usypianie nadawcy, gdy kolejka odbiorcy jest pe³na
 		{
 			nadawca->SetState(State::OCZEKUJACY);
 			czy_pelna = true;
