@@ -63,9 +63,10 @@ tab ExchangeFile::getData(int ProcID, int pageNumber) {
 			for (int j = 0;j < 16;j++) {
 				returnthis.data[j] = file[i].data[j];
 			}
-			return returnthis;
+			break;
 		}
 	}
+	return returnthis;
 }
 
 

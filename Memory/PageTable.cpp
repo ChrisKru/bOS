@@ -42,7 +42,6 @@ int PageTable::getID() {
 
 
 void PageTable::show() {
-	std::cout << "TABLICA STRONIC (dla procesu o ID: " << ID << ")" << std::endl;
 	for (int i = 0;i < pages;i++) {
 		std::cout << "Stronica nr " << i << ".: ";
 		if (VIBit[i] == 0) std::cout << "nie ma jej w pamieci";

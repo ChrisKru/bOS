@@ -42,11 +42,21 @@ public:
 		// nie ma potrzeby usuwania procesu z pamiêci, bo dane i tak bêd¹
 		// nadpisywane, natomiast plik wymiany nie mo¿e byæ nieskoñczenie wielki
 
+	int getAddress();
+		// zwraca wolne miejsce na zapisanie znaku, który interpreter bêdzie musia³
+		// umieœciæ w pamiêci
+
+	void writeToMemory(int LogicalAddress, std::string s);
+		// metoda umo¿liwiaj¹ca zapisanie do pamiêci maksymalnie 3 znaków
+
+	std::string readFromMemory(int LogicalAddress);
+		// odczytuje znak/znaki od danego adresu
+
 	void show();
 		// wyœwietla zawartoœæ pamiêci
 
 	void showExchangeFile();
-		//wyœwietla zawartoœæ pliku wymiany
+		// wyœwietla zawartoœæ pliku wymiany
 		// jeœli mo¿na, to lepiej tego nie u¿ywaæ. miêdzy znakami wyrzuca krzaczki-niewidki
 
 	void showFIFO();

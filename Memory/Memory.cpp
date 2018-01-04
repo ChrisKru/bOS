@@ -259,8 +259,86 @@ void Memory::deleteProcess(int PID) {
 	file.deleteProcessData(PID);
 }
 
+int Memory::getAddress() {
+	// przeszukiwanie 
+	int it = 0;
+	for (int k = 0;k < 8;k++) {
+		for (int j = 0;j < 16;j++) {
+			if (j < 15) {
+				if (RAM[it] == ' '&&RAM[it + 1] == ' '&&RAM[it + 2] == ' ') {
+					if (!freeFrame[k]) {
+						return it;
+						break;
+					}
+					else {
+						// zape³nianie nowej ramki
+						freeFrame[k] = false;
+						PIDinFrame[k] = -2;
+						FrameInfo _frame;
+						_frame.FrameNumber = k;
+						_frame.PID = -2;
+						_frame.pageNumber = 0;
+						FIFO.push(_frame);
+						return it;
+						break;
+					}
+				}
+			}
+			it++;
+		}
+	}
+	int newframe;
+	newframe = FIFO.front().FrameNumber;
+	int ProcID = PIDinFrame[newframe];
+	for (int i = 0;i < pagetables.size();i++) {
+		if (pagetables[i].getID() == ProcID) {
+			pagetables[i].FrameNumber[FIFO.front().pageNumber] = -1;
+			pagetables[i].VIBit[FIFO.front().pageNumber] = false;
+			break;
+		}
+	}
+	FIFO.pop();
+	
+	int address = newframe * 16;
+	int k = address;
+	for (int i = 0;i < 16;i++) {
+		RAM[k] = ' ';
+		k++;
+	}
+
+	PIDinFrame[newframe] = -2;
+	freeFrame[newframe] = false;
+	FrameInfo nwframe;
+	nwframe.FrameNumber = newframe;
+	nwframe.PID = -2;
+	nwframe.pageNumber = 0;
+	FIFO.push(nwframe);
+	return address;
+}
+
+void Memory::writeToMemory(int LogicalAddress, std::string s) {
+	int stringsize = s.size();
+	if (stringsize > 3) {
+		std::cout << "Wynik wychodzi poza zakres." << std::endl;
+	}
+	else {
+		for (int i = 0;i < stringsize;i++) {
+			RAM[LogicalAddress] = s[i];
+			LogicalAddress++;
+		}
+	}
+}
+
+std::string Memory::readFromMemory(int LogicalAddress) {
+	std::string ret;
+	for (int i = 0;i < 3;i++) {
+		ret += RAM[LogicalAddress];
+		LogicalAddress++;
+	}
+	return ret;
+}
+
 void Memory::show() {
-	std::cout << "RAM" << std::endl;
 	int it = 0;
 	for (int i = 0;i < 8;i++) {
 		std::cout << "Ramka " << i << ":";
@@ -272,7 +350,6 @@ void Memory::show() {
 }
 
 void Memory::showExchangeFile() {
-	std::cout << "PLIK WYMIANY" << std::endl;
 	file.show();
 }
 
@@ -281,11 +358,17 @@ void Memory::showFIFO() {
 	int size = showthis.size();
 
 	if (!showthis.empty()) {
-		std::cout << "KOLEJKA FIFO" << std::endl;
 		for (int i = 0;i < size;i++) {
-			std::cout << "Ramka: " << showthis.front().FrameNumber << "; PID: " <<
-				showthis.front().PID << "; stronica procesu: " << showthis.front().pageNumber << std::endl;
-			showthis.pop();
+			if (showthis.front().PID != -2) {
+				std::cout << "Ramka: " << showthis.front().FrameNumber << "; PID: " <<
+					showthis.front().PID << "; stronica procesu: " << showthis.front().pageNumber << std::endl;
+				showthis.pop();
+			}
+			else {
+				std::cout << "Ramka: " << showthis.front().FrameNumber << "; nie nalezaca do zadnego procesu"
+					<< std::endl;
+				showthis.pop();
+			}
 		}
 	}
 }
@@ -300,6 +383,6 @@ void Memory::showPageTable(int PID) {
 		}
 	}
 	if (!exist) {
-		std::cout << "Tablica stronic dla wskazanego procesu nie istnieje" << std::endl;
+		std::cout << "Brak tablicy stronic dla procesu" << std::endl;
 	}
 }
