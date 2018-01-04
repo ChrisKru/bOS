@@ -204,7 +204,6 @@ void Scheduler::killprocess()
 	{
 		running->SetState(State::ZAKONCZONY);
 		DeleteProcess(running->GetID());
-		idle->SetState(State::AKTYWNY);
 	}
 }
 void Scheduler::usun(string name)
