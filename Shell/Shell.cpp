@@ -43,7 +43,7 @@ std::vector<std::string> Shell::parseInput(std::string input){
 			edit_mode = true;
 		}
 	}
-	for(int q = 0; q < parameters.size(); ++q){
+	for(unsigned int q = 0; q < parameters.size(); ++q){
 		if(parameters[q] == ""){
 			parameters.erase(parameters.begin() + q);
 		}
@@ -305,4 +305,4 @@ void Shell::printHelp(){
 	std::cout << "reg                                              zawartosc rejestru\n";
 }
 
-//
+/////
