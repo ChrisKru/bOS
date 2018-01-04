@@ -197,7 +197,12 @@ std::shared_ptr<PCB> NewProcessGroupProcessNumer(std::string ProcessName, int nu
 	Group NewGroup;
 	NewGroup.ProcessGroup = numer;
 	ProcessGroupsList.push_back(NewGroup);
-	std::shared_ptr<PCB> New = NewProcess(ProcessName, NewGroup.ProcessGroup);
+	std::shared_ptr<PCB> New = std::make_shared<PCB>(ProcessName, NewGroup.ProcessGroup);
+	for (auto it = ProcessGroupsList.begin(); it != ProcessGroupsList.end(); ++it) {
+		if (numer == it->ProcessGroup) {
+			it->ProcessList.push_back(New);
+		}
+	}
 	if (NewGroup.ProcessGroup > 0) { std::cout << "Stworzono grupe z procesem nr: " << NewGroup.ProcessGroup << std::endl; }
 	return New;
 };
