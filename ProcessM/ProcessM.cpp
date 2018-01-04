@@ -29,7 +29,21 @@ int OverseerID::GetFreeID() {
 void OverseerID::ClearID(int ID) {
 	FreeIDList[ID] = 1;
 }
+PCB::PCB(std::string processname) {
 
+	ProcessID = -1;
+	ProcessState = NOWY;
+	ProcessName = processname;
+	ProcessGroup = 0;
+	A = 0;
+	B = 0;
+	C = 0;
+	CommandCounter = 0;
+	Tau = 5;
+	Timmer = 0;
+
+
+};
 PCB::PCB(std::string processname, int processgroup) {
 
 	ProcessID = IDs.GetFreeID();
@@ -165,13 +179,13 @@ std::shared_ptr<PCB> FirstProcess(int ProcessGroup) {
 	return first;
 };
 void NewProcessGroup(std::string ProcessName) {
-	Group NewGroup; // numer powinien byc adany przez nadzorcê
+	Group NewGroup; // numer powinien byc adany przez nadzorcï¿½
 	NewGroup.ProcessList.push_back(FirstProcess(NewGroup.ProcessGroup));
 	ProcessGroupsList.push_back(NewGroup);
 	if (NewGroup.ProcessGroup > 0) { std::cout << "Stworzono grupe nr: " << NewGroup.ProcessGroup << std::endl; }
 };
 std::shared_ptr<PCB> NewProcessGroupProcess(std::string ProcessName) {
-	Group NewGroup; // numer powinien byc adany przez nadzorcê
+	Group NewGroup; // numer powinien byc adany przez nadzorcï¿½
 	ProcessGroupsList.push_back(NewGroup);
 	std::shared_ptr<PCB> New = NewProcess(ProcessName, NewGroup.ProcessGroup);
 	if (NewGroup.ProcessGroup > 0) { std::cout << "Stworzono grupe z procesem nr: " << NewGroup.ProcessGroup << std::endl;}

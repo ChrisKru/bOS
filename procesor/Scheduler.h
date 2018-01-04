@@ -17,7 +17,7 @@ class Scheduler
 	shared_ptr<PCB> idle;
 	vector<shared_ptr<PCB>> procesy_gotowe;
 	priority_queue<shared_ptr<PCB>, vector<shared_ptr<PCB>>, komparator> procesy_gotowe_queue;
-	shared_ptr<PCB> id1e = make_shared<PCB>("bezczynny", 0);
+	shared_ptr<PCB> id1e;
 public:
 	Scheduler();
 	Scheduler(int a);

@@ -10,9 +10,10 @@ Scheduler::Scheduler() //to wywoluja wszyscy oprocz shella na poczatku w main
 	time = 0;
 }
 Scheduler::Scheduler(int a) // to wywoluje Shell w main
-{
-	time = 0;
+{ 
 	idle = FirstProcess(0);
+	time = 0;
+	id1e = make_shared<PCB>("bezczynny");
 	idle->SetState(State::AKTYWNY);
 	running = id1e;
 }
@@ -47,7 +48,7 @@ void Scheduler::Schedule()
 	{
 		time = running->Timmer;
 		if (running->GetState() == State::OCZEKUJACY) running->SetTimmer(0);
-		idle->SetState(State::AKTYWNY);
+		//idle->SetState(State::AKTYWNY);
 	}
 	if (running != nullptr && running->GetState() != State::AKTYWNY)
 	{
@@ -118,6 +119,7 @@ void Scheduler::Schedule()
 
 				cout << "Brak gotowych procesow, ";
 				running = id1e;
+				idle->SetState(State::AKTYWNY);
 			}
 			else // jesli jest to przelicz tau i wybierz nowy proces
 			{

@@ -72,7 +72,7 @@ struct PCB {
 
 	std::string FileName;
 	// Konstruktor tworz¹cy nowy PCB
-
+	PCB(std::string processname);
 	PCB(std::string processname, int processgroup);
 
 	//Metody - gdyz nie bedziecie mieli dostêpu bezpoœredio do pól
