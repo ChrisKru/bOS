@@ -54,6 +54,7 @@ std::vector<std::string> Shell::parseInput(std::string input){
 bool Shell::executeCommand(std::vector<std::string> parameters) {
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN | FOREGROUND_BLUE);
 	if (parameters.size() == 0) {
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
 		return 0;
 	}
 	if (parameters[0] == "exit") {
@@ -168,7 +169,6 @@ bool Shell::executeCommand(std::vector<std::string> parameters) {
 			ErrorPM();
 			return 0;
 		}
-		// komenda zrobiona przez dobrego ziomka z zarzadzania procesami 
 	}else if (parameters[0] == "lsg") {
 		if (parameters.size() == 1) {
 			PrintProcessListInformation();
@@ -207,7 +207,6 @@ bool Shell::executeCommand(std::vector<std::string> parameters) {
 			ErrorPM();
 			return 0;
 		}
-		// komenda zrobiona przez dobrego ziomka z zarzadzania procesami 
 	} else if (parameters[0] == "cgp") {
 		if (parameters.size() == 3) {
 			try {
