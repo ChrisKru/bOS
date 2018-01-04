@@ -157,3 +157,4 @@ void PrintProcessListInformation();
 
 std::shared_ptr<PCB> NewProcessGroupProcess(std::string ProcessName);
 void NameStane(State state);
+std::shared_ptr<PCB> NewProcessGroupProcessNumer(std::string ProcessName, int numer);

@@ -158,12 +158,21 @@ void Scheduler::Schedule()
 }
 void Scheduler::print_running()
 {
-	if (running->ProcessState == State::AKTYWNY) cout << "Akutalnie wykonywany proces o nazwie: " << running->ProcessName << " PID: " << running->ProcessID
+	if (idle->GetState() == State::AKTYWNY)
+	{
+		cout << "Akutalnie wykonywany proces o nazwie: " << idle->ProcessName << " PID: " << idle->ProcessID
+			<< " Nr grupy: " << idle->ProcessGroup << endl;
+	}
+	else if (running->ProcessState == State::AKTYWNY) cout << "Akutalnie wykonywany proces o nazwie: " << running->ProcessName << " PID: " << running->ProcessID
 		<< " Nr grupy: " << running->ProcessGroup << endl;
-	else cout << "Nie jest wykonywany zaden proces, aktywny proces bezczynnosci" << endl;
+	else cout << "Nie jest wykonywany zaden proces" << endl;
 }
 void Scheduler::wyswietl_gotowe()
 {
+	if (idle->GetState() == State::GOTOWY)
+	{
+		cout << "Nazwa: " << idle->GetName() << " PID: " << idle->GetID() << " Nr grupy: " << idle->ProcessGroup << endl;
+	}
 	priority_queue<shared_ptr<PCB>, vector<shared_ptr<PCB>>, komparator> procesy_gotowe_queue2 = procesy_gotowe_queue;
 	if (procesy_gotowe_queue2.size() > 0 && procesy_otrzymane.size() > 0) {
 		int temp = procesy_gotowe_queue2.size();

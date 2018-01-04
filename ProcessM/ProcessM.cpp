@@ -138,14 +138,15 @@ std::shared_ptr<PCB> NewProcess(std::string ProcessName, int ProcessGroup) {
 	}
 
 	if (f == false) {
-		std::cout << "Podany nr grupy nie istnieje" << std::endl;
-		return New = NULL;
+		//std::cout << "Podany nr grupy nie istnieje" << std::endl;
+		//return New = NULL;
+		New = NewProcessGroupProcessNumer(ProcessName, ProcessGroup);
 	}
-	else {
+	//else {
 		New->SetState(State::GOTOWY);
 		procesy_otrzymane.push_back(New); 
 		return New;
-	}
+	//}
 };
 void DeleteProcess(int ProcessID) {
 	int i;
@@ -189,6 +190,15 @@ std::shared_ptr<PCB> NewProcessGroupProcess(std::string ProcessName) {
 	ProcessGroupsList.push_back(NewGroup);
 	std::shared_ptr<PCB> New = NewProcess(ProcessName, NewGroup.ProcessGroup);
 	if (NewGroup.ProcessGroup > 0) { std::cout << "Stworzono grupe z procesem nr: " << NewGroup.ProcessGroup << std::endl;}
+	return New;
+};
+
+std::shared_ptr<PCB> NewProcessGroupProcessNumer(std::string ProcessName, int numer) {
+	Group NewGroup;
+	NewGroup.ProcessGroup = numer;
+	ProcessGroupsList.push_back(NewGroup);
+	std::shared_ptr<PCB> New = NewProcess(ProcessName, NewGroup.ProcessGroup);
+	if (NewGroup.ProcessGroup > 0) { std::cout << "Stworzono grupe z procesem nr: " << NewGroup.ProcessGroup << std::endl; }
 	return New;
 };
 
