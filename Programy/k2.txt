@@ -1,5 +1,5 @@
 SC k1 Hello
-MV B 15
+MV B 11
 MV A 1
 MV C 0
 RC k1
