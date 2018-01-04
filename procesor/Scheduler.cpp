@@ -13,10 +13,18 @@ Scheduler::Scheduler(int a) // to wywoluje Shell w main
 {
 	time = 0;
 	idle = FirstProcess(0);
-	running = idle;
+	idle->SetState(State::AKTYWNY);
+	running = id1e;
 }
 void Scheduler::Schedule()
 {
+	/*if (procesy_otrzymane.size() > 0)
+	{
+		for (auto proces : procesy_otrzymane)
+		{
+			if (proces->GetState() == State::NOWY) proces->SetState(State::GOTOWY);
+		}
+	}*/
 	if (procesy_otrzymane.size() == 0 && procesy_gotowe_queue.size() == 0 && running->GetName() == "bezczynny")
 	{
 		bool a = false;
@@ -39,6 +47,7 @@ void Scheduler::Schedule()
 	{
 		time = running->Timmer;
 		if (running->GetState() == State::OCZEKUJACY) running->SetTimmer(0);
+		idle->SetState(State::AKTYWNY);
 	}
 	if (running != nullptr && running->GetState() != State::AKTYWNY)
 	{
@@ -97,6 +106,7 @@ void Scheduler::Schedule()
 				running = procesy_gotowe_queue.top();
 				procesy_gotowe_queue.pop();
 				running->SetState(State::AKTYWNY);
+				idle->SetState(State::GOTOWY);
 				cout << "Przydzielono procesor: " << running->ProcessName << " PID: " << running->ProcessID << endl;// " z tau = " << running->GetTau() << endl;
 
 			}
@@ -107,7 +117,7 @@ void Scheduler::Schedule()
 			{
 
 				cout << "Brak gotowych procesow, ";
-				running = idle;
+				running = id1e;
 			}
 			else // jesli jest to przelicz tau i wybierz nowy proces
 			{
@@ -137,6 +147,7 @@ void Scheduler::Schedule()
 				running = procesy_gotowe_queue.top();
 				procesy_gotowe_queue.pop();
 				running->SetState(State::AKTYWNY);
+				idle->SetState(State::GOTOWY);
 				cout << "Przydzielono procesor: " << running->ProcessName << " PID: " << running->ProcessID << endl;//" z tau = " << running->GetTau() << endl;
 			}
 
@@ -193,6 +204,7 @@ void Scheduler::killprocess()
 	{
 		running->SetState(State::ZAKONCZONY);
 		DeleteProcess(running->GetID());
+		idle->SetState(State::AKTYWNY);
 	}
 }
 void Scheduler::usun(string name)
